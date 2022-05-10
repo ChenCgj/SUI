@@ -15,7 +15,7 @@ namespace sui {
 
 // which was created in SUI_window.cpp, element in it will be destroyed by window
 extern std::unordered_map<Window *, std::pair<SDL_mutex *, SDL_cond *>> window_message_queue_lock_map;
-// which was create in SUI_window.cpp, will be destroyed by SUI_main.cpp:clean()
+// which was create in SUI_window.cpp, will be destroyed by the last window
 extern SDL_mutex *lock_window_message_queue_lock_map;
 // which is used to lock the window_id --- (Window *, flag) map, deleted by ~Window_manager()
 static SDL_mutex *lock_window_map = nullptr;
@@ -52,6 +52,7 @@ Window_manager::Window_manager() {
 
 Window_manager::~Window_manager() {
     SDL_DestroyMutex(lock_window_map);
+    lock_window_map = nullptr;
     DBG(<< "Window manager was deleted");
 }
 
@@ -162,10 +163,10 @@ void Window_manager::push_event(Window *pWnd, const SDL_Event &event) {
     SDL_LockMutex(lock_window_message_queue_lock_map);
     SDL_mutex *m = window_message_queue_lock_map[pWnd].first;
     SDL_cond *c = window_message_queue_lock_map[pWnd].second;
+    SDL_UnlockMutex(lock_window_message_queue_lock_map);
     SDL_LockMutex(m);
     pWnd->pData->event_queue.push(event);
     SDL_CondSignal(c);
     SDL_UnlockMutex(m);
-    SDL_UnlockMutex(lock_window_message_queue_lock_map);
 }
 }

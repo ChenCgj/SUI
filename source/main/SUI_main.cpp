@@ -86,7 +86,14 @@ int tackle_size_change(void *data, SDL_Event *resized_event) {
 }
 
 void clean() {
+    // we can't make sure that dose any object need the object_tree lock when we prepare to end program
+    // but we can make sure that this thread needn't this lock, because it can't change the object tree now
+    // however, if user create a new thread(which operate the object tree), he should wait the thread to end and then this thread can end
     SDL_DestroyMutex(lock_object_tree);
-    SDL_DestroyMutex(lock_window_message_queue_lock_map);
+    lock_object_tree = nullptr;
+    DBG(<< "destroy lock_object_tree ok");
+    // this lock should be destroyed by the last window, otherwise when we destroy this lock but a window not be destroy will need this lock will lead to problem
+    // SDL_DestroyMutex(lock_window_message_queue_lock_map);
     SDL_Quit();
+    DBG(<< "SDL_Quit OK");
 }

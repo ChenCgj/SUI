@@ -6,6 +6,8 @@
 *.lo
 *.o
 *.obj
+# build/**
+/build
 
 # Precompiled Headers
 *.gch
@@ -30,3 +32,18 @@
 *.exe
 *.out
 *.app
+
+# Cmake
+CMakeLists.txt
+
+# header file needed on windows
+/source/include/SDL_include
+
+# lib needed on windows
+/lib
+
+# other
+/SUI.und
+/.cache
+/.vscode
+

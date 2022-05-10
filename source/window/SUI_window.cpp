@@ -42,7 +42,7 @@ namespace sui {
 
 // this lock is aim to lock the message queue the window deal with
 std::unordered_map<Window*, std::pair<SDL_mutex*, SDL_cond*>> window_message_queue_lock_map;
-// this lock is use to lock the mutex_map above which lock the message queue, will be destroyed in SDL_main.cpp:clean()
+// this lock is use to lock the mutex_map above which lock the message queue, will be destroyed by last window
 SDL_mutex *lock_window_message_queue_lock_map = SDL_CreateMutex();
 
 /**
@@ -110,19 +110,29 @@ Window::~Window() {
     // the Window_data will be freed auto
     SDL_DestroyRenderer(pData->pRenderer);
     SDL_DestroyWindow(pData->pWnd);
-    DBG(<< get_name() << " window destroy ok in ~Window");
+    DBG(<< get_name() << " SDL window destroy ok in ~Window");
 
+    bool should_delete_lock = false;
     SDL_LockMutex(lock_window_message_queue_lock_map);
     SDL_mutex *m = window_message_queue_lock_map[this].first;
     SDL_cond *c = window_message_queue_lock_map[this].second;
+    window_message_queue_lock_map.erase(this);
+    // if this is the last window
+    should_delete_lock = window_message_queue_lock_map.empty();
+    SDL_UnlockMutex(lock_window_message_queue_lock_map);
     if (m) {
         SDL_DestroyMutex(m);
+        m = nullptr;
     }
     if (c) {
         SDL_DestroyCond(c);
+        c = nullptr;
     }
-    window_message_queue_lock_map.erase(this);
-    SDL_UnlockMutex(lock_window_message_queue_lock_map);
+    if (should_delete_lock) {
+        SDL_DestroyMutex(lock_window_message_queue_lock_map);
+        lock_window_message_queue_lock_map = nullptr;
+        DBG(<< "delete lock_window_message_queue_lock_map OK");
+    }
 
     DBG(<< "delete " <<  get_name() << " ok");
 }
