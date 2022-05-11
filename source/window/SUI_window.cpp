@@ -383,15 +383,6 @@ void Window::draw_all(Canvas &canvas) {
     // we will not change the object tree
     obj_q.push(this);
 
-#ifdef __WIN32__
-    /**
-    * @bug On widnow when the num of children more than 4, the buffer_canvas of the window can't draw on it when the window size change
-    *      it need to draw again on the buffer_canvas so that it can draw
-    *      and one of the child was the same
-    */
-    this->set_redraw_flag(true); // can't fixed the bug, but make the window can be drawed after stoping the size changing, during the change, it's incorrect
-#endif
-
     while (!obj_q.empty()) {
         int size = obj_q.size();
         for (int i = 0; i < size; ++i) {

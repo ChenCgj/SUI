@@ -136,6 +136,11 @@ void Canvas::paint_on_canvas(Canvas &canvas) {
         ERR(<< "render copy error. SDL: " << SDL_GetError());
     }
     canvas.restore_env();
+    /**
+    * may call this function is uncessary? but it fix the bug that when the object too more, the window can't show some element on windows
+    * may be this function make all buffer to the texture?
+    */
+    SDL_RenderPresent(canvas.pCanvas_data->pRenderer);
 }
 
 /**
