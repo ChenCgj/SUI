@@ -26,15 +26,22 @@ class Object {
 public:
     static Object *get_trash_root();
     static Object *get_root();
+
     bool add_node(Object * pObject);
     bool add_nodes(const std::list<Object *> pObjects);
     bool remove_node(Object *pObject);
     bool remove_nodes(const std::list<Object *> pObjects);
+
     Object *get_parent();
     // this function is insafe in multi-program
     // when you call this, you should confirm that you will not make the child deletable
     std::list<Object *> get_node_list();
-    bool destroy(bool flag);
+    /**
+    * if flag is true, try to make the object can be destroyed, otherwise return the whether the object can be desroyed
+    * @warning if set flag true success, you should not use this object any more as well as calling this function.
+    */
+    bool set_destroy(bool flag);
+
     virtual std::string get_name();
     virtual ~Object();
 protected:
@@ -42,12 +49,12 @@ protected:
     Object();
     Object *set_parent(Object *parent);
 private:
+    int ID;
     Object *parent;
     std::list<Object *> object_list;
     bool can_delete;
     // a tool function to move a object
     void add_node_from(Object *src, Object *child);
-    int ID;
     friend int clean_trash(void *data);
 };
 

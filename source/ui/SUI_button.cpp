@@ -39,21 +39,17 @@ Button::~Button() {
     DBG(<< get_name() << "was destroy.");
 }
 
-void Button::deal_key_down_event(Key_board_event &key_event) {
+void Button::deal_key_down_event(Keyboard_event &key_event) {
 
 }
 
-void Button::deal_key_up_event(Key_board_event &key_event) {
+void Button::deal_key_up_event(Keyboard_event &key_event) {
 
 }
-
-/**
-* @bug change the object tree will cause dead_lock
-*/
 
 void Button::deal_mouse_button_down_event(Mouse_button_event &mouse_button) {
-    int mouse_x = mouse_button.event.x;
-    int mouse_y = mouse_button.event.y;
+    int mouse_x = mouse_button.event.button.x;
+    int mouse_y = mouse_button.event.button.y;
     if (mouse_x < get_width() + get_posX()
         && mouse_x > get_posX()
         && mouse_y < get_height() + get_posY()

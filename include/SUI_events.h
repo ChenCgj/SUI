@@ -3,11 +3,11 @@
 * @brief contains some pre-declaration of event types
 */
 namespace sui {
-struct Key_board_event;
-struct Text_editint_event;
-struct Text_input_event;
-struct Mouse_motion_event;
-struct Mouse_button_event;
-struct Mouse_wheel_event;
-struct Event;
+class Keyboard_event;
+class Text_editint_event;
+class Text_input_event;
+class Mouse_motion_event;
+class Mouse_button_event;
+class Mouse_wheel_event;
+class Event;
 }

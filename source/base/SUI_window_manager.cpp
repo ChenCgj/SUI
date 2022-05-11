@@ -16,15 +16,13 @@ namespace sui {
 
 /**
 * use this function is to solve that when some object style change the window can't redraw auto, the window was waitting the EXPOSED event
-* @todo don't use this to decrease the occupy of CPU
-* @todo this function should be static, but friend function can't set to static, avoid friend function!
 * this function is not used now
 */
-/*static */unsigned interval_deal(unsigned interval, void *data) {
-    Window_manager *pwm = static_cast<Window_manager*>(data);
-    pwm->update_all_window();
-    return interval;
-}
+// static unsigned interval_deal(unsigned interval, void *data) {
+//     Window_manager *pwm = static_cast<Window_manager*>(data);
+//     pwm->update_all_window();
+//     return interval;
+// }
 
 Window_manager::Window_manager() {}
 
@@ -96,7 +94,7 @@ void Window_manager::update_all_window() {
 }
 
 void Window_manager::update_window(Window *pWindow) {
-    pWindow->redraw_all();
+    pWindow->redraw();
 }
 
 Window *Window_manager::get_window(Uint32 window_no) {
@@ -119,41 +117,58 @@ void Window_manager::could_quit() {
 
 void Window_manager::push_event(Window *pWnd, const SDL_Event &event) {
     switch (event.type) {
-    case SDL_KEYDOWN:
-        break;
-    case SDL_KEYUP:
-        break;
-    case SDL_MOUSEBUTTONDOWN:
-        break;
-    case SDL_MOUSEBUTTONUP: {
-        Mouse_button_event mbe{event.button};
-        pWnd->deal_mouse_button_down_event(mbe);
+    case SDL_KEYDOWN: {
+        Keyboard_event key_down{event};
+        pWnd->deal_key_down_event(key_down);
         break;
     }
-    case SDL_MOUSEWHEEL:
+    case SDL_KEYUP: {
+        Keyboard_event key_up{event};
+        pWnd->deal_key_up_event(key_up);
         break;
-    case SDL_MOUSEMOTION:
+    }
+    case SDL_MOUSEBUTTONDOWN: {
+        Mouse_button_event mouse_button_down{event};
+        pWnd->deal_mouse_button_down_event(mouse_button_down);
         break;
+    }
+    case SDL_MOUSEBUTTONUP: {
+        Mouse_button_event mouse_button_up{event};
+        pWnd->deal_mouse_button_up_event(mouse_button_up);
+        break;
+    }
+    case SDL_MOUSEWHEEL: {
+        Mouse_wheel_event mouse_wheel{event};
+        pWnd->deal_mouse_wheel_event(mouse_wheel);
+        break;
+    }
+    case SDL_MOUSEMOTION: {
+        Mouse_motion_event mouse_move{event};
+        pWnd->deal_mouse_move_event(mouse_move);
+        break;
+    }
     case SDL_WINDOWEVENT: {
-        Event w_e{event};
+        Event window_event{event};
         switch (event.window.event) {
         case SDL_WINDOWEVENT_CLOSE:
-            pWnd->deal_window_close_event(w_e);
+            pWnd->deal_window_close_event(window_event);
             break;
         case SDL_WINDOWEVENT_EXPOSED:
             update_window(pWnd);
             break;
         case SDL_WINDOWEVENT_RESIZED:
-            pWnd->deal_window_resized_event(w_e);
+            pWnd->deal_window_resized_event(window_event);
             break;
         default:
             break;
         }
         break;
     }
-    default:
+    default: {
+        Event e_other{event};
+        pWnd->deal_other_event(e_other);
         break;
     }
+    }
 }
-
 }

@@ -18,8 +18,8 @@ class Event_handler {
 public:
     Event_handler();
     virtual ~Event_handler();
-    virtual void deal_key_down_event(Key_board_event &key_event); // = 0;
-    virtual void deal_key_up_event(Key_board_event &key_event); // = 0;
+    virtual void deal_key_down_event(Keyboard_event &key_event); // = 0;
+    virtual void deal_key_up_event(Keyboard_event &key_event); // = 0;
     virtual void deal_mouse_button_down_event(Mouse_button_event &mouse_button); // = 0;
     virtual void deal_mouse_button_up_event(Mouse_button_event &mouse_button); // = 0;
     virtual void deal_mouse_wheel_event(Mouse_wheel_event &mouse_wheel); // = 0;

@@ -5,7 +5,6 @@
 #include <unordered_map>
 
 #include "SDL_events.h"
-#include "SDL_mutex.h"
 #include "SDL_render.h"
 #include "SDL_video.h"
 
@@ -40,17 +39,6 @@ namespace sui {
 //     return SetLayeredWindowAttributes(hWnd, colorKey, 0, LWA_COLORKEY);
 // }
 
-// this lock is aim to lock the message queue the window deal with
-// std::unordered_map<Window*, std::pair<SDL_mutex*, SDL_cond*>> window_message_queue_lock_map;
-// this lock is use to lock the mutex_map above which lock the message queue, will be destroyed by last window
-// SDL_mutex *lock_window_message_queue_lock_map = SDL_CreateMutex();
-
-/**
-* @todo this function should be static, but friend function can't set to static, avoid friend function!
-*/
-// use to deal event in a new thread
-/*static */int deal_event(void *pWindow);
-
 Window::Window(const std::string &title, int width, int height,
                int posX, int posY, Window_flag flag) : Drawable(width, height) {
 
@@ -84,8 +72,6 @@ Window::Window(const std::string &title, int width, int height,
     WINDOW_MANAGER->add_window(this, false);
     set_color(0, 0, 0, 255);
     set_background_color(255, 255, 255, 255);
-    // create a new thread
-    // pData->event_deal_thread = SDL_CreateThread(sui::deal_event, "deal window event thread", this); 
 }
 
 Window::Window(const std::string &title, int width, int height, Window_flag flag) :
@@ -96,7 +82,6 @@ Window::~Window() {
     SDL_DestroyRenderer(pData->pRenderer);
     SDL_DestroyWindow(pData->pWnd);
     DBG(<< get_name() << " SDL window destroy ok in ~Window");
-
     DBG(<< "delete " <<  get_name() << " ok");
 }
 
@@ -110,11 +95,13 @@ void Window::show() {
 }
 
 void Window::close() {
-    static SDL_Event e;
-    e.window.type = SDL_WINDOWEVENT;
-    e.window.windowID = get_window_id();
-    e.window.event = SDL_WINDOWEVENT_CLOSE;
-    WINDOW_MANAGER->patch_event_to(get_window_id(), e, Window_manager::window_status_all);
+    DBG(<< get_name() << " (window id:" << get_window_id() << ") close in event circle");
+    // trans the object to the trash_root
+    ROOT->remove_node(this);
+    // remove it in window manager, so that it will not send message to this window
+    WINDOW_MANAGER->remove_window(this);
+    // currently just hide it simply, it will be destroy when program quit or clean the trash_root
+    SDL_HideWindow(pData->pWnd);
 }
 
 void Window::set_window_title(const std::string &title) {
@@ -187,7 +174,6 @@ void Window::set_size(int w, int h) {
 //     return h;
 // }
 
-
 Uint32 Window::get_window_id() const {
     return SDL_GetWindowID(pData->pWnd);
 }
@@ -219,18 +205,12 @@ void Window::deal_window_resized_event(Event &e) {
     DBG(<< get_name() << "(window id:" << e.event.window.windowID << ") resized");
     Drawable::set_width(e.event.window.data1);
     Drawable::set_height(e.event.window.data2);
-    update_all_with_children();
-    redraw_all();
+    update_all_with_children(); // bug, without this the children didn't show
+    redraw();
 }
 
 void Window::deal_window_close_event(Event &e) {
-    DBG(<< get_name() << " (window id:" << get_window_id() << ") close in event circle");
-    // trans the object to the trash_root
-    ROOT->remove_node(this);
-    // remove it in window manager, so that it will not send message to this window
-    WINDOW_MANAGER->remove_window(this);
-    // currently just hide it simply, it will be destroy when program quit or clean the trash_root
-    SDL_HideWindow(pData->pWnd);
+    close();
 }
 
 // draw the window on a canvas
@@ -247,13 +227,15 @@ void Window::draw(Canvas &canvas) {
 /**
 * @bug may be on high dpi system, the size can draw is different width the window size
 */
-void Window::redraw_all() {
+void Window::redraw() {
     // int w, h;
     // SDL_GetRendererOutputSize(pData->pRenderer, &w, &h);
     // create a new canvas which has the render information of the window
     // then the canvas will pass to the object the window contains to update the render information
     Canvas canvas{*this, 0, 0, 0, get_width(), get_height(), get_depth()};
     draw_all(canvas);
+    // draw all on the window now
+    canvas.paint_on_window(*this);
 }
 
 void Window::draw_all(Canvas &canvas) {
@@ -261,9 +243,6 @@ void Window::draw_all(Canvas &canvas) {
     canvas.set_color(255, 255, 255, 255);
     canvas.clear();
     canvas.restore_env();
-    std::queue<Object*> obj_q;
-    // we will not change the object tree
-    obj_q.push(this);
 
 #ifdef __WIN32__
     /**
@@ -274,6 +253,8 @@ void Window::draw_all(Canvas &canvas) {
     this->set_redraw_flag(true); // can't fixed the bug, but make the window can be drawed after stoping the size changing, during the change, it's incorrect
 #endif
 
+    std::queue<Object*> obj_q;
+    obj_q.push(this);
     while (!obj_q.empty()) {
         int size = obj_q.size();
         for (int i = 0; i < size; ++i) {
@@ -282,6 +263,9 @@ void Window::draw_all(Canvas &canvas) {
             for (auto p : pObj->get_node_list()) {
                 obj_q.push(p);
             }
+            // if (pObj == this) {
+            //     continue;
+            // }
             Drawable *pd = dynamic_cast<Drawable *>(pObj);
             // may be pd is not a drawable object
             if (pd == nullptr) {
@@ -296,60 +280,58 @@ void Window::draw_all(Canvas &canvas) {
         // the redraw flag is true?
         // ERROR!!! why my data change!
     }
-    // draw all on the window now
-    canvas.paint_on_window(*this);
 }
 
 /**
 * @bug when the window patch events to its children, the child should not deletable anything object, otherwise it will may cause hand point
 */
-void Window::deal_key_down_event(Key_board_event &key_event) {
+void Window::deal_key_down_event(Keyboard_event &key_event) {
     for (auto p : get_node_list()) {
         // use dynamic_cast here because the object is multi-inherit
         Event_handler *e_p = dynamic_cast<Event_handler *>(p);
-        e_p->deal_key_down_event(key_event);
+        HANDLER_HELPER->deal_key_down_event(e_p, key_event);
     }
 }
 
 void Window::deal_mouse_button_down_event(Mouse_button_event &mouse_button) {
     for (auto p : get_node_list()) {
         Event_handler *e_p = dynamic_cast<Event_handler *>(p);
-        e_p->deal_mouse_button_down_event(mouse_button);
+        HANDLER_HELPER->deal_mouse_button_down_event(e_p, mouse_button);
     }
 }
 
 void Window::deal_mouse_button_up_event(Mouse_button_event &mouse_button) {
     for (auto p : get_node_list()) {
         Event_handler *e_p = dynamic_cast<Event_handler *>(p);
-        e_p->deal_mouse_button_up_event(mouse_button);
+        HANDLER_HELPER->deal_mouse_button_up_event(e_p, mouse_button);
     }
 }
 
 void Window::deal_mouse_wheel_event(Mouse_wheel_event &mouse_wheel) {
     for (auto p : get_node_list()) {
         Event_handler *e_p = dynamic_cast<Event_handler *>(p);
-        e_p->deal_mouse_wheel_event(mouse_wheel);
+        HANDLER_HELPER->deal_mouse_wheel_event(e_p, mouse_wheel);
     }
 }
 
 void Window::deal_mouse_move_event(Mouse_motion_event &mouse_motion) {
     for (auto p : get_node_list()) {
         Event_handler *e_p = dynamic_cast<Event_handler *>(p);
-        e_p->deal_mouse_move_event(mouse_motion);
+        HANDLER_HELPER->deal_mouse_move_event(e_p, mouse_motion);
     }
 }
 
-void Window::deal_key_up_event(Key_board_event &key_event) {
+void Window::deal_key_up_event(Keyboard_event &key_event) {
     for (auto p : get_node_list()) {
         Event_handler *e_p = dynamic_cast<Event_handler *>(p);
-        e_p->deal_key_up_event(key_event);
+        HANDLER_HELPER->deal_key_up_event(e_p, key_event);
     }
 }
 
 void Window::deal_other_event(Event &event) {
     for (auto p : get_node_list()) {
         Event_handler *e_p = dynamic_cast<Event_handler *>(p);
-        e_p->deal_other_event(event);
+        HANDLER_HELPER->deal_other_event(e_p, event);
     }
 }
 }

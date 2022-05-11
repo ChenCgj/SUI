@@ -7,11 +7,11 @@ namespace sui {
 Event_handler::Event_handler() = default;
 Event_handler::~Event_handler() = default;
 
-void Event_handler::deal_key_down_event(Key_board_event &key_event) {
+void Event_handler::deal_key_down_event(Keyboard_event &key_event) {
 
 };
 
-void Event_handler::deal_key_up_event(Key_board_event &key_event) {
+void Event_handler::deal_key_up_event(Keyboard_event &key_event) {
 
 };
 

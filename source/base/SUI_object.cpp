@@ -12,8 +12,6 @@ namespace sui {
 // it's unsafe to use this global static variable to intial others static object
 // this thread is to clean the trash_root, no use now
 // SDL_Thread *clean_thread = nullptr;
-// lock the object_tree, this mutex will be desroyed in SUI_main.cpp:clean()
-// SDL_mutex *lock_object_tree = SDL_CreateMutex();
 
 /**
 * @todo this function should be static, but friend function can't set to static, avoid friend function!
@@ -26,7 +24,7 @@ namespace sui {
             if (*iter == TRASH_ROOT) {
                 flag = false;
                 break;
-            } else if ((*iter)->destroy(false) == true) {
+            } else if ((*iter)->set_destroy(false) == true) {
                 delete *iter;
                 iter = TRASH_ROOT->object_list.erase(iter);
             }
@@ -42,7 +40,7 @@ std::string Object::get_name() {
     return name;
 }
 
-Object::Object() : object_name{"Object"}, parent{nullptr}, object_list{}, can_delete{false}, ID{-1} {
+Object::Object() : object_name{"Object"}, ID{-1}, parent{nullptr}, object_list{}, can_delete{false} {
     static int id_count = 0;
     ID = id_count++;
 }
@@ -127,7 +125,7 @@ Object *Object::get_parent() {
 
 // flag a object can be delete on trash_root
 // warning : you should not use a object when it was on trash_root and be flag deleteale
-bool Object::destroy(bool flag) {
+bool Object::set_destroy(bool flag) {
     if (flag && get_parent() == TRASH_ROOT) {
         can_delete = true;
     }

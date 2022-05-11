@@ -15,6 +15,7 @@ int main(int argc, char *argv[]) {
     Button *pButton = new Button(150, 150, 200, 200);
     pButton->set_color(255, 0, 0, 125);
     pButton->get_posX_property().bind(pWindow->get_width_property(), function<int (const int &)>([](const int &x)->int {return x / 2;}));
+    pButton->get_width_property().bind(pWindow->get_width_property(), function<int (const int &)>([](const int &x)->int {return x / 4;}));
     pButton->add_listener([=](){
         pButton->set_background_color(rand() %255, rand() %255, rand() %255, rand() %255);
         pButton->set_redraw_flag(true);

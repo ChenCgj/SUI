@@ -10,14 +10,14 @@
 using namespace sui;
 
 static void clean();
-static int tackle_size_change(void *data, SDL_Event * resized_event);
+static int event_filter(void *data, SDL_Event *event);
 
 int main(int argc, char *argv[]) {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
+    SDL_SetEventFilter(event_filter, nullptr);
     // call the user function
     SUI_main(argc, argv);
     SDL_Event event;
-    SDL_SetEventFilter(tackle_size_change, nullptr);
     bool flag = true;
     while (flag) {
         while (flag && SDL_WaitEventTimeout(&event, 10)) {
@@ -61,10 +61,13 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-int tackle_size_change(void *data, SDL_Event *resized_event) {
-    if (resized_event->type == SDL_WINDOWEVENT && resized_event->window.event == SDL_WINDOWEVENT_RESIZED) {
-        WINDOW_MANAGER->patch_event_to(resized_event->window.windowID, *resized_event, sui::Window_manager::window_status_showing);
+int event_filter(void *data, SDL_Event *event) {
+    if (event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_RESIZED) {
+        WINDOW_MANAGER->patch_event_to(event->window.windowID, *event, sui::Window_manager::window_status_showing);
         return 0;
+    }
+    if (event->type == SDL_QUIT) {
+        return 1;
     }
     return 1;
 }

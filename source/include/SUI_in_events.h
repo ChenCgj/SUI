@@ -9,32 +9,42 @@
 
 #include "SDL_events.h"
 namespace sui {
-struct Key_board_event {
-    SDL_KeyboardEvent event;
-};
 
-struct Text_editint_event {
-    SDL_TextEditingEvent event;
-};
-
-struct Text_input_event {
-    SDL_TextInputEvent event;
-};
-
-struct Mouse_motion_event {
-    SDL_MouseMotionEvent event;
-};
-
-struct Mouse_button_event {
-    SDL_MouseButtonEvent event;
-};
-
-struct Mouse_wheel_event {
-    SDL_MouseWheelEvent event;
-};
-
-struct Event {
+class Event {
+public: 
     SDL_Event event;
+    Event(const SDL_Event &e);
 };
+
+class Keyboard_event : public Event {
+public:
+    Keyboard_event(const SDL_Event &e);
+};
+
+class Text_editint_event : public Event {
+public:
+    Text_editint_event(const SDL_Event &e);
+};
+
+class Text_input_event : public Event {
+public:
+    Text_input_event(const SDL_Event &e);
+};
+
+class Mouse_motion_event : public Event {
+public:
+    Mouse_motion_event(const SDL_Event &e);
+};
+
+class Mouse_button_event : public Event {
+public:
+    Mouse_button_event(const SDL_Event &e);
+};
+
+class Mouse_wheel_event : public Event {
+public:
+    Mouse_wheel_event(const SDL_Event &e);
+};
+
 }
 #endif
