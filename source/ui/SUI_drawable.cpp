@@ -63,6 +63,7 @@ void Drawable::using_buffer_draw(Canvas &canvas) {
     bool flag = get_redraw_flag();
     if (!flag) {
         // the buffer is valid
+        DBG(<< "using buffer texture...");
         canvas_buffer.paint_on_canvas(canvas);
     } else {
         DBG(<< "save buffer texture...");

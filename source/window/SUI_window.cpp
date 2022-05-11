@@ -205,7 +205,10 @@ void Window::deal_window_resized_event(Event &e) {
     DBG(<< get_name() << "(window id:" << e.event.window.windowID << ") resized");
     Drawable::set_width(e.event.window.data1);
     Drawable::set_height(e.event.window.data2);
-    update_all_with_children(); // bug, without this the children didn't show
+    // when the window size change, all texture create for this window will be invalid
+    // if any object recreate a texture, it copy the origin invalid content to the new texture, it was invalid
+    // so every object should redraw anyway.
+    update_all_with_children();
     redraw();
 }
 
@@ -246,7 +249,7 @@ void Window::draw_all(Canvas &canvas) {
 
 #ifdef __WIN32__
     /**
-    * @bug On widnow when the num of children more than 4, the buffer_canvas of the window can't draw on it when the window size change
+    * @bug On widnows when the num of children more than 4, the buffer_canvas of the window can't draw on it when the window size change
     *      it need to draw again on the buffer_canvas so that it can draw
     *      and one of the child was the same
     */
@@ -263,9 +266,6 @@ void Window::draw_all(Canvas &canvas) {
             for (auto p : pObj->get_node_list()) {
                 obj_q.push(p);
             }
-            // if (pObj == this) {
-            //     continue;
-            // }
             Drawable *pd = dynamic_cast<Drawable *>(pObj);
             // may be pd is not a drawable object
             if (pd == nullptr) {

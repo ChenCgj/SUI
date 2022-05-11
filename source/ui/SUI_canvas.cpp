@@ -148,6 +148,7 @@ bool Canvas::prepare_texture() {
     }
     // if the size has changed
     if (get_width() != width_bak || get_height() != height_bak || get_depth() != depth_bak) {
+        DBG(<< "need to create a new texture...");
         save_env();
         SDL_Texture *new_texture = recreate_texture(pCanvas_data->pRenderer, pCanvas_data->pTexture, width_bak, height_bak, get_width(), get_height());
         if (new_texture == nullptr) {
@@ -258,7 +259,12 @@ static SDL_Texture *recreate_texture(SDL_Renderer *pRenderer, SDL_Texture *origi
     SDL_RenderClear(pRenderer);
     SDL_Rect rect_src = {0, 0, origin_w, origin_h};
     // copy the content to the new
-    SDL_RenderCopy(pRenderer, origin, &rect_src, &rect_src);
+    /**
+    * @warning if the window size change, the origin texture has the invalid content, and copy it to the new is incorrect, object need redraw
+    */
+    if (SDL_RenderCopy(pRenderer, origin, &rect_src, &rect_src) < 0) {
+        ERR(<< "render copy origin texture fail");
+    }
     SDL_DestroyTexture(origin);
     return new_texture;
 }
