@@ -110,12 +110,14 @@ void Canvas::paint_on_window(const Window &window) {
         ERR(<< "couldn't preapre the texture.");
         return;
     }
-    SDL_Rect rect_dect = {get_posX(), get_posY(), get_width(), get_height()};
+    SDL_Rect rect_dst = {get_posX(), get_posY(), get_width(), get_height()};
     SDL_Rect rect_src = {0, 0, get_width(), get_height()};
+    DBG(<< "src: " << rect_src.x << " " << rect_src.y << " " << rect_src.w << " " << rect_src.h);
+    DBG(<< "dest: " << rect_dst.x << " " << rect_dst.y << " " << rect_dst.w << " " << rect_dst.h);
     SDL_SetRenderTarget(window.pData->pRenderer, nullptr);
     SDL_SetRenderDrawColor(window.pData->pRenderer, 0, 0, 0, 0);
     SDL_RenderClear(window.pData->pRenderer);
-    if (SDL_RenderCopy(window.pData->pRenderer, pCanvas_data->pTexture, &rect_src, &rect_dect) < 0) {
+    if (SDL_RenderCopy(window.pData->pRenderer, pCanvas_data->pTexture, &rect_src, &rect_dst) < 0) {
         ERR(<< "render copy error. SDL: " << SDL_GetError());
     };
     SDL_RenderPresent(window.pData->pRenderer);
@@ -129,10 +131,12 @@ void Canvas::paint_on_canvas(Canvas &canvas) {
         ERR(<< "couldn't preapre the texture.");
         return;
     }
-    SDL_Rect rect_desc = {get_posX(), get_posY(), get_width(), get_height()};
+    SDL_Rect rect_dst = {get_posX(), get_posY(), get_width(), get_height()};
     SDL_Rect rect_src = {0, 0, get_width(), get_height()};
+    DBG(<< "src: " << rect_src.x << " " << rect_src.y << " " << rect_src.w << " " << rect_src.h);
+    DBG(<< "dest: " << rect_dst.x << " " << rect_dst.y << " " << rect_dst.w << " " << rect_dst.h);
     canvas.save_env();
-    if (SDL_RenderCopy(canvas.pCanvas_data->pRenderer, pCanvas_data->pTexture, &rect_src, &rect_desc) < 0) {
+    if (SDL_RenderCopy(canvas.pCanvas_data->pRenderer, pCanvas_data->pTexture, &rect_src, &rect_dst) < 0) {
         ERR(<< "render copy error. SDL: " << SDL_GetError());
     }
     canvas.restore_env();
@@ -262,6 +266,7 @@ static SDL_Texture *recreate_texture(SDL_Renderer *pRenderer, SDL_Texture *origi
     /**
     * @warning if the window size change, the origin texture has the invalid content, and copy it to the new is incorrect, object need redraw
     */
+    DBG(<< "src and dest: " << rect_src.x << " " << rect_src.y << " " << rect_src.w << " " << rect_src.h);
     if (SDL_RenderCopy(pRenderer, origin, &rect_src, &rect_src) < 0) {
         ERR(<< "render copy origin texture fail");
     }

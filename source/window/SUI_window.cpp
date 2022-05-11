@@ -210,6 +210,7 @@ void Window::deal_window_resized_event(Event &e) {
     // so every object should redraw anyway.
     update_all_with_children();
     redraw();
+    DBG(<< get_name() << "(window id:" << e.event.window.windowID << ") resized deal end");
 }
 
 void Window::deal_window_close_event(Event &e) {

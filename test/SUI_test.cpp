@@ -11,6 +11,7 @@ using namespace sui;
 
 int main(int argc, char *argv[]) {
     Window *pWindow = new Window("Hello Test", 800, 600, Window_flag::window_flag_resizable);
+    pWindow->set_background_color(128, 128, 0, 255);
 
     Button *pButton = new Button(150, 150, 200, 200);
     pButton->set_color(255, 0, 0, 125);
@@ -34,10 +35,15 @@ int main(int argc, char *argv[]) {
         printf("add child failure!\n");
     }
     pWindow->add_node(pButton2);
+    pButton2->add_node(new Button(10, 10, 10, 10));
+    pButton2->add_node(new Button(20, 20, 10, 10));
+    pButton2->add_node(new Button(30, 30, 10, 10));
+    pButton2->add_node(new Button(40, 40, 10, 10));
+    pButton2->add_node(new Button(50, 50, 10, 10));
     pWindow->show();
 
     Window *pWindow2 = new Window("Test2", 800, 600, 100, 100, Window_flag::window_flag_resizable);
-    pWindow2->set_background_color(0, 125, 125, 125);
+    pWindow2->set_background_color(0, 125, 125, 255);
     pWindow2->set_posX(200);
     pWindow2->set_posY(300);
     Button *pButton3 = new Button(0, 0, 100, 100);
