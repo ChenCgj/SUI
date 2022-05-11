@@ -17,7 +17,6 @@ extern SDL_mutex *lock_window_message_queue_lock_map;
 
 enum Event_type {
     none_event = SDL_USEREVENT,
-    window_redraw_event,
     quit_after_all_window_closed
 };
 }

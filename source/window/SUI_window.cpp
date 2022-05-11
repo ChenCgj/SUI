@@ -41,9 +41,9 @@ namespace sui {
 // }
 
 // this lock is aim to lock the message queue the window deal with
-std::unordered_map<Window*, std::pair<SDL_mutex*, SDL_cond*>> window_message_queue_lock_map;
+// std::unordered_map<Window*, std::pair<SDL_mutex*, SDL_cond*>> window_message_queue_lock_map;
 // this lock is use to lock the mutex_map above which lock the message queue, will be destroyed by last window
-SDL_mutex *lock_window_message_queue_lock_map = SDL_CreateMutex();
+// SDL_mutex *lock_window_message_queue_lock_map = SDL_CreateMutex();
 
 /**
 * @todo this function should be static, but friend function can't set to static, avoid friend function!
@@ -55,19 +55,6 @@ Window::Window(const std::string &title, int width, int height,
                int posX, int posY, Window_flag flag) : Drawable(width, height) {
 
     object_name = "window";
-    SDL_mutex *m = SDL_CreateMutex();
-    if (m == nullptr) {
-        ERR(<< "create mutex failure when create window");
-    }
-    SDL_cond *c = SDL_CreateCond();
-    if (c == nullptr) {
-        ERR(<< "create condition variable failure when create window");
-    }
-    if (m && c) {
-        SDL_LockMutex(lock_window_message_queue_lock_map);
-        window_message_queue_lock_map[this] = std::make_pair(m, c);
-        SDL_UnlockMutex(lock_window_message_queue_lock_map);
-    }
     // all object except the root should be add to the trash_root initially
     if (TRASH_ROOT->add_node(this) == false) {
         ERR(<< "create window failure\n");
@@ -98,41 +85,17 @@ Window::Window(const std::string &title, int width, int height,
     set_color(0, 0, 0, 255);
     set_background_color(255, 255, 255, 255);
     // create a new thread
-    pData->event_deal_thread = SDL_CreateThread(sui::deal_event, "deal window event thread", this); 
+    // pData->event_deal_thread = SDL_CreateThread(sui::deal_event, "deal window event thread", this); 
 }
 
 Window::Window(const std::string &title, int width, int height, Window_flag flag) :
     Window(title, width, height, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, flag) {}
 
 Window::~Window() {
-    SDL_WaitThread(pData->event_deal_thread, nullptr);
-    pData->event_deal_thread = nullptr;
     // the Window_data will be freed auto
     SDL_DestroyRenderer(pData->pRenderer);
     SDL_DestroyWindow(pData->pWnd);
     DBG(<< get_name() << " SDL window destroy ok in ~Window");
-
-    bool should_delete_lock = false;
-    SDL_LockMutex(lock_window_message_queue_lock_map);
-    SDL_mutex *m = window_message_queue_lock_map[this].first;
-    SDL_cond *c = window_message_queue_lock_map[this].second;
-    window_message_queue_lock_map.erase(this);
-    // if this is the last window
-    should_delete_lock = window_message_queue_lock_map.empty();
-    SDL_UnlockMutex(lock_window_message_queue_lock_map);
-    if (m) {
-        SDL_DestroyMutex(m);
-        m = nullptr;
-    }
-    if (c) {
-        SDL_DestroyCond(c);
-        c = nullptr;
-    }
-    if (should_delete_lock) {
-        SDL_DestroyMutex(lock_window_message_queue_lock_map);
-        lock_window_message_queue_lock_map = nullptr;
-        DBG(<< "delete lock_window_message_queue_lock_map OK");
-    }
 
     DBG(<< "delete " <<  get_name() << " ok");
 }
@@ -224,89 +187,6 @@ void Window::set_size(int w, int h) {
 //     return h;
 // }
 
-int Window::deal_event() {
-
-    SDL_LockMutex(lock_window_message_queue_lock_map);
-    SDL_mutex *m = window_message_queue_lock_map[this].first;
-    SDL_cond *c = window_message_queue_lock_map[this].second;
-    SDL_UnlockMutex(lock_window_message_queue_lock_map);
-
-    bool flag = true;
-    while (flag) {
-        SDL_LockMutex(m);
-        if (pData->event_queue.empty()) {
-            SDL_CondWait(c, m);
-        }
-        while (flag && !pData->event_queue.empty()) {
-            SDL_Event event = pData->event_queue.front();
-            pData->event_queue.pop();
-            switch (event.type) {
-            case SDL_KEYDOWN: {
-                Key_board_event k_e{event.key};
-                deal_key_down_event(k_e);
-                break;
-            }
-            case SDL_KEYUP: {
-                Key_board_event k_e{event.key};
-                deal_key_up_event(k_e);
-                break;
-            }
-            case SDL_MOUSEBUTTONDOWN: {
-                Mouse_button_event m_e{event.button};
-                deal_mouse_button_down_event(m_e);
-                break;
-            }
-            case SDL_MOUSEBUTTONUP: {
-                Mouse_button_event m_e{event.button};
-                deal_mouse_button_up_event(m_e);
-                break;
-            }
-            case SDL_WINDOWEVENT:
-                switch (event.window.event) {
-                case SDL_WINDOWEVENT_CLOSE:
-                    DBG(<< get_name() << " (window id:" << get_window_id() << ") close in event circle");
-                    // should trans the object to the trash_root first then remove the window in window_manager
-                    // because when the manager is empty, it will make the program quit and destroy the object_tree_lock,
-                    // but maybe the window still on the ROOT, in which need the lock to trans to TRASH_ROOT
-                    // trans the object to the trash_root
-                    ROOT->remove_node(this);
-                    // remove it in window manager, so that it will not send message to this window
-                    WINDOW_MANAGER->remove_window(this);
-                    // currently just hide it simply, it will be destroy when program quit or clean the trash_root
-                    SDL_HideWindow(pData->pWnd);
-                    flag = false;
-                    break;
-                case SDL_WINDOWEVENT_EXPOSED:
-                    // window need to redraw
-                    // because the render should be done in main thread, we push the event to the main thread
-                    WINDOW_MANAGER->update_window(this);
-                    break;
-                case SDL_WINDOWEVENT_RESIZED: {
-                    // NOT USED
-                    // the event here was never used as we filter the event in SUI_main.cpp:main()
-                    DBG(<< get_name() << "(window id:" << get_window_id() << ") resized");
-                    ERR(<< "never used??");
-                    // we should not render, create window or accept the message in other thread excpet the main thread
-                    // make all redraw flag true there
-                    // update the size
-                    Drawable::set_width(event.window.data1);
-                    Drawable::set_height(event.window.data2);
-                    // we should update all texture
-                    update_all_with_children();
-                    break;
-                }
-                default:
-                    break;
-                }
-                break;
-            default:
-                break;
-            }
-        }
-        SDL_UnlockMutex(m);
-    }
-    return 0;
-}
 
 Uint32 Window::get_window_id() const {
     return SDL_GetWindowID(pData->pWnd);
@@ -335,20 +215,22 @@ void Window::update_all_with_children() {
     }
 }
 
-int deal_event(void *pWindow) {
-    Window *pw = (Window *)(pWindow);
-    int ret_value = pw->deal_event();
-    // when the event thread end, this window can be deleted
-    // and the user should not use the window any more
-    pw->destroy(true);
-    DBG(<< pw->get_name() << "( " << "window id: " << pw->get_window_id() << ") deal event thread end");
-    return ret_value;
-}
-
 void Window::deal_window_resized_event(Event &e) {
+    DBG(<< get_name() << "(window id:" << e.event.window.windowID << ") resized");
     Drawable::set_width(e.event.window.data1);
     Drawable::set_height(e.event.window.data2);
     update_all_with_children();
+    redraw_all();
+}
+
+void Window::deal_window_close_event(Event &e) {
+    DBG(<< get_name() << " (window id:" << get_window_id() << ") close in event circle");
+    // trans the object to the trash_root
+    ROOT->remove_node(this);
+    // remove it in window manager, so that it will not send message to this window
+    WINDOW_MANAGER->remove_window(this);
+    // currently just hide it simply, it will be destroy when program quit or clean the trash_root
+    SDL_HideWindow(pData->pWnd);
 }
 
 // draw the window on a canvas

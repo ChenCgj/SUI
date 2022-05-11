@@ -66,6 +66,8 @@ public:
     void set_height(int h) override;
     void set_position(int x, int y);
     void set_size(int w, int h);
+    void deal_window_resized_event(Event &event);
+private:
     void deal_key_down_event(Key_board_event &key_event) override;
     void deal_key_up_event(Key_board_event &key_event) override;
     void deal_mouse_button_down_event(Mouse_button_event &mouse_button) override;
@@ -73,8 +75,7 @@ public:
     void deal_mouse_wheel_event(Mouse_wheel_event &mouse_wheel) override;
     void deal_mouse_move_event(Mouse_motion_event &mouse_motion) override;
     void deal_other_event(Event &event) override;
-    void deal_window_resized_event(Event &event);
-private:
+    void deal_window_close_event(Event &event);
     struct Window_data;
     std::unique_ptr<Window_data> pData;
     uint32_t get_window_id() const;

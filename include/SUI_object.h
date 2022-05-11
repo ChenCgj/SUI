@@ -33,7 +33,7 @@ public:
     Object *get_parent();
     // this function is insafe in multi-program
     // when you call this, you should confirm that you will not make the child deletable
-    const std::list<Object *> get_node_list();
+    std::list<Object *> get_node_list();
     bool destroy(bool flag);
     virtual std::string get_name();
     virtual ~Object();

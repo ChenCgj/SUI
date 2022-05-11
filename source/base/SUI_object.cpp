@@ -13,7 +13,7 @@ namespace sui {
 // this thread is to clean the trash_root, no use now
 // SDL_Thread *clean_thread = nullptr;
 // lock the object_tree, this mutex will be desroyed in SUI_main.cpp:clean()
-SDL_mutex *lock_object_tree = SDL_CreateMutex();
+// SDL_mutex *lock_object_tree = SDL_CreateMutex();
 
 /**
 * @todo this function should be static, but friend function can't set to static, avoid friend function!
@@ -145,23 +145,23 @@ Object::~Object() {
 
 void Object::add_node_from(Object *src, Object *child) {
     // lock the object tree
-    SDL_LockMutex(lock_object_tree);
+    // SDL_LockMutex(lock_object_tree);
     if (src != nullptr) {
         src->object_list.remove(child);
     }
     object_list.push_back(child);
     child->set_parent(this);
-    SDL_UnlockMutex(lock_object_tree);
+    // SDL_UnlockMutex(lock_object_tree);
 }
 
 // unsafe function
 // you should not make any object to be deletable on TRASH_ROOT while using the reture value
 // unless you can confirm that the object you set is not in the list returned
-const std::list<Object *> Object::get_node_list() {
+std::list<Object *> Object::get_node_list() {
     std::list<Object *> ret;
-    SDL_LockMutex(lock_object_tree);
+    // SDL_LockMutex(lock_object_tree);
     ret = object_list;
-    SDL_UnlockMutex(lock_object_tree);
+    // SDL_UnlockMutex(lock_object_tree);
     return ret;
 }
 }

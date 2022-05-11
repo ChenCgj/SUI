@@ -2,6 +2,8 @@
 
 A simple UI library built base on SDL2
 
+this version was "single" thread
+
 ## Build
 
 - build on ubuntu
