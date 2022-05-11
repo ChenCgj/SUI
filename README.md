@@ -33,6 +33,8 @@ this version was "single" thread
   2. change the %PATH% or make the header files with the code
   3. build
 
+tips: you can define `DEBUG_OPEN` to output the information of running
+
 ## Quickly start
 
 When you finish building, you will get the static library in /build.

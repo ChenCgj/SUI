@@ -1,7 +1,7 @@
 #include <iostream>
 
 #define LOG_OPEN
-#define DEBUG_OPEN
+// #define DEBUG_OPEN
 #define ERROR_OPEN
 
 #ifndef __FILE_NAME__
@@ -22,12 +22,18 @@
 
 #ifdef LOG_OPEN
 #define LOG(msg) LOG_in msg << " ]" << std::endl << std::endl
+#else
+#define LOG(msg)
 #endif
 #ifdef DEBUG_OPEN
 #define DBG(msg) DBG_in msg << " ]" << std::endl << std::endl
+#else
+#define DBG(msg)
 #endif
 #ifdef ERROR_OPEN
 #define ERR(msg) ERR_in msg << " ]" << std::endl << std::endl
+#else
+#define ERR(msg)
 #endif
 
 namespace sui {
