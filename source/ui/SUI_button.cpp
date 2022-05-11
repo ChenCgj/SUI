@@ -19,7 +19,7 @@ Button::Button(int x, int y, int w, int h) : Element(x, y, w, h) {
 }
 
 void Button::draw(Canvas &canvas) {
-    DBG(<< "draw button");
+    DBG(<< get_name() << "draw button start...");
     canvas.save_env();
     uint8_t r, g, b, a;
     get_background_color(r, g, b, a);
@@ -29,6 +29,7 @@ void Button::draw(Canvas &canvas) {
     canvas.set_color(r, g, b, a);
     canvas.draw_rect(Rect{0, 0, get_width(), get_height()});
     canvas.restore_env();
+    DBG(<< get_name() << "draw button ok");
 }
 
 void Button::add_listener(std::function<void (void)> func) {

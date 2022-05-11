@@ -39,6 +39,11 @@ namespace sui {
 //     return SetLayeredWindowAttributes(hWnd, colorKey, 0, LWA_COLORKEY);
 // }
 
+// debug
+// SDL_Window *pw = nullptr;
+// SDL_Renderer *pr = nullptr;
+// debug
+
 Window::Window(const std::string &title, int width, int height,
                int posX, int posY, Window_flag flag) : Drawable(width, height) {
 
@@ -67,6 +72,10 @@ Window::Window(const std::string &title, int width, int height,
     // create the render environment
     pData->pWnd = SDL_CreateWindow(title.c_str(), posX, posY, width, height, wflag | SDL_WINDOW_HIDDEN);
     pData->pRenderer = SDL_CreateRenderer(pData->pWnd, -1, 0);
+// debug
+    // pw = pData->pWnd;
+    // pr = pData->pRenderer;
+// debug
     // the window manager should control the window, when the program quit, it will close all window
     // and we set false so the window is flag hiden and will not receive anyother message
     WINDOW_MANAGER->add_window(this, false);
@@ -226,6 +235,7 @@ void Window::draw(Canvas &canvas) {
     canvas.set_color(r, g, b, a);
     canvas.fill_rect(Rect{0, 0, get_width(), get_height()});
     canvas.restore_env();
+    DBG(<< get_name() << "( window id: " << get_window_id() << ") draw widnow ok");
 }
 
 /**
@@ -244,18 +254,9 @@ void Window::redraw() {
 
 void Window::draw_all(Canvas &canvas) {
     canvas.save_env();
-    canvas.set_color(255, 255, 255, 255);
+    canvas.set_color(255, 255, 255, 0);
     canvas.clear();
     canvas.restore_env();
-
-#ifdef __WIN32__
-    /**
-    * @bug On widnows when the num of children more than 4, the buffer_canvas of the window can't draw on it when the window size change
-    *      it need to draw again on the buffer_canvas so that it can draw
-    *      and one of the child was the same
-    */
-    this->set_redraw_flag(true); // can't fixed the bug, but make the window can be drawed after stoping the size changing, during the change, it's incorrect
-#endif
 
     std::queue<Object*> obj_q;
     obj_q.push(this);

@@ -8,6 +8,7 @@
 #include "SDL_rect.h"
 #include "SDL_render.h"
 
+#include "SDL_video.h"
 #include "SUI_canvas.h"
 #include "SUI_in_canvas_data.h"
 #include "SUI_in_window_data.h"
@@ -139,6 +140,22 @@ void Canvas::paint_on_canvas(Canvas &canvas) {
     if (SDL_RenderCopy(canvas.pCanvas_data->pRenderer, pCanvas_data->pTexture, &rect_src, &rect_dst) < 0) {
         ERR(<< "render copy error. SDL: " << SDL_GetError());
     }
+    /**
+    * may call this function is uncessary? but it fix the bug that when the object too more, the window can't show some element on windows
+    * may be this function make all buffer to the texture?
+    */
+    SDL_RenderPresent(canvas.pCanvas_data->pRenderer);
+// debug
+    // extern SDL_Window *pw;
+    // extern SDL_Renderer *pr;
+    // int r = 0;
+    // r = SDL_SetRenderTarget(pr, nullptr);
+    // r = SDL_SetRenderDrawColor(pr, 255, 255, 255, 255);
+    // r = SDL_RenderClear(pr);
+    // SDL_RenderPresent(pr);
+    // r = SDL_RenderCopy(pr, pCanvas_data->pTexture, &rect_src, &rect_dst);
+    // SDL_RenderPresent(pr);
+// debug
     canvas.restore_env();
 }
 
