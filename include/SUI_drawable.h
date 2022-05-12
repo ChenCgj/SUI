@@ -7,6 +7,7 @@
 #define SUI_DRAWABLE_H
 
 #include "SUI_canvas.h"
+#include "SUI_decorator.h"
 #include "SUI_geometry.h"
 
 namespace sui {
@@ -15,7 +16,7 @@ namespace sui {
 * @class Drawable
 * @brief any element can be drawed on the window should be derived this class
 */
-class Drawable : public Geometry {
+class Drawable : public Geometry, public Decorator {
 public:
     Drawable(int width, int height);
     Drawable(int posX, int posY, int width, int height);
@@ -30,6 +31,9 @@ public:
     void set_redraw_flag(bool flag);
     bool get_redraw_flag();
     virtual ~Drawable();
+protected:
+    virtual void draw_bolder(Canvas &canvas);
+    virtual void draw_background(Canvas &canvas);
 private:
     // draw the element to buffer canvas, the param is aim to provide the render information
     void save_buffer(Canvas &canvas);

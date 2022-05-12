@@ -35,8 +35,8 @@ Window_manager *Window_manager::get_window_manager() {
     return &wm;
 }
 
-void Window_manager::add_window(Window *pWindow, bool flag) {
-    window_map[pWindow->get_window_id()] = std::make_pair(pWindow, flag);
+void Window_manager::add_window(Window *pWindow, Window_listen_status statu) {
+    window_map[pWindow->get_window_id()] = std::make_pair(pWindow, statu);
 }
 
 void Window_manager::remove_window(Uint32 window_no) {
@@ -51,7 +51,7 @@ void Window_manager::remove_window(Window *pWindow) {
     remove_window(pWindow->get_window_id());
 }
 
-void Window_manager::patch_event_to(Uint32 window_no, const SDL_Event &event, Window_status statu) {
+void Window_manager::patch_event_to(Uint32 window_no, const SDL_Event &event, Window_listen_status statu) {
     bool flag = true;
     // SDL_LockMutex(lock_window_map);
     /**
@@ -64,22 +64,18 @@ void Window_manager::patch_event_to(Uint32 window_no, const SDL_Event &event, Wi
     }
     if (flag) {
         Window *pWnd = window_map[window_no].first;
-        bool wnd_statu = window_map[window_no].second;
-        if (statu == window_status_all
-        || (statu == window_status_showing && wnd_statu)
-        || (statu == window_status_hiding && !wnd_statu)) {
+        Window_listen_status wnd_lis_statu = window_map[window_no].second;
+        if (statu == window_listening_ignore || (statu == wnd_lis_statu)) {
             push_event(pWnd, event);
         }
     }
     // SDL_UnlockMutex(lock_window_map);
 }
 
-void Window_manager::patch_event_to_all(const SDL_Event &event, Window_status statu) {
+void Window_manager::patch_event_to_all(const SDL_Event &event, Window_listen_status statu) {
     for (auto iter = window_map.begin(); iter != window_map.end(); ++iter) {
-        bool wnd_statu = iter->second.second;
-        if (statu == window_status_all
-        || (statu == window_status_showing && wnd_statu)
-        || (statu == window_status_hiding && !wnd_statu)) {
+        Window_listen_status wnd_lis_statu = iter->second.second;
+        if (statu == window_listening_ignore || (statu == wnd_lis_statu)) {
             push_event(iter->second.first, event);
         }
     }
@@ -87,7 +83,7 @@ void Window_manager::patch_event_to_all(const SDL_Event &event, Window_status st
 
 void Window_manager::update_all_window() {
     for (const auto &p : window_map) {
-        if (p.second.second) {
+        if (p.second.second == window_message_listening) {
             update_window(p.second.first);
         }
     }

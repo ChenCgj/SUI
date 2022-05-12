@@ -41,7 +41,7 @@ enum Window_flag {
 * @todo add listener to achieve that when close the window, make programer can decide whether close the window or not
 * @bug when change the size of the window, the space out of range area is black
 */
-class Window : public Object, public Drawable, public Decorator, public Event_handler {
+class Window : public Object, public Drawable, public Event_handler {
 public:
     Window(const std::string &title, int width, int height, int posX, int posY, Window_flag flag = Window_flag::window_flag_none);
     Window(const std::string &title, int width, int height, Window_flag flag = Window_flag::window_flag_none);

@@ -19,11 +19,13 @@ namespace sui {
 class Decorator {
 public:
     Decorator();
-    ~Decorator();
-    virtual void set_color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha);
-    virtual void get_color(uint8_t &red, uint8_t &green, uint8_t &blue, uint8_t &alpha) const;
-    virtual void set_background_color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha);
-    virtual void get_background_color(uint8_t &red, uint8_t &green, uint8_t &blue, uint8_t &alpha) const;
+    virtual ~Decorator();
+    void set_color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha);
+    void get_color(uint8_t &red, uint8_t &green, uint8_t &blue, uint8_t &alpha) const;
+    void set_background_color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha);
+    void get_background_color(uint8_t &red, uint8_t &green, uint8_t &blue, uint8_t &alpha) const;
+    void set_border_radius(unsigned radius);
+    int get_border_radius() const;
 private:
     struct Decorator_data;
     std::unique_ptr<Decorator_data> pData;

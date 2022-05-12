@@ -13,7 +13,7 @@ int main(int argc, char *argv[]) {
     Window *pWindow = new Window("Hello Test", 800, 600, Window_flag::window_flag_resizable);
     pWindow->set_background_color(255, 255, 255, 255);
 
-    Button *pButton = new Button(150, 150, 200, 200);
+    Button *pButton = new Button("Button", 150, 150, 200, 200);
     pButton->set_color(255, 0, 0, 125);
     pButton->get_posX_property().bind(pWindow->get_width_property(), function<int (const int &)>([](const int &x)->int {return x / 2;}));
     pButton->get_width_property().bind(pWindow->get_width_property(), function<int (const int &)>([](const int &x)->int {return x / 4;}));
@@ -23,7 +23,7 @@ int main(int argc, char *argv[]) {
         present_all();
     });
 
-    Button *pButton2 = new Button(100, 100, 100, 100);
+    Button *pButton2 = new Button("Button", 100, 100, 100, 100);
     pButton2->set_color(0, 0, 0, 125);
     pButton2->add_listener([=](){
         pButton2->set_background_color(rand() %255, rand() %255, rand() %255, rand() %255);
@@ -35,20 +35,19 @@ int main(int argc, char *argv[]) {
         printf("add child failure!\n");
     }
     pWindow->add_node(pButton2);
-    pButton2->add_node(new Button(10, 10, 10, 10));
-    pButton2->add_node(new Button(20, 20, 10, 10));
-    pButton2->add_node(new Button(30, 30, 10, 10));
-    pButton2->add_node(new Button(40, 40, 10, 10));
-    pButton2->add_node(new Button(50, 50, 10, 10));
     pWindow->show();
 
     Window *pWindow2 = new Window("Test2", 800, 600, 100, 100, Window_flag::window_flag_resizable);
     pWindow2->set_background_color(0, 125, 125, 200);
     pWindow2->set_posX(200);
     pWindow2->set_posY(300);
-    Button *pButton3 = new Button(0, 0, 100, 100);
+    Button *pButton3 = new Button();
+    pButton3->set_posX(0);
+    pButton3->set_posY(0);
+    pButton3->set_width(100);
+    pButton3->set_height(100);
     pButton3->add_listener([=](){
-        Button *btn = new Button(0, 0, 20, 20);
+        Button *btn = new Button();
         btn->get_posX_property().bind(pWindow2->get_width_property(),
             std::function<int (const int &)>([](const int &x) {
                 if (x - 10 > 0)

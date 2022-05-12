@@ -78,7 +78,7 @@ Window::Window(const std::string &title, int width, int height,
 // debug
     // the window manager should control the window, when the program quit, it will close all window
     // and we set false so the window is flag hiden and will not receive anyother message
-    WINDOW_MANAGER->add_window(this, false);
+    WINDOW_MANAGER->add_window(this, Window_manager::window_message_unlistening);
     set_color(0, 0, 0, 255);
     set_background_color(255, 255, 255, 255);
 }
@@ -97,7 +97,7 @@ Window::~Window() {
 void Window::show() {
     if (get_parent() == TRASH_ROOT) {
         // when show, is was added to the root and make the window_manager patch events to the window by setting true flag
-        WINDOW_MANAGER->add_window(this, true);
+        WINDOW_MANAGER->add_window(this, Window_manager::window_message_listening);
         ROOT->add_node(this);
     }
     SDL_ShowWindow(pData->pWnd);
@@ -230,10 +230,7 @@ void Window::deal_window_close_event(Event &e) {
 void Window::draw(Canvas &canvas) {
     DBG(<< get_name() << "( window id: " << get_window_id() << ") draw widnow");
     canvas.save_env();
-    uint8_t r, g, b, a;
-    get_background_color(r, g, b, a);
-    canvas.set_color(r, g, b, a);
-    canvas.fill_rect(Rect{0, 0, get_width(), get_height()});
+    draw_background(canvas);
     canvas.restore_env();
     DBG(<< get_name() << "( window id: " << get_window_id() << ") draw widnow ok");
 }

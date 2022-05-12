@@ -11,9 +11,9 @@
 #include "SUI_in_debug.h"
 
 namespace sui {
-Button::Button(int x, int y, int w, int h) : Element(x, y, w, h) {
+Button::Button(const std::string &letter, int x, int y, int w, int h) : Element(x, y, w, h) {
     object_name = "button";
-    set_background_color(0, 0, 0, 0);
+    set_background_color(125, 125, 125, 255);
     set_color(0, 0, 0, 255);
     callback = nullptr;
 }
@@ -21,13 +21,8 @@ Button::Button(int x, int y, int w, int h) : Element(x, y, w, h) {
 void Button::draw(Canvas &canvas) {
     DBG(<< get_name() << "draw button start...");
     canvas.save_env();
-    uint8_t r, g, b, a;
-    get_background_color(r, g, b, a);
-    canvas.set_color(r, g, b, a);
-    canvas.fill_rect(Rect{0, 0, get_width(), get_height()});
-    get_color(r, g, b, a);
-    canvas.set_color(r, g, b, a);
-    canvas.draw_rect(Rect{0, 0, get_width(), get_height()});
+    draw_background(canvas);
+    draw_bolder(canvas);
     canvas.restore_env();
     DBG(<< get_name() << "draw button ok");
 }

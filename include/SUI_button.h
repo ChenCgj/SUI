@@ -10,6 +10,7 @@
 #include "SUI_element.h"
 #include "SUI_decorator.h"
 #include <functional>
+#include <string>
 
 namespace sui {
 
@@ -21,9 +22,9 @@ namespace sui {
 * @warning when you change the button style(such as color), you should call set_redraw_flag(true).
 */
 
-class Button : public Element, public Decorator, public Event_handler {
+class Button : public Element, public Event_handler {
 public:
-    Button(int x, int y, int w, int h);
+    Button(const std::string &letter = "Button", int x = 0, int y = 0, int w = 60, int h = 30);
     void add_listener(std::function<void (void)> func);
     void draw(Canvas &canvas) override;
     ~Button();

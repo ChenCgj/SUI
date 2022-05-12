@@ -1,7 +1,9 @@
 #include <functional>
+#include <stdint.h>
 #include "SUI_drawable.h"
 #include "SUI_canvas.h"
 #include "SUI_geometry.h"
+#include "SUI_rect.h"
 #include "SUI_window.h"
 #include "SUI_in_binder.h"
 #include "SUI_property.h"
@@ -71,5 +73,21 @@ void Drawable::using_buffer_draw(Canvas &canvas) {
         // recursive
         using_buffer_draw(canvas);
     }
+}
+
+void Drawable::draw_bolder(Canvas &canvas) {
+    uint8_t r, g, b, a;
+    get_color(r, g, b, a);
+    canvas.set_color(r, g, b, a);
+    Rect rect = {0, 0, get_width(), get_height()};
+    canvas.draw_rect(rect);
+}
+
+void Drawable::draw_background(Canvas &canvas) {
+    uint8_t r, g, b, a;
+    get_background_color(r, g, b, a);
+    canvas.set_color(r, g, b, a);
+    Rect rect = {0, 0, get_width(), get_height()};
+    canvas.fill_rect(rect);
 }
 }
