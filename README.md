@@ -73,7 +73,7 @@ int main(int argc, char *argv[]) {
 ```
 
 ```sh
-g++ -g -Wall -Iinclude -o demo demo.cpp -L. -lsui -lSDL2
+g++ -g -Wall -Iinclude -o demo demo.cpp -L. -lsui -lSDL2 -lSDL2_ttf
 ./demo
 ```
 
