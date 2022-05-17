@@ -33,6 +33,10 @@ Drawable::Drawable(int posX, int posY, int width, int height)
 
 Drawable::~Drawable() = default;
 
+void Drawable::destroy_content() {
+    canvas_buffer.unload_renderer();
+}
+
 void Drawable::draw_all(Canvas &canvas) {
     draw(canvas);
 }
@@ -75,7 +79,7 @@ void Drawable::using_buffer_draw(Canvas &canvas) {
     }
 }
 
-void Drawable::draw_bolder(Canvas &canvas) {
+void Drawable::draw_border(Canvas &canvas) {
     uint8_t r, g, b, a;
     get_color(r, g, b, a);
     canvas.set_color(r, g, b, a);

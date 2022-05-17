@@ -6,6 +6,7 @@
 
 #ifndef SUI_BUTTON_H
 #define SUI_BUTTON_H
+#include "SUI_canvas.h"
 #include "SUI_event_handler.h"
 #include "SUI_element.h"
 #include "SUI_decorator.h"
@@ -24,11 +25,12 @@ namespace sui {
 
 class Button : public Element, public Event_handler {
 public:
-    Button(const std::string &letter = "Button", int x = 0, int y = 0, int w = 60, int h = 30);
+    Button(const std::string &title = "Button", int x = 0, int y = 0, int w = 60, int h = 30);
     void add_listener(std::function<void (void)> func);
     void draw(Canvas &canvas) override;
     ~Button();
 private:
+    void draw_border(Canvas &canvas) override;
     void deal_key_down_event(Keyboard_event &key_event) override;
     void deal_key_up_event(Keyboard_event &key_event) override;
     void deal_mouse_button_down_event(Mouse_button_event &mouse_button) override;
@@ -38,6 +40,7 @@ private:
     void deal_other_event(Event &event) override;
     // void *(*callback)(void *);
     std::function<void (void)> callback;
+    std::string title;
     friend class Event_handler_helper;
 };
 }

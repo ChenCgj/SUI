@@ -1,3 +1,5 @@
+#include <algorithm>
+#include <cmath>
 #include <cstddef>
 #include <iostream>
 #include <memory>
@@ -7,29 +9,34 @@
 #include "SDL_pixels.h"
 #include "SDL_rect.h"
 #include "SDL_render.h"
-
+#include "SDL_surface.h"
+#include "SDL_ttf.h"
 #include "SDL_video.h"
+
 #include "SUI_canvas.h"
 #include "SUI_in_canvas_data.h"
 #include "SUI_in_window_data.h"
 #include "SUI_in_debug.h"
+#include "SUI_point.h"
 
 namespace sui {
 
 static void store_env(SDL_Renderer *pRenderer, Renderer_env &env);
 static void load_env(SDL_Renderer *pRenderer, Renderer_env &env);
 static SDL_Texture *recreate_texture(SDL_Renderer *pRenderer, SDL_Texture *origin, int origin_w, int origin_h, int new_w, int new_h);
+static const double math_pi = 4 * atan(1);
 
 Canvas::Canvas(const Window &window, int posX, int posY, int posZ, int width, int height, int depth)
     : Canvas(posX, posY, posZ, width, height, depth) {
 
     // load the render from a window
     pCanvas_data->pRenderer = window.pData->pRenderer;
-    pCanvas_data->pTexture = SDL_CreateTexture(pCanvas_data->pRenderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, width, height);
+    pCanvas_data->pTexture = SDL_CreateTexture(pCanvas_data->pRenderer,
+        SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, width, height);
     // should set the blend mode so that we can have the transparent effective
     SDL_SetTextureBlendMode(pCanvas_data->pTexture, SDL_BLENDMODE_BLEND);
 }
- 
+
 Canvas::Canvas(int posX, int posY, int posZ, int width, int height, int depth)
     : Geometry{posX, posY, posZ, width, height, depth},
     pCanvas_data{nullptr}, width_bak{width}, height_bak{height}, depth_bak{depth} {
@@ -53,8 +60,8 @@ void Canvas::load_renderer(Canvas &canvas) {
     if (pCanvas_data->pTexture) {
         SDL_DestroyTexture(pCanvas_data->pTexture);
     }
-    pCanvas_data->pTexture = SDL_CreateTexture(pCanvas_data->pRenderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32,
-        SDL_TEXTUREACCESS_TARGET, get_width(), get_height());
+    pCanvas_data->pTexture = SDL_CreateTexture(pCanvas_data->pRenderer,
+        SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, get_width(), get_height());
     if (pCanvas_data->pTexture == nullptr) {
         ERR(<< "nullptr texture: SDL: " << SDL_GetError());
     }
@@ -62,10 +69,16 @@ void Canvas::load_renderer(Canvas &canvas) {
     SDL_SetTextureBlendMode(pCanvas_data->pTexture, SDL_BLENDMODE_BLEND);
 }
 
-Canvas::~Canvas() {
+void Canvas::unload_renderer() {
     if (pCanvas_data->pTexture) {
         SDL_DestroyTexture(pCanvas_data->pTexture);
+        pCanvas_data->pTexture = nullptr;
     }
+    pCanvas_data->pRenderer = nullptr;
+}
+
+Canvas::~Canvas() {
+    unload_renderer();
 }
 /**
 * @brief
@@ -94,14 +107,115 @@ void Canvas::fill_rect(const Rect &rect) {
 
 void Canvas::draw_rect(const Rect &rect) {
     if (!prepare_texture()) {
-        ERR(<< "couldn't preapre the texture.");
+        ERR(<< "couldn't prepare the texture.");
         return;
     }
     SDL_Rect rect_in = {rect.p1.x, rect.p1.y, rect.get_width(), rect.get_height()};
     if (SDL_RenderDrawRect(pCanvas_data->pRenderer, &rect_in) < 0) {
-        std::cerr << "Error in draw rect. :" << SDL_GetError() << std::endl;
+        ERR(<< "Error in draw rect. SDL:" << SDL_GetError());
     }
 }
+
+void Canvas::draw_ellipse_arc(const Point &center, unsigned int semiX_axis, unsigned int semiY_axis, double start_angle, double end_angle) {
+    if (semiX_axis <= 0 || semiY_axis <= 0) {
+        ERR(<< "the axis of ellipse is zero!");
+        return;
+    }
+    if (!prepare_texture()) {
+        ERR(<< "couldn't prepare the texture.");
+        return;
+    }
+    constexpr int count = 100;
+    SDL_FPoint points[count], temp;
+
+    double delta = std::min(0.001, 0.02 / (semiX_axis + semiY_axis));
+    delta = end_angle > start_angle ? delta : -delta;
+
+    double angle = start_angle;
+    bool first = true;
+    while (abs(angle - end_angle) >= delta) {
+        int i = 1;
+        for (i = 1; abs(angle - end_angle) >= delta && i < count; angle += delta, ++i) {
+            points[i].x = center.x + semiX_axis * cos(angle);
+            points[i].y = center.y - semiY_axis * sin(angle);
+        }
+        if (first) {
+            points[0] = points[1];
+            first = false;
+        } else {
+            points[0] = temp;
+        }
+        temp = points[i - 1];
+        if (SDL_RenderDrawLinesF(pCanvas_data->pRenderer, points, i) < 0) {
+            ERR(<< "Error in draw ellipse arc. SDL:" << SDL_GetError());
+        }
+    }
+}
+
+void Canvas::draw_ellipse(const Point &center, unsigned int semiX_axis, unsigned int semiY_axis) {
+    draw_ellipse_arc(center, semiX_axis, semiY_axis, 0, 2 * math_pi);
+}
+
+void Canvas::draw_arc(const Point &center, unsigned int radius, double start_angle, double end_angle) {
+    draw_ellipse_arc(center, radius, radius, start_angle, end_angle);
+}
+
+void Canvas::draw_circle(const Point &center, unsigned int radius) {
+    draw_ellipse(center, radius, radius);
+}
+
+void Canvas::draw_round_rect(const Rect &rect, int radius) {
+    radius = std::min({abs(rect.get_width()) / 2, abs(rect.get_height()) / 2, radius});
+    Point p1 = rect.p1;
+    Point p2 = rect.p2;
+    if (p1.x > p2.x) {
+        std::swap(p1.x, p2.x);
+    }
+    if (p1.y > p2.y) {
+        std::swap(p1.y, p2.y);
+    }
+    draw_line(Point{p1.x + radius, p1.y, 0}, Point{p2.x - radius, p1.y, 0});
+    draw_line(Point{p1.x, p1.y + radius, 0}, Point{p1.x, p2.y - radius, 0});
+    /**
+    * @todo maybe you should use the drawlineF? sub 1 is to make the line not be covered
+    */
+    draw_line(Point{p1.x + radius, p2.y - 1, 0}, Point{p2.x - radius, p2.y - 1, 0});
+    draw_line(Point{p2.x - 1, p1.y + radius, 0}, Point{p2.x - 1, p2.y - radius, 0});
+    draw_arc(Point{p1.x + radius, p1.y + radius, 0}, radius, math_pi / 2, math_pi);
+    draw_arc(Point{p2.x - radius, p1.y + radius, 0}, radius, 0, math_pi / 2);
+    draw_arc(Point{p1.x + radius, p2.y - radius, 0}, radius, math_pi, math_pi * 3 / 2);
+    draw_arc(Point{p2.x - radius, p2.y - radius, 0}, radius, math_pi * 3 / 2, math_pi * 2);
+}
+
+void Canvas::draw_text(const Rect &rect, const std::string &str, const std::string &font_name, const Color &color, unsigned font_size) {
+    TTF_Font *font = TTF_OpenFont(font_name.c_str(), font_size);
+    if (font == nullptr) {
+        ERR(<< "open font fail! TTF:" << TTF_GetError());
+        return;
+    }
+    SDL_Color font_color = {color.red, color.green, color.blue, color.alpha};
+    SDL_Surface *font_sf = TTF_RenderUTF8_Blended(font, str.c_str(), font_color);
+    if (font_sf == nullptr) {
+        ERR(<< "create font surface fail. TTF:" << TTF_GetError());
+        TTF_CloseFont(font);
+        return;
+    }
+    SDL_Texture *font_texture = SDL_CreateTextureFromSurface(pCanvas_data->pRenderer, font_sf);
+    if (font_texture == nullptr) {
+        ERR(<< "create font texture fail. SDL:" << SDL_GetError());
+        SDL_FreeSurface(font_sf);
+        TTF_CloseFont(font);
+        return;
+    }
+    SDL_FreeSurface(font_sf);
+    SDL_Rect rsrc = {0, 0, 0, 0};
+    TTF_SizeText(font, str.c_str(), &rsrc.w, &rsrc.h);
+    TTF_CloseFont(font);
+    SDL_Rect rdest = {rect.p1.x + (rect.get_width() - rsrc.w) / 2, rect.p1.y + (rect.get_height() - rsrc.h) / 2, rsrc.w, rsrc.h};
+    SDL_RenderCopy(pCanvas_data->pRenderer, font_texture, &rsrc, &rdest);
+    SDL_DestroyTexture(font_texture);
+}
+
 /**
 * @warning the canvas should connect to the window or renderer
 * @warning this function will clean all on the window

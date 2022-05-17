@@ -1,8 +1,11 @@
+#include <algorithm>
 #include <functional>
+#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 
 #include "SUI_button.h"
+#include "SUI_canvas.h"
 #include "SUI_element.h"
 #include "SUI_drawable.h"
 #include "SUI_geometry.h"
@@ -11,9 +14,10 @@
 #include "SUI_in_debug.h"
 
 namespace sui {
-Button::Button(const std::string &letter, int x, int y, int w, int h) : Element(x, y, w, h) {
+Button::Button(const std::string &title, int x, int y, int w, int h) : Element(x, y, w, h) {
     object_name = "button";
-    set_background_color(125, 125, 125, 255);
+    this->title = title;
+    set_background_color(0xef, 0xef, 0xef, 0xff);
     set_color(0, 0, 0, 255);
     callback = nullptr;
 }
@@ -22,7 +26,10 @@ void Button::draw(Canvas &canvas) {
     DBG(<< get_name() << "draw button start...");
     canvas.save_env();
     draw_background(canvas);
-    draw_bolder(canvas);
+    draw_border(canvas);
+    Color color = {0, 0, 0, 255};
+    Rect r = {0, 0, get_width(), get_height()};
+    canvas.draw_text(r, title, "Inkfree.ttf", color, 18);
     canvas.restore_env();
     DBG(<< get_name() << "draw button ok");
 }
@@ -73,4 +80,12 @@ void Button::deal_other_event(Event &event) {
 
 }
 
+void Button::draw_border(Canvas &canvas) {
+    uint8_t r, g, b, a;
+    get_color(r, g, b, a);
+    canvas.set_color(r, g, b, a);
+    Rect rect = {0, 0, get_width(), get_height()};
+    int radius = std::min(get_width() / 4, get_height() / 4);
+    canvas.draw_round_rect(rect, radius);
+}
 }

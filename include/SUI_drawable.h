@@ -30,9 +30,10 @@ public:
     // set the element should be redraw to the buffer canvas or not
     void set_redraw_flag(bool flag);
     bool get_redraw_flag();
+    void destroy_content();
     virtual ~Drawable();
 protected:
-    virtual void draw_bolder(Canvas &canvas);
+    virtual void draw_border(Canvas &canvas);
     virtual void draw_background(Canvas &canvas);
 private:
     // draw the element to buffer canvas, the param is aim to provide the render information

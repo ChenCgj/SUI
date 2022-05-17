@@ -1,5 +1,5 @@
 #include "SDL.h"
-
+#include "SDL_ttf.h"
 #include "SUI_object.h"
 #include "SUI_in_main.h"
 #include "SUI_in_window_manager.h"
@@ -14,6 +14,7 @@ static int event_filter(void *data, SDL_Event *event);
 
 int main(int argc, char *argv[]) {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
+    TTF_Init();
     SDL_SetEventFilter(event_filter, nullptr);
     // call the user function
     SUI_main(argc, argv);
@@ -73,6 +74,7 @@ int event_filter(void *data, SDL_Event *event) {
 }
 
 void clean() {
+    TTF_Quit();
     SDL_Quit();
     DBG(<< "SDL_Quit OK");
 }

@@ -7,6 +7,8 @@
 #ifndef SUI_CANVAS
 #define SUI_CANVAS
 #include <memory>
+#include <string>
+#include "SUI_color.h"
 #include "SUI_geometry.h"
 #include "SUI_point.h"
 #include "SUI_rect.h"
@@ -47,6 +49,15 @@ public:
     void draw_line(const Point &first, const Point &second);
     void fill_rect(const Rect &rect);
     void draw_rect(const Rect &rect);
+    void draw_arc(const Point &center, unsigned radius, double start_angle, double end_angle);
+    void draw_circle(const Point &center, unsigned radius);
+    void draw_ellipse_arc(const Point &center, unsigned semiX_axis, unsigned semiY_axis, double start_angle, double end_angle);
+    void draw_ellipse(const Point &center, unsigned semiX_axis, unsigned semiY_axis);
+    void draw_round_rect(const Rect &rect, int radius);
+    void draw_text(const Rect &rect, const std::string &str, const std::string &font_name, const Color &color, unsigned font_size);
+    /**
+    * @todo add the fill graph funcitons
+    */
     /**
     * @fn paint_on_window
     * @param window a window the canvas connect to
@@ -98,6 +109,7 @@ public:
     * @warning only valid when the target is the window
     */
     void present();
+    void unload_renderer();
 private:
     struct Canvas_data;
     std::unique_ptr<Canvas_data> pCanvas_data;

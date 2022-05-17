@@ -35,6 +35,7 @@ int main(int argc, char *argv[]) {
         printf("add child failure!\n");
     }
     pWindow->add_node(pButton2);
+    pWindow->add_node(new Button("Hello", 300, 400));
     pWindow->show();
 
     Window *pWindow2 = new Window("Test2", 800, 600, 100, 100, Window_flag::window_flag_resizable);

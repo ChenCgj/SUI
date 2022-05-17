@@ -87,6 +87,34 @@ Window::Window(const std::string &title, int width, int height, Window_flag flag
     Window(title, width, height, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, flag) {}
 
 Window::~Window() {
+    /**
+    * the canvas's texture should be destroyed before destroy the render and window beacuse there are created by this window and renderer
+    */
+    /**
+    * @todo this process appear three times, restruct it a function
+    */
+    std::queue<Object*> obj_q;
+    obj_q.push(this);
+    while (!obj_q.empty()) {
+        int size = obj_q.size();
+        for (int i = 0; i < size; ++i) {
+            Object *pObj = obj_q.front();
+            obj_q.pop();
+            for (auto p : pObj->get_node_list()) {
+                obj_q.push(p);
+            }
+            Drawable *pd = dynamic_cast<Drawable *>(pObj);
+            // may be pd is not a drawable object
+            if (pd == nullptr) {
+                ERR(<< "a nullptr point from dynamic, may be a object is no drawable");
+            }
+            if (pd != nullptr) {
+                // pd->set_redraw_flag(true);
+                pd->destroy_content();
+                // pd->draw(canvas);
+            }
+        }
+    }
     // the Window_data will be freed auto
     SDL_DestroyRenderer(pData->pRenderer);
     SDL_DestroyWindow(pData->pWnd);
