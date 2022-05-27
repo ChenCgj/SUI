@@ -18,7 +18,7 @@ struct Border_style {
 
 struct Background_style {
     Color background_color;
-    SDL_Texture *background_img;
+    SDL_Texture *background_image;
 };
 
 struct Style {
@@ -28,8 +28,9 @@ struct Style {
 };
 
 struct Button_style {
+    Style normal;
     Style hover;
-    Style press;
+    Style pressed;
 };
 
 #endif

@@ -3,6 +3,7 @@
 #include "SUI_drawable.h"
 #include "SUI_canvas.h"
 #include "SUI_geometry.h"
+#include "SUI_main.h"
 #include "SUI_rect.h"
 #include "SUI_window.h"
 #include "SUI_in_binder.h"
@@ -79,17 +80,17 @@ void Drawable::using_buffer_draw(Canvas &canvas) {
     }
 }
 
-void Drawable::draw_border(Canvas &canvas) {
+void Drawable::draw_border(Canvas &canvas, Element_status statu) {
     uint8_t r, g, b, a;
-    get_color(r, g, b, a);
+    get_color(r, g, b, a, statu);
     canvas.set_color(r, g, b, a);
     Rect rect = {0, 0, get_width(), get_height()};
     canvas.draw_rect(rect);
 }
 
-void Drawable::draw_background(Canvas &canvas) {
+void Drawable::draw_background(Canvas &canvas, Element_status statu) {
     uint8_t r, g, b, a;
-    get_background_color(r, g, b, a);
+    get_background_color(r, g, b, a, statu);
     canvas.set_color(r, g, b, a);
     Rect rect = {0, 0, get_width(), get_height()};
     canvas.fill_rect(rect);

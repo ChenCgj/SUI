@@ -9,6 +9,7 @@
 #include "SUI_canvas.h"
 #include "SUI_decorator.h"
 #include "SUI_geometry.h"
+#include "SUI_main.h"
 
 namespace sui {
 
@@ -33,8 +34,8 @@ public:
     void destroy_content();
     virtual ~Drawable();
 protected:
-    virtual void draw_border(Canvas &canvas);
-    virtual void draw_background(Canvas &canvas);
+    virtual void draw_border(Canvas &canvas, Element_status statu = Element_status::normal);
+    virtual void draw_background(Canvas &canvas, Element_status statu = Element_status::normal);
 private:
     // draw the element to buffer canvas, the param is aim to provide the render information
     void save_buffer(Canvas &canvas);

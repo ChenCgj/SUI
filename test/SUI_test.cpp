@@ -18,24 +18,20 @@ int main(int argc, char *argv[]) {
     pButton->get_posX_property().bind(pWindow->get_width_property(), function<int (const int &)>([](const int &x)->int {return x / 2;}));
     pButton->get_width_property().bind(pWindow->get_width_property(), function<int (const int &)>([](const int &x)->int {return x / 4;}));
     pButton->add_listener([=](){
-        pButton->set_background_color(rand() %255, rand() %255, rand() %255, rand() %255);
-        pButton->set_redraw_flag(true);
-        present_all();
+        pButton->set_background_color(rand() %255, rand() %255, rand() %255, rand() %255, Element_status::button_normal);
     });
 
     Button *pButton2 = new Button("Button", 100, 100, 100, 100);
     pButton2->set_color(0, 0, 0, 125);
     pButton2->add_listener([=](){
-        pButton2->set_background_color(rand() %255, rand() %255, rand() %255, rand() %255);
-        pButton2->set_redraw_flag(true);
-        present_all();
+        pButton2->set_background_color(rand() %255, rand() %255, rand() %255, rand() %255, Element_status::button_normal);
     });
 
     if (pWindow->add_node(pButton) == false) {
         printf("add child failure!\n");
     }
     pWindow->add_node(pButton2);
-    pWindow->add_node(new Button("Hello", 300, 400));
+    pWindow->add_node(new Button("Hello World", 300, 400));
     pWindow->show();
 
     Window *pWindow2 = new Window("Test2", 800, 600, 100, 100, Window_flag::window_flag_resizable);
@@ -62,11 +58,9 @@ int main(int argc, char *argv[]) {
                 else return 0;
             }));
         btn->add_listener([=](){
-            btn->set_background_color(rand() %255, rand() %255, rand() %255, rand() %255);
-            btn->set_redraw_flag(true);
-            present_all();
+            btn->set_background_color(rand() %255, rand() %255, rand() %255, rand() %255, Element_status::button_normal);
         });
-        btn->set_background_color(rand() % 255, rand() % 255, rand() % 255, rand() % 255);
+        btn->set_background_color(rand() % 255, rand() % 255, rand() % 255, rand() % 255, Element_status::button_normal);
         pWindow2->add_node(btn);
         present_all();
     });
