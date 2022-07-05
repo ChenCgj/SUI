@@ -146,13 +146,13 @@ void Window::set_window_title(const std::string &title) {
 }
 
 // ovrride the function so that it can return the positon on desktop
-int Window::get_posX() {
+int Window::get_posX() const {
     int x = 0;
     SDL_GetWindowPosition(pData->pWnd, &x, nullptr);
     return x;
 }
 
-int Window::get_posY() {
+int Window::get_posY() const {
     int y = 0;
     SDL_GetWindowPosition(pData->pWnd, nullptr, &y);
     return y;

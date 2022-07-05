@@ -12,6 +12,7 @@ using namespace sui;
 int main(int argc, char *argv[]) {
     Window *pWindow = new Window("Hello Test", 800, 600, Window_flag::window_flag_resizable);
     pWindow->set_background_color(255, 255, 255, 255);
+    pWindow->set_background_image("background.jpg", 800, 600);
 
     Button *pButton = new Button("Button", 150, 150, 200, 200);
     pButton->set_color(255, 0, 0, 125);

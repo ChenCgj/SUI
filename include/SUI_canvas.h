@@ -17,7 +17,7 @@
 namespace sui {
 
 class Window;
-
+class Image;
 /**
 * @class Canvas
 * @brief this class is designed to draw things on it
@@ -60,6 +60,7 @@ public:
     void draw_point(const Point &point);
     void draw_shape(const Shape &shape);
     void fill_shape(const Shape &shape);
+    void draw_image(const Image &image);
     /**
     * @todo add the fill graph funcitons
     */

@@ -19,6 +19,7 @@
 #include "SUI_in_window_data.h"
 #include "SUI_in_debug.h"
 #include "SUI_shape.h"
+#include "SUI_in_image.h"
 
 namespace sui {
 
@@ -200,6 +201,41 @@ void Canvas::draw_shape(const Shape &shape) {
 
 void Canvas::fill_shape(const Shape &shape) {
     shape.fill_shape(*this);
+}
+
+void Canvas::draw_image(const Image &image) {
+    if (image.image_surface == nullptr) {
+        return;
+    }
+    bool create_texture = false;
+    SDL_Texture *texture = image.image_texture;
+    if (texture == nullptr) {
+        texture = SDL_CreateTextureFromSurface(pCanvas_data->pRenderer, image.image_surface);
+        if (texture == nullptr) {
+            ERR(<< "create textrue fail." << SDL_GetError());
+            return;
+        }
+        SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+        create_texture = true;
+    }
+    if (!prepare_texture()) {
+        ERR(<< "couldn't prepare the texture.");
+        return;
+    }
+    SDL_Rect rect_dst = {image.get_posX(), image.get_posY(), image.get_width(), image.get_height()};
+    SDL_Rect rect_src = {0, 0, image.get_width(), image.get_height()};
+    DBG(<< "src: " << rect_src.x << " " << rect_src.y << " " << rect_src.w << " " << rect_src.h);
+    DBG(<< "dest: " << rect_dst.x << " " << rect_dst.y << " " << rect_dst.w << " " << rect_dst.h);
+    if (SDL_RenderCopy(pCanvas_data->pRenderer, texture, &rect_src, &rect_dst) < 0) {
+        ERR(<< "render copy error. SDL: " << SDL_GetError());
+    }
+    SDL_RenderPresent(pCanvas_data->pRenderer);
+/**
+* @todo use texture buffer rather than repeatly create texutre
+*/
+    if (create_texture) {
+        SDL_DestroyTexture(texture);
+    }
 }
 
 void Canvas::draw_round_rect(const Rect &rect, double radius) {

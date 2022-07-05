@@ -1,6 +1,8 @@
 #ifndef SUI_IN_THEME_H
 #define SUI_IN_THEME_H
+#include <string>
 #include "SDL_render.h"
+#include "SUI_canvas.h"
 #include "SUI_in_main.h"
 #include "SUI_in_styles.h"
 #include "SUI_main.h"
@@ -25,10 +27,12 @@ public:
     bool set_color(Element_status statu, Style_option bg_fg, const Color &color);
     Color get_background_color(Element_status statu, Style_option bg_color);
     bool set_background_color(Element_status statu, Style_option bg_color, const Color &color);
+    bool set_background_image(Element_status statu, Style_option bg_image, const std::string &image_file, unsigned width, unsigned height);
+    Image *get_background_image(Element_status statu, Style_option bg_image);
     int get_border_radius(Element_status statu, Style_option edge);
     bool set_border_radius(Element_status statu, Style_option edge, int radius);
-    SDL_Texture *get_background_image(Element_status statu, Style_option background_image);
     Theme();
+    ~Theme();
 private:
     Style *get_style(Element_status statu);
     Button_style button_style;

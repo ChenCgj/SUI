@@ -94,5 +94,9 @@ void Drawable::draw_background(Canvas &canvas, Element_status statu) {
     canvas.set_color(r, g, b, a);
     Rect rect = {0, 0, static_cast<double>(get_width()), static_cast<float>(get_height())};
     canvas.fill_shape(rect);
+    Image *image = get_background_image(statu);
+    if (image != nullptr) {
+        canvas.draw_image(*get_background_image(statu));
+    }
 }
 }

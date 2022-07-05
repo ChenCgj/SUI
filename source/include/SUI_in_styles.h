@@ -5,9 +5,12 @@
 
 #include "SDL_render.h"
 
+#include "SUI_canvas.h"
 #include "SUI_styles.h"
 #include "SUI_color.h"
+#include "SUI_in_image.h"
 
+namespace sui {
 struct Border_style {
     Color border_left_color;
     Color border_top_color;
@@ -16,9 +19,12 @@ struct Border_style {
     int border_radius;
 };
 
+/**
+* @todo make the background image can fill the background
+*/
 struct Background_style {
     Color background_color;
-    SDL_Texture *background_image;
+    Image *background_image;
 };
 
 struct Style {
@@ -32,5 +38,5 @@ struct Button_style {
     Style hover;
     Style pressed;
 };
-
+}
 #endif

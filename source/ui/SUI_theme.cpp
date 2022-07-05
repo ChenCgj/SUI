@@ -7,6 +7,8 @@
 
 namespace sui {
 
+void clean_button_background_image(Button_style &style);
+
 Theme::Theme() {
     normal_style.border.border_bottom_color =
     normal_style.border.border_left_color =
@@ -19,7 +21,9 @@ Theme::Theme() {
 
     button_style.normal = button_style.hover = button_style.pressed = normal_style;
     button_style.normal.background.background_color = Color{0xd5, 0xd5, 0xd5, 0xff};
+    button_style.normal.background.background_image = nullptr;
     button_style.pressed.background.background_color = Color{0x3f, 0x3f, 0x3f, 0xff};
+    button_style.pressed.background.background_image = nullptr;
     button_style.normal.color = Color{0, 0, 0, 255};
 }
 
@@ -104,11 +108,29 @@ bool Theme::set_background_color(Element_status statu, Style_option bg_colorm, c
     return true;
 }
 
-SDL_Texture *Theme::get_background_image(Element_status statu, Style_option background_image) {
-    SDL_Texture *image = nullptr;
+Image *Theme::get_background_image(Element_status statu, Style_option background_image) {
+    Image *image = nullptr;
     Style *style = get_style(statu);
     if (style) {image = style->background.background_image;}
     return image;
+}
+
+bool Theme::set_background_image(Element_status statu, Style_option bg_image, const std::string &image_file, unsigned width, unsigned height) {
+    Style *style = get_style(statu);
+    if (!style) {
+        ERR(<< "the style is nullptr");
+        return false;
+    }
+    if (bg_image != Style_option::background_image) {
+        return false;
+    }
+    if (!style->background.background_image) {
+        style->background.background_image = new Image(0, 0, 0, 0);
+    }
+    style->background.background_image->load_image(image_file);
+    style->background.background_image->set_width(width);
+    style->background.background_image->set_height(height);
+    return true;
 }
 
 bool Theme::set_color(Element_status statu, Style_option bg_fg, const Color &color) {
@@ -159,5 +181,26 @@ Style *Theme::get_style(Element_status statu) {
         break;
     }
     return pstyle;
+}
+
+Theme::~Theme() {
+    if (normal_style.background.background_image) {
+        delete normal_style.background.background_image;
+        normal_style.background.background_image = nullptr;
+    }
+    clean_button_background_image(button_style);
+}
+
+void clean_button_background_image(Button_style &style) {
+    if (style.normal.background.background_image) {
+        delete style.normal.background.background_image;
+    }
+    if (style.hover.background.background_image) {
+        delete style.hover.background.background_image;
+    }
+    if (style.pressed.background.background_image) {
+        delete style.pressed.background.background_image;
+    }
+    style.normal.background.background_image = style.hover.background.background_image = style.pressed.background.background_image = nullptr;
 }
 }

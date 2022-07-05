@@ -13,7 +13,7 @@ Geometry::Geometry(int posX, int posY, int posZ, int width, int height, int dept
 
 Geometry::~Geometry() = default;
 
-int Geometry::get_posX() {
+int Geometry::get_posX() const {
     return posX.get_value();
 }
 
@@ -21,7 +21,7 @@ void Geometry::set_posX(int x) {
     posX.set_value(x);
 }
 
-int Geometry::get_posY() {
+int Geometry::get_posY() const {
     return posY.get_value();
 }
 
@@ -33,11 +33,11 @@ void Geometry::set_posZ(int z) {
     posZ.set_value(z);
 }
 
-int Geometry::get_posZ() {
+int Geometry::get_posZ() const {
     return posZ.get_value();
 }
 
-int Geometry::get_width() {
+int Geometry::get_width() const {
     return width.get_value();
 }
 
@@ -45,7 +45,7 @@ void Geometry::set_width(int w) {
     width.set_value(w);
 }
 
-int Geometry::get_height() {
+int Geometry::get_height() const {
     return height.get_value();
 }
 
@@ -57,7 +57,7 @@ void Geometry::set_depth(int d) {
     depth.set_value(d);
 }
 
-int Geometry::get_depth() {
+int Geometry::get_depth() const {
     return depth.get_value();
 }
 

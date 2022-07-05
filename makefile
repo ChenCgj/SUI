@@ -12,7 +12,7 @@ TEST_DIR = test
 
 INCLUDE_FLAGS = $(addprefix -I, $(INCLUDE_DIR))
 
-LDFLAGS = -L$(BUILD_DIR) -l$(name) -lSDL2
+LDFLAGS = -L$(BUILD_DIR) -l$(name) -lSDL2 -lSDL2_tff -lSDL2_image
 CXXFLAGS = -g -Wall $(INCLUDE_FLAGS)
 ARFLAGS = rcsv
 

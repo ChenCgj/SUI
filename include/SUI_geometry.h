@@ -18,12 +18,12 @@ class Geometry {
 public:
     Geometry(int posX, int posY, int width, int height);
     Geometry(int posX, int posY, int poxZ, int widht, int height, int depth);
-    virtual int get_posX();
-    virtual int get_posY();
-    virtual int get_posZ();
-    virtual int get_width();
-    virtual int get_height();
-    virtual int get_depth();
+    virtual int get_posX() const;
+    virtual int get_posY() const;
+    virtual int get_posZ() const;
+    virtual int get_width() const;
+    virtual int get_height() const;
+    virtual int get_depth() const;
     virtual void set_posX(int x);
     virtual void set_posY(int y);
     virtual void set_width(int w);

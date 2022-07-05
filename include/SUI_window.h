@@ -53,8 +53,8 @@ public:
     void draw_all(Canvas &canvas) override;
     void redraw();
     void update_all_with_children();
-    int get_posX() override;
-    int get_posY() override;
+    int get_posX() const override;
+    int get_posY() const override;
     void set_posX(int x) override;
     void set_posY(int y) override;
     void set_width(int w) override;
