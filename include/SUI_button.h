@@ -32,6 +32,7 @@ public:
     ~Button();
 private:
     void draw_border(Canvas &canvas, Element_status statu = Element_status::normal) override;
+    void draw_background(Canvas &canvas, Element_status statu = Element_status::button_normal) override;
     void deal_key_down_event(Keyboard_event &key_event) override;
     void deal_key_up_event(Keyboard_event &key_event) override;
     void deal_mouse_button_down_event(Mouse_button_event &mouse_button) override;

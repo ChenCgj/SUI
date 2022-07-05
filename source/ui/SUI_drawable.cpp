@@ -4,7 +4,7 @@
 #include "SUI_canvas.h"
 #include "SUI_geometry.h"
 #include "SUI_main.h"
-#include "SUI_rect.h"
+#include "SUI_shape.h"
 #include "SUI_window.h"
 #include "SUI_in_binder.h"
 #include "SUI_property.h"
@@ -84,15 +84,15 @@ void Drawable::draw_border(Canvas &canvas, Element_status statu) {
     uint8_t r, g, b, a;
     get_color(r, g, b, a, statu);
     canvas.set_color(r, g, b, a);
-    Rect rect = {0, 0, get_width(), get_height()};
-    canvas.draw_rect(rect);
+    Rect rect = {0, 0, static_cast<double>(get_width()), static_cast<double>(get_height())};
+    canvas.draw_shape(rect);
 }
 
 void Drawable::draw_background(Canvas &canvas, Element_status statu) {
     uint8_t r, g, b, a;
     get_background_color(r, g, b, a, statu);
     canvas.set_color(r, g, b, a);
-    Rect rect = {0, 0, get_width(), get_height()};
-    canvas.fill_rect(rect);
+    Rect rect = {0, 0, static_cast<double>(get_width()), static_cast<float>(get_height())};
+    canvas.fill_shape(rect);
 }
 }

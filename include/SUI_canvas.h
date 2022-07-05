@@ -8,10 +8,11 @@
 #define SUI_CANVAS
 #include <memory>
 #include <string>
+#include <vector>
+
 #include "SUI_color.h"
 #include "SUI_geometry.h"
-#include "SUI_point.h"
-#include "SUI_rect.h"
+#include "SUI_shape.h"
 
 namespace sui {
 
@@ -47,14 +48,18 @@ public:
     Canvas(int posX, int posY, int posZ, int width, int height, int depth);
     virtual ~Canvas();
     void draw_line(const Point &first, const Point &second);
+    void draw_lines(const std::vector<Point> &points);
     void fill_rect(const Rect &rect);
     void draw_rect(const Rect &rect);
-    void draw_arc(const Point &center, unsigned radius, double start_angle, double end_angle);
-    void draw_circle(const Point &center, unsigned radius);
-    void draw_ellipse_arc(const Point &center, unsigned semiX_axis, unsigned semiY_axis, double start_angle, double end_angle);
-    void draw_ellipse(const Point &center, unsigned semiX_axis, unsigned semiY_axis);
-    void draw_round_rect(const Rect &rect, int radius);
+    void draw_arc(const Point &center, double radius, double start_angle, double end_angle);
+    void draw_circle(const Point &center, double radius);
+    void draw_ellipse_arc(const Point &center, double semiX_axis, double semiY_axis, double start_angle, double end_angle);
+    void draw_ellipse(const Point &center, double semiX_axis, double semiY_axis);
+    void draw_round_rect(const Rect &rect, double radius);
     void draw_text(const Rect &rect, const std::string &str, const std::string &font_name, const Color &color, unsigned font_size);
+    void draw_point(const Point &point);
+    void draw_shape(const Shape &shape);
+    void fill_shape(const Shape &shape);
     /**
     * @todo add the fill graph funcitons
     */

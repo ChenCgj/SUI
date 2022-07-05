@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <iostream>
 #include <memory>
+#include <type_traits>
 
 #include "SDL_blendmode.h"
 #include "SDL_error.h"
@@ -17,7 +18,7 @@
 #include "SUI_in_canvas_data.h"
 #include "SUI_in_window_data.h"
 #include "SUI_in_debug.h"
-#include "SUI_point.h"
+#include "SUI_shape.h"
 
 namespace sui {
 
@@ -80,6 +81,16 @@ void Canvas::unload_renderer() {
 Canvas::~Canvas() {
     unload_renderer();
 }
+
+void Canvas::draw_point(const Point &point) {
+    if (!prepare_texture()) {
+        ERR(<< "couldn't prepare the texture.");
+        return;
+    }
+    if (SDL_RenderDrawPointF(pCanvas_data->pRenderer, point.x, point.y) < 0) {
+        ERR(<< "draw point failure. SDL: " << SDL_GetError());
+    }
+}
 /**
 * @brief
 * @warning when call this functions, should prepare the correct target, window or the texture
@@ -89,9 +100,28 @@ void Canvas::draw_line(const Point &first, const Point &second) {
         ERR(<< "couldn't preapre the texture.");
         return;
     }
-    if (SDL_RenderDrawLine(pCanvas_data->pRenderer, first.x, first.y, second.x, second.y) < 0) {
-        printf("%s\n", SDL_GetError());
+    if (SDL_RenderDrawLineF(pCanvas_data->pRenderer, first.x, first.y, second.x, second.y) < 0) {
+        ERR(<< "draw line failure. SDL: " << SDL_GetError());
     }
+}
+
+void Canvas::draw_lines(const std::vector<Point> &points) {
+    if (!prepare_texture()) {
+        ERR(<< "couldn't preapre the texture.");
+        return;
+    }
+    SDL_FPoint *sdl_points = new SDL_FPoint[points.size()];
+    if (!sdl_points) {
+        ERR(<< "draw lines failure");
+        return;
+    }
+    for (int i = 0; i < points.size(); ++i) {
+        sdl_points[i] = SDL_FPoint{static_cast<float>(points[i].x), static_cast<float>(points[i].y)};
+    }
+    if (SDL_RenderDrawLinesF(pCanvas_data->pRenderer, sdl_points, points.size()) < 0) {
+        ERR(<< "draw line failure. SDL: " << SDL_GetError());
+    }
+    delete [] sdl_points;
 }
 
 void Canvas::fill_rect(const Rect &rect) {
@@ -99,8 +129,8 @@ void Canvas::fill_rect(const Rect &rect) {
         ERR(<< "couldn't preapre the texture.");
         return;
     }
-    SDL_Rect rect_in = {rect.p1.x, rect.p1.y, rect.get_width(), rect.get_height()};
-    if (SDL_RenderFillRect(pCanvas_data->pRenderer, &rect_in) < 0) {
+    SDL_FRect rect_in = {static_cast<float>(rect.p1.x), static_cast<float>(rect.p1.y), static_cast<float>(rect.get_width()), static_cast<float>(rect.get_height())};
+    if (SDL_RenderFillRectF(pCanvas_data->pRenderer, &rect_in) < 0) {
         ERR(<< "renderer error, SDL: " << SDL_GetError());
     }
 }
@@ -110,13 +140,13 @@ void Canvas::draw_rect(const Rect &rect) {
         ERR(<< "couldn't prepare the texture.");
         return;
     }
-    SDL_Rect rect_in = {rect.p1.x, rect.p1.y, rect.get_width(), rect.get_height()};
-    if (SDL_RenderDrawRect(pCanvas_data->pRenderer, &rect_in) < 0) {
+    SDL_FRect rect_in = {static_cast<float>(rect.p1.x), static_cast<float>(rect.p1.y), static_cast<float>(rect.get_width()), static_cast<float>(rect.get_height())};
+    if (SDL_RenderDrawRectF(pCanvas_data->pRenderer, &rect_in) < 0) {
         ERR(<< "Error in draw rect. SDL:" << SDL_GetError());
     }
 }
 
-void Canvas::draw_ellipse_arc(const Point &center, unsigned int semiX_axis, unsigned int semiY_axis, double start_angle, double end_angle) {
+void Canvas::draw_ellipse_arc(const Point &center, double semiX_axis, double semiY_axis, double start_angle, double end_angle) {
     if (semiX_axis <= 0 || semiY_axis <= 0) {
         ERR(<< "the axis of ellipse is zero!");
         return;
@@ -152,20 +182,28 @@ void Canvas::draw_ellipse_arc(const Point &center, unsigned int semiX_axis, unsi
     }
 }
 
-void Canvas::draw_ellipse(const Point &center, unsigned int semiX_axis, unsigned int semiY_axis) {
+void Canvas::draw_ellipse(const Point &center, double semiX_axis, double semiY_axis) {
     draw_ellipse_arc(center, semiX_axis, semiY_axis, 0, 2 * math_pi);
 }
 
-void Canvas::draw_arc(const Point &center, unsigned int radius, double start_angle, double end_angle) {
+void Canvas::draw_arc(const Point &center, double radius, double start_angle, double end_angle) {
     draw_ellipse_arc(center, radius, radius, start_angle, end_angle);
 }
 
-void Canvas::draw_circle(const Point &center, unsigned int radius) {
+void Canvas::draw_circle(const Point &center, double radius) {
     draw_ellipse(center, radius, radius);
 }
 
-void Canvas::draw_round_rect(const Rect &rect, int radius) {
-    radius = std::min({abs(rect.get_width()) / 2, abs(rect.get_height()) / 2, radius});
+void Canvas::draw_shape(const Shape &shape) {
+    shape.draw_shape(*this);
+}
+
+void Canvas::fill_shape(const Shape &shape) {
+    shape.fill_shape(*this);
+}
+
+void Canvas::draw_round_rect(const Rect &rect, double radius) {
+    radius = std::min({fabs(rect.get_width()) / 2, fabs(rect.get_height()) / 2, radius});
     Point p1 = rect.p1;
     Point p2 = rect.p2;
     if (p1.x > p2.x) {
@@ -211,8 +249,8 @@ void Canvas::draw_text(const Rect &rect, const std::string &str, const std::stri
     SDL_Rect rsrc = {0, 0, 0, 0};
     TTF_SizeText(font, str.c_str(), &rsrc.w, &rsrc.h);
     TTF_CloseFont(font);
-    SDL_Rect rdest = {rect.p1.x + (rect.get_width() - rsrc.w) / 2, rect.p1.y + (rect.get_height() - rsrc.h) / 2, rsrc.w, rsrc.h};
-    SDL_RenderCopy(pCanvas_data->pRenderer, font_texture, &rsrc, &rdest);
+    SDL_FRect rdest = {static_cast<float>(rect.p1.x + (rect.get_width() - rsrc.w) / 2), static_cast<float>(rect.p1.y + (rect.get_height() - rsrc.h) / 2), static_cast<float>(rsrc.w), static_cast<float>(rsrc.h)};
+    SDL_RenderCopyF(pCanvas_data->pRenderer, font_texture, &rsrc, &rdest);
     SDL_DestroyTexture(font_texture);
 }
 

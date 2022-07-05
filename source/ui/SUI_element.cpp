@@ -18,7 +18,7 @@ void Element::draw(Canvas &canvas) {
     DBG(<< "draw element...");
     canvas.save_env();
     canvas.set_color(255, 255, 255, 255);
-    canvas.draw_rect(Rect{0, 0, get_width(), get_height()});
+    canvas.draw_rect(Rect{0, 0, static_cast<double>(get_width()), static_cast<double>(get_height())});
     canvas.restore_env();
 }
 

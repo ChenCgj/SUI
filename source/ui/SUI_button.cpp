@@ -13,6 +13,7 @@
 #include "SUI_in_main.h"
 #include "SUI_in_debug.h"
 #include "SUI_main.h"
+#include "SUI_shape.h"
 
 namespace sui {
 Button::Button(const std::string &title, int x, int y, int w, int h) : Element(x, y, w, h) {
@@ -28,7 +29,7 @@ void Button::draw(Canvas &canvas) {
     draw_background(canvas, statu);
     draw_border(canvas, statu);
     Color color = {0, 0, 0, 255};
-    Rect r = {0, 0, get_width(), get_height()};
+    Rect r = {0, 0, static_cast<double>(get_width()), static_cast<double>(get_height())};
     canvas.draw_text(r, title, "Inkfree.ttf", color, 18);
     canvas.restore_env();
     DBG(<< get_name() << "draw button ok");
@@ -98,8 +99,21 @@ void Button::draw_border(Canvas &canvas, Element_status statu) {
     uint8_t r, g, b, a;
     get_color(r, g, b, a, statu);
     canvas.set_color(r, g, b, a);
-    Rect rect = {0, 0, get_width(), get_height()};
-    int radius = std::min(get_width() / 4, get_height() / 4);
-    canvas.draw_round_rect(rect, radius);
+    Rect rect = {0, 0, static_cast<double>(get_width()), static_cast<double>(get_height())};
+    double radius = std::min(get_width() / 4, get_height() / 4);
+    Round_rect rrect{rect, radius};
+    canvas.draw_shape(rrect);
+}
+
+void Button::draw_background(Canvas &canvas, Element_status statu) {
+    uint8_t r, g, b, a;
+    get_background_color(r, g, b, a, statu);
+    canvas.set_color(r, g, b, a);
+    Rect rect = {0, 0, static_cast<double>(get_width()), static_cast<double>(get_height())};
+    double radius = std::min(get_width() / 4.0, get_height() / 4.0);
+    Round_rect rrect{rect, radius};
+    canvas.fill_shape(rrect);
+    // Ellipse_arc ea(Point{get_width() / 2.0, get_height() / 2.0}, 20, 10, 0, 8 * atan(1));
+    // canvas.draw_shape(ea);
 }
 }
