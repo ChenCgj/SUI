@@ -113,6 +113,10 @@ void Button::draw_background(Canvas &canvas, Element_status statu) {
     double radius = std::min(get_width() / 4.0, get_height() / 4.0);
     Round_rect rrect{rect, radius};
     canvas.fill_shape(rrect);
+    Image *image = get_background_image(statu);
+    if (image) {
+        canvas.draw_image(*image);
+    }
     // Ellipse_arc ea(Point{get_width() / 2.0, get_height() / 2.0}, 20, 10, 0, 8 * atan(1));
     // canvas.draw_shape(ea);
 }
