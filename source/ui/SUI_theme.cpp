@@ -4,6 +4,7 @@
 #include "SUI_in_styles.h"
 #include "SUI_in_theme.h"
 #include "SUI_in_debug.h"
+#include "SUI_main.h"
 
 namespace sui {
 
@@ -18,12 +19,15 @@ Theme::Theme() {
 
     normal_style.background.background_color = Color{255, 255, 255, 255};
     normal_style.background.background_image = nullptr;
+    normal_style.background.fill_style = Background_fill_style::target_size;
 
     button_style.normal = button_style.hover = button_style.pressed = normal_style;
     button_style.normal.background.background_color = Color{0xd5, 0xd5, 0xd5, 0xff};
     button_style.normal.background.background_image = nullptr;
+    button_style.normal.background.fill_style = Background_fill_style::target_size;
     button_style.pressed.background.background_color = Color{0x3f, 0x3f, 0x3f, 0xff};
     button_style.pressed.background.background_image = nullptr;
+    button_style.pressed.background.fill_style = Background_fill_style::target_size;
     button_style.normal.color = Color{0, 0, 0, 255};
 }
 
@@ -115,7 +119,7 @@ Image *Theme::get_background_image(Element_status statu, Style_option background
     return image;
 }
 
-bool Theme::set_background_image(Element_status statu, Style_option bg_image, const std::string &image_file, unsigned width, unsigned height) {
+bool Theme::set_background_image(Element_status statu, Style_option bg_image, const std::string &image_file, const Rect &target_rect) {
     Style *style = get_style(statu);
     if (!style) {
         ERR(<< "the style is nullptr");
@@ -128,8 +132,23 @@ bool Theme::set_background_image(Element_status statu, Style_option bg_image, co
         style->background.background_image = new Image(0, 0, 0, 0);
     }
     style->background.background_image->load_image(image_file);
-    style->background.background_image->set_width(width);
-    style->background.background_image->set_height(height);
+    style->background.background_image->set_width(target_rect.get_width());
+    style->background.background_image->set_height(target_rect.get_height());
+    style->background.background_image->set_posX(target_rect.p1.x);
+    style->background.background_image->set_posY(target_rect.p1.y);
+    return true;
+}
+
+bool Theme::set_background_fill_style(Element_status statu, Style_option bg_image, Background_fill_style fill_style) {
+    Style *style = get_style(statu);
+    if (!style) {
+        ERR(<< "the style is nullptr");
+        return false;
+    }
+    if (bg_image != Style_option::background_image) {
+        return false;
+    }
+    style->background.fill_style = fill_style;
     return true;
 }
 

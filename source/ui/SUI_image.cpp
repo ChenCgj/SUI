@@ -1,4 +1,3 @@
-#include <cctype>
 #include <string>
 #include "SDL_surface.h"
 #include "SDL_image.h"
@@ -10,7 +9,7 @@
 namespace sui {
 
 Image::Image(int posX, int posY, int width, int height)
-    : Geometry(posX, posY, width, height), image_surface{nullptr}, image_texture{nullptr} {}
+    : Geometry(posX, posY, width, height), image_surface{nullptr}, image_texture{nullptr}, source_area{0, 0, 0, 0} {}
 
 void Image::destroy_image() {
     if (!image_texture) {
@@ -21,6 +20,29 @@ void Image::destroy_image() {
     }
     image_surface = nullptr;
     image_texture = nullptr;
+}
+
+unsigned Image::get_image_width() const {
+    if (image_surface == nullptr) {
+        return 0;
+    } else {
+        return image_surface->w;
+    }
+}
+
+unsigned Image::get_image_height() const {
+    if (image_surface == nullptr) {
+        return 0;
+    } else {
+        return image_surface->h;
+    }
+}
+
+void Image::set_source_area(int x, int y, int w, int h) {
+    source_area.x = x;
+    source_area.y = y;
+    source_area.w = w;
+    source_area.h = h;
 }
 
 bool Image::load_image(const std::string &image_file) {
@@ -51,6 +73,7 @@ bool Image::load_image(const std::string &image_file) {
         ERR(<< "IMG load err: " << IMG_GetError());
         return false;
     }
+    set_source_area(0, 0, get_image_width(), get_image_height());
     IMG_Quit();
     return true;
 }

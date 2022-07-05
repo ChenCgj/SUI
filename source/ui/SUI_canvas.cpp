@@ -223,7 +223,15 @@ void Canvas::draw_image(const Image &image) {
         return;
     }
     SDL_Rect rect_dst = {image.get_posX(), image.get_posY(), image.get_width(), image.get_height()};
-    SDL_Rect rect_src = {0, 0, image.get_width(), image.get_height()};
+    SDL_Rect rect_src = image.source_area;
+    if (rect_src.h == 0) {
+        rect_src.y = 0;
+        rect_src.h = image.get_image_height();
+    }
+    if (rect_src.w == 0) {
+        rect_src.x = 0;
+        rect_src.h = image.get_image_width();
+    }
     DBG(<< "src: " << rect_src.x << " " << rect_src.y << " " << rect_src.w << " " << rect_src.h);
     DBG(<< "dest: " << rect_dst.x << " " << rect_dst.y << " " << rect_dst.w << " " << rect_dst.h);
     if (SDL_RenderCopy(pCanvas_data->pRenderer, texture, &rect_src, &rect_dst) < 0) {

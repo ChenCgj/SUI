@@ -23,6 +23,7 @@ struct Border_style {
 * @todo make the background image can fill the background
 */
 struct Background_style {
+    Background_fill_style fill_style;
     Color background_color;
     Image *background_image;
 };

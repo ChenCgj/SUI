@@ -3,7 +3,10 @@
 
 #include "SUI.h"
 #include "SUI_button.h"
+#include "SUI_geometry.h"
 #include "SUI_main.h"
+#include "SUI_shape.h"
+#include "SUI_styles.h"
 #include "SUI_window.h"
 
 using namespace std;
@@ -12,7 +15,12 @@ using namespace sui;
 int main(int argc, char *argv[]) {
     Window *pWindow = new Window("Hello Test", 800, 600, Window_flag::window_flag_resizable);
     pWindow->set_background_color(255, 255, 255, 255);
-    pWindow->set_background_image("background.jpg", 800, 600);
+    Rect target_rect{0, 0, 600, 600};
+    pWindow->set_background_image("background.jpg", target_rect);
+    pWindow->set_background_fill_style(Background_fill_style::full, dynamic_cast<Geometry *>(pWindow));
+    // target_rect.p2.x = 800;
+    // pWindow->set_background_fill_style(Background_fill_style::target_size, &target_rect);
+
 
     Button *pButton = new Button("Button", 150, 150, 200, 200);
     pButton->set_color(255, 0, 0, 125);

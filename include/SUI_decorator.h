@@ -12,8 +12,9 @@
 
 #include "SUI_main.h"
 #include "SUI_canvas.h"
+#include "SUI_geometry.h"
+#include "SUI_styles.h"
 #include "SUI_main.h"
-
 
 namespace sui {
 
@@ -30,8 +31,9 @@ public:
     void get_color(uint8_t &red, uint8_t &green, uint8_t &blue, uint8_t &alpha, Element_status statu = Element_status::normal) const;
     void set_background_color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha, Element_status statu = Element_status::normal);
     void get_background_color(uint8_t &red, uint8_t &green, uint8_t &blue, uint8_t &alpha, Element_status statu = Element_status::normal) const;
-    void set_background_image(const std::string &image_file, unsigned width, unsigned height, Element_status statu = Element_status::normal);
+    void set_background_image(const std::string &image_file, const Rect &target_rect, Element_status statu = Element_status::normal);
     Image *get_background_image(Element_status statu = Element_status::normal);
+    void set_background_fill_style(Background_fill_style fill_style, void *data, Element_status statu = Element_status::normal);
     void set_border_radius(unsigned radius, Element_status statu = Element_status::normal);
     int get_border_radius(Element_status statu = Element_status::normal) const;
     void set_theme(Theme_index index);
