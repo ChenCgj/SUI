@@ -6,13 +6,13 @@
 #ifndef SUI_DRAWABLE_H
 #define SUI_DRAWABLE_H
 
-#include "SUI_canvas.h"
 #include "SUI_decorator.h"
 #include "SUI_geometry.h"
 #include "SUI_main.h"
+#include "SUI_shape.h"
 
 namespace sui {
-
+class Canvas;
 /**
 * @class Drawable
 * @brief any element can be drawed on the window should be derived this class
@@ -40,7 +40,7 @@ private:
     // draw the element to buffer canvas, the param is aim to provide the render information
     void save_buffer(Canvas &canvas);
     // the buffer
-    Canvas canvas_buffer;
+    Canvas *canvas_buffer;
     bool redraw_flag;
 };
 }

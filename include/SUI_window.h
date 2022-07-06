@@ -10,7 +10,6 @@
 #include <string>
 #include <memory>
 
-#include "SUI_canvas.h"
 #include "SUI_decorator.h"
 #include "SUI_drawable.h"
 #include "SUI_geometry.h"
@@ -19,7 +18,7 @@
 #include "SUI_property.h"
 
 namespace sui {
-
+class Canvas;
 // use when create window
 enum Window_flag {
     window_flag_none = 0x0,

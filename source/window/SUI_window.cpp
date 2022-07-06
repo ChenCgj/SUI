@@ -9,7 +9,7 @@
 #include "SDL_video.h"
 
 #include "SUI_button.h"
-#include "SUI_canvas.h"
+#include "SUI_in_canvas.h"
 #include "SUI_drawable.h"
 #include "SUI_event_handler.h"
 #include "SUI_in_events.h"

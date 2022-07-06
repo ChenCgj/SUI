@@ -1,6 +1,6 @@
 
 /**
-* @file SUI_canvas.h
+* @file SUI_in_canvas.h
 * @brief contains definition of canvas
 */
 
@@ -17,7 +17,7 @@
 namespace sui {
 
 class Window;
-class Image;
+class Sketch;
 /**
 * @class Canvas
 * @brief this class is designed to draw things on it
@@ -60,7 +60,7 @@ public:
     void draw_point(const Point &point);
     void draw_shape(const Shape &shape);
     void fill_shape(const Shape &shape);
-    void draw_image(const Image &image);
+    void draw_sketch(const Sketch &image);
     /**
     * @todo add the fill graph funcitons
     */

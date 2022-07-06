@@ -6,7 +6,6 @@
 #ifndef SUI_ELEMENT_H
 #define SUI_ELEMENT_H
 
-#include "SUI_canvas.h"
 #include "SUI_drawable.h"
 #include "SUI_main.h"
 #include "SUI_object.h"

@@ -6,7 +6,6 @@
 #ifndef SUI_OBJECT_H
 #define SUI_OBJECT_H
 
-#include "SUI_canvas.h"
 #include <list>
 #include <string>
 

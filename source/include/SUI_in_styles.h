@@ -5,10 +5,10 @@
 
 #include "SDL_render.h"
 
-#include "SUI_canvas.h"
+#include "SUI_in_canvas.h"
 #include "SUI_styles.h"
 #include "SUI_color.h"
-#include "SUI_in_image.h"
+#include "SUI_in_sketch.h"
 
 namespace sui {
 struct Border_style {
@@ -25,7 +25,7 @@ struct Border_style {
 struct Background_style {
     Background_fill_style fill_style;
     Color background_color;
-    Image *background_image;
+    Sketch *background_image;
 };
 
 struct Style {

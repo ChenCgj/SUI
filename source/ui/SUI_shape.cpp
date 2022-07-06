@@ -1,6 +1,6 @@
 #include "SUI_shape.h"
 #include "SDL_rect.h"
-#include "SUI_canvas.h"
+#include "SUI_in_canvas.h"
 #include "SUI_in_debug.h"
 
 static const double math_pi = 4 * atan(1);

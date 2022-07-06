@@ -1,5 +1,5 @@
 #include "SUI_graphic_board.h"
-#include "SUI_canvas.h"
+#include "SUI_in_canvas.h"
 #include "SUI_element.h"
 #include "SUI_main.h"
 #include "SUI_in_debug.h"

@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 #include "SUI_button.h"
-#include "SUI_canvas.h"
+#include "SUI_in_canvas.h"
 #include "SUI_element.h"
 #include "SUI_drawable.h"
 #include "SUI_geometry.h"
@@ -113,9 +113,9 @@ void Button::draw_background(Canvas &canvas, Element_status statu) {
     /**
     * @todo add mask to make the image radius
     */
-    Image *image = get_background_image(statu);
+    Sketch *image = get_background_image(statu);
     if (image) {
-        canvas.draw_image(*image);
+        canvas.draw_sketch(*image);
     }
     // Ellipse_arc ea(Point{get_width() / 2.0, get_height() / 2.0}, 20, 10, 0, 8 * atan(1));
     // canvas.draw_shape(ea);

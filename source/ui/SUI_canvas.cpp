@@ -14,12 +14,12 @@
 #include "SDL_ttf.h"
 #include "SDL_video.h"
 
-#include "SUI_canvas.h"
+#include "SUI_in_canvas.h"
 #include "SUI_in_canvas_data.h"
 #include "SUI_in_window_data.h"
 #include "SUI_in_debug.h"
 #include "SUI_shape.h"
-#include "SUI_in_image.h"
+#include "SUI_in_sketch.h"
 
 namespace sui {
 
@@ -203,14 +203,14 @@ void Canvas::fill_shape(const Shape &shape) {
     shape.fill_shape(*this);
 }
 
-void Canvas::draw_image(const Image &image) {
-    if (image.image_surface == nullptr) {
+void Canvas::draw_sketch(const Sketch &image) {
+    if (image.sketch_surface == nullptr) {
         return;
     }
     bool create_texture = false;
-    SDL_Texture *texture = image.image_texture;
+    SDL_Texture *texture = image.sketch_texture;
     if (texture == nullptr) {
-        texture = SDL_CreateTextureFromSurface(pCanvas_data->pRenderer, image.image_surface);
+        texture = SDL_CreateTextureFromSurface(pCanvas_data->pRenderer, image.sketch_surface);
         if (texture == nullptr) {
             ERR(<< "create textrue fail." << SDL_GetError());
             return;
@@ -226,11 +226,11 @@ void Canvas::draw_image(const Image &image) {
     SDL_Rect rect_src = image.source_area;
     if (rect_src.h == 0) {
         rect_src.y = 0;
-        rect_src.h = image.get_image_height();
+        rect_src.h = image.get_sketch_height();
     }
     if (rect_src.w == 0) {
         rect_src.x = 0;
-        rect_src.h = image.get_image_width();
+        rect_src.h = image.get_sketch_width();
     }
     DBG(<< "src: " << rect_src.x << " " << rect_src.y << " " << rect_src.w << " " << rect_src.h);
     DBG(<< "dest: " << rect_dst.x << " " << rect_dst.y << " " << rect_dst.w << " " << rect_dst.h);

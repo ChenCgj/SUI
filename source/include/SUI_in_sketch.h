@@ -7,27 +7,27 @@
 #include <string>
 #include "SDL_render.h"
 #include "SDL_surface.h"
-#include "SUI_canvas.h"
+#include "SUI_in_canvas.h"
 #include "SUI_geometry.h"
 
 namespace sui {
 
-class Image : public Geometry {
+class Sketch : public Geometry {
 public:
-    Image(int posX, int posY, int width, int height);
-    bool load_image(const std::string &image_file);
-    void destroy_image();
-    void draw_image(Canvas &canvas);
-    unsigned get_image_width() const;
-    unsigned get_image_height() const;
+    Sketch(int posX, int posY, int width, int height);
+    bool load_sketch(const std::string &image_file);
+    void destroy_sketch();
+    void draw_sketch(Canvas &canvas);
+    unsigned get_sketch_width() const;
+    unsigned get_sketch_height() const;
     void set_source_area(int x, int y, int w, int h);
-    ~Image();
+    ~Sketch();
 private:
-    SDL_Surface *image_surface;
+    SDL_Surface *sketch_surface;
 /**
 * @todo use texture buffer rathder than surface
 */
-    SDL_Texture *image_texture;
+    SDL_Texture *sketch_texture;
     SDL_Rect source_area;
     friend Canvas;
 };

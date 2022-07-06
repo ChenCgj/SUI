@@ -5,7 +5,7 @@
 #include "SDL_render.h"
 #include "SDL_stdinc.h"
 #include "SDL_video.h"
-#include "SUI_canvas.h"
+#include "SUI_in_canvas.h"
 
 namespace sui {
 

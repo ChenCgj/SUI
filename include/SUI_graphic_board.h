@@ -7,7 +7,6 @@
 #define SUI_GRAPHIC_BOARD
 
 #include <functional>
-#include "SUI_canvas.h"
 #include "SUI_color.h"
 #include "SUI_element.h"
 #include "SUI_event_handler.h"
