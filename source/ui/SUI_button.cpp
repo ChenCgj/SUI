@@ -1,6 +1,3 @@
-#include <algorithm>
-#include <functional>
-#include <math.h>
 #include <stdint.h>
 #include <stdio.h>
 
@@ -113,6 +110,9 @@ void Button::draw_background(Canvas &canvas, Element_status statu) {
     double radius = std::min(get_width() / 4.0, get_height() / 4.0);
     Round_rect rrect{rect, radius};
     canvas.fill_shape(rrect);
+    /**
+    * @todo add mask to make the image radius
+    */
     Image *image = get_background_image(statu);
     if (image) {
         canvas.draw_image(*image);

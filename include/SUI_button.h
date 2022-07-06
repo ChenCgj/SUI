@@ -43,7 +43,7 @@ private:
     // void *(*callback)(void *);
     std::function<void (void)> callback;
     std::string title;
-    Element_status statu;
+    // Element_status statu;
     friend class Event_handler_helper;
 };
 }

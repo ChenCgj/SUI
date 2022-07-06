@@ -3,6 +3,7 @@
 #include "SUI_drawable.h"
 #include "SUI_in_main.h"
 #include "SUI_in_debug.h"
+#include "SUI_main.h"
 namespace sui {
 
 Element::Element(int posX, int posY, int width, int height) : Drawable(posX, posY, width, height) {
@@ -11,6 +12,7 @@ Element::Element(int posX, int posY, int width, int height) : Drawable(posX, pos
     if (!TRASH_ROOT->add_node(this)) {
         ERR(<< "Element added to root failure.");
     }
+    statu = Element_status::None;
 }
 
 // simply draw a rect contain the element

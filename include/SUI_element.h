@@ -8,6 +8,7 @@
 
 #include "SUI_canvas.h"
 #include "SUI_drawable.h"
+#include "SUI_main.h"
 #include "SUI_object.h"
 namespace sui {
 
@@ -20,6 +21,8 @@ public:
     Element(int posX, int posY, int width, int height);
     virtual void draw(Canvas &canvas) override;
     virtual ~Element();
+protected:
+    Element_status statu;
 };
 
 }

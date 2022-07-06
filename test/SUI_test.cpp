@@ -4,6 +4,7 @@
 #include "SUI.h"
 #include "SUI_button.h"
 #include "SUI_geometry.h"
+#include "SUI_graphic_board.h"
 #include "SUI_main.h"
 #include "SUI_shape.h"
 #include "SUI_styles.h"
@@ -32,6 +33,20 @@ int main(int argc, char *argv[]) {
         pButton->set_background_color(rand() %255, rand() %255, rand() %255, rand() %255, Element_status::button_normal);
     });
 
+    Graphic_board *pboard = new Graphic_board(300, 300, 100, 100);
+    pboard->set_draw_callback(function<void ()>([=]() {
+        pboard->set_color(Color{0, 125, 125, 255});
+        pboard->fill();
+        pboard->set_color(Color{125, 125, 0, 255});
+        pboard->move(50, 50);
+        pboard->line_to(50, 25);
+        pboard->line_to(75, 25);
+        pboard->line_to(75, 75);
+        pboard->line_to(25, 75);
+        pboard->line_to(25, 25);
+        pboard->draw_line(0, 0, 100, 100);
+    }));
+
     Button *pButton2 = new Button("Button", 100, 100, 100, 100);
     pButton2->set_color(0, 0, 0, 125);
     pButton2->add_listener([=](){
@@ -43,6 +58,7 @@ int main(int argc, char *argv[]) {
     }
     pWindow->add_node(pButton2);
     pWindow->add_node(new Button("Hello World", 300, 400));
+    pWindow->add_node(pboard);
     pWindow->show();
 
     Window *pWindow2 = new Window("Test2", 800, 600, 100, 100, Window_flag::window_flag_resizable);
