@@ -38,7 +38,7 @@ int main(int argc, char *argv[]) {
         pboard->set_color(Color{0, 125, 125, 255});
         pboard->fill();
         pboard->set_color(Color{125, 125, 0, 255});
-        pboard->move(50, 50);
+        pboard->move_to(50, 50);
         pboard->line_to(50, 25);
         pboard->line_to(75, 25);
         pboard->line_to(75, 75);

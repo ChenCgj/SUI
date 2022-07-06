@@ -19,7 +19,6 @@
 #include "SUI_object.h"
 #include "SUI_property.h"
 #include "SUI_window.h"
-#include "SUI_in_canvas_data.h"
 #include "SUI_in_debug.h"
 
 namespace sui {

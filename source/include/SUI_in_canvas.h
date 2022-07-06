@@ -6,9 +6,13 @@
 
 #ifndef SUI_CANVAS
 #define SUI_CANVAS
-#include <memory>
 #include <string>
+#include <stack>
 #include <vector>
+
+#include "SDL_render.h"
+#include "SDL_stdinc.h"
+#include "SDL_video.h"
 
 #include "SUI_color.h"
 #include "SUI_geometry.h"
@@ -117,8 +121,11 @@ public:
     void present();
     void unload_renderer();
 private:
-    struct Canvas_data;
-    std::unique_ptr<Canvas_data> pCanvas_data;
+    SDL_Texture *pTexture;
+    SDL_Renderer *pRenderer;
+
+    struct Renderer_env;
+    std::stack<Renderer_env*> env_stack;
     // backup the size, so that when size change we can recreate new content
     int width_bak, height_bak, depth_bak;
     // detect if the size change and realloc the new content
