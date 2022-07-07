@@ -6,13 +6,16 @@
 #include "SDL_error.h"
 #include "SDL_pixels.h"
 #include "SDL_rect.h"
+#include "SDL_render.h"
 #include "SDL_surface.h"
 #include "SDL_ttf.h"
 
 #include "SUI_in_canvas.h"
+#include "SUI_in_main.h"
 #include "SUI_in_window_data.h"
 #include "SUI_in_debug.h"
 #include "SUI_in_sketch.h"
+#include "SUI_in_texture_sdl_manager.h"
 
 namespace sui {
 
@@ -205,19 +208,33 @@ void Canvas::fill_shape(const Shape &shape) {
 }
 
 void Canvas::draw_sketch(const Sketch &image) {
-    if (image.sketch_surface == nullptr) {
-        return;
-    }
-    bool create_texture = false;
-    SDL_Texture *texture = image.sketch_texture;
-    if (texture == nullptr) {
-        texture = SDL_CreateTextureFromSurface(pRenderer, image.sketch_surface);
-        if (texture == nullptr) {
-            ERR(<< "create textrue fail." << SDL_GetError());
-            return;
+    SDL_Texture *texture = TEXTURE_SDL_MANAGER->get_texture(image.texture_id);
+
+    if (texture == nullptr || pRenderer != TEXTURE_SDL_MANAGER->get_renderer(image.texture_id)) {
+        texture = TEXTURE_SDL_MANAGER->get_texture(image.image_texture_id);
+        if (texture == nullptr || pRenderer != TEXTURE_SDL_MANAGER->get_renderer(image.image_texture_id)) {
+            if (image.sketch_surface == nullptr) {
+                return;
+            }
+            texture = TEXTURE_SDL_MANAGER->set_texture(image.image_texture_id, pRenderer, image.sketch_surface);
+            if (texture == nullptr) {
+                ERR(<< "create texture fail." << SDL_GetError());
+                return;
+            }
         }
-        SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
-        create_texture = true;
+        SDL_Texture *image_texture = texture;
+        texture = TEXTURE_SDL_MANAGER->set_texture(image.texture_id, pRenderer, 
+            image.sketch_surface->format->format, SDL_TEXTUREACCESS_TARGET, 
+            image.get_sketch_width(), image.get_sketch_height());
+        if (texture == nullptr) {
+            ERR(<< "create texture fail. " << SDL_GetError());
+        }
+        save_env();
+        SDL_SetRenderTarget(pRenderer, texture);
+        // use mask???
+        SDL_RenderCopy(pRenderer, image_texture, nullptr, nullptr);
+        SDL_RenderPresent(pRenderer);
+        restore_env();
     }
     if (!prepare_texture()) {
         ERR(<< "couldn't prepare the texture.");
@@ -238,13 +255,23 @@ void Canvas::draw_sketch(const Sketch &image) {
     if (SDL_RenderCopy(pRenderer, texture, &rect_src, &rect_dst) < 0) {
         ERR(<< "render copy error. SDL: " << SDL_GetError());
     }
+
+    // SDL_BlendMode mask_mode = SDL_ComposeCustomBlendMode(SDL_BLENDFACTOR_ZERO, SDL_BLENDFACTOR_DST_COLOR, SDL_BLENDOPERATION_ADD, SDL_BLENDFACTOR_SRC_ALPHA, SDL_BLENDFACTOR_ZERO, SDL_BLENDOPERATION_ADD);
+    // SDL_Texture *mask = SDL_CreateTexture(pRenderer, image.sketch_surface->format->format, SDL_TEXTUREACCESS_TARGET, image.get_sketch_width(), image.get_sketch_height());
+    // SDL_SetTextureBlendMode(mask, mask_mode);
+    // save_env();
+    // SDL_SetRenderTarget(pRenderer, mask);
+    // SDL_SetRenderDrawColor(pRenderer, 255, 255, 255, 125);
+    // SDL_RenderClear(pRenderer);
+    // SDL_SetRenderDrawColor(pRenderer, 255, 255, 255, 255);
+    // SDL_Rect rect = {500, 500, 1000, 1000};
+    // SDL_RenderFillRect(pRenderer, &rect);
+    // SDL_RenderPresent(pRenderer);
+    // restore_env();
+    // SDL_RenderCopy(pRenderer, mask, &rect_src, &rect_dst);
+    // SDL_DestroyTexture(mask);
+
     SDL_RenderPresent(pRenderer);
-/**
-* @todo use texture buffer rather than repeatly create texutre
-*/
-    if (create_texture) {
-        SDL_DestroyTexture(texture);
-    }
 }
 
 void Canvas::draw_round_rect(const Rect &rect, double radius) {

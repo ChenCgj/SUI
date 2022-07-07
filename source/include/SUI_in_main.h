@@ -9,6 +9,7 @@
 #define WINDOW_MANAGER Window_manager::get_window_manager()
 #define HANDLER_HELPER Event_handler_helper::instance()
 #define THEME_MANAGER Theme_manager::instance()
+#define TEXTURE_SDL_MANAGER Texture_sdl_manager::instance()
 
 extern int SUI_main(int argc, char *argv[]);
 

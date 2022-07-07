@@ -20,6 +20,7 @@
 #include "SUI_property.h"
 #include "SUI_window.h"
 #include "SUI_in_debug.h"
+#include "SUI_in_texture_sdl_manager.h"
 
 namespace sui {
 
@@ -244,6 +245,7 @@ void Window::deal_window_resized_event(Event &e) {
     // when the window size change, all texture create for this window will be invalid
     // if any object recreate a texture, it copy the origin invalid content to the new texture, it was invalid
     // so every object should redraw anyway.
+    TEXTURE_SDL_MANAGER->invalid_texture(pData->pRenderer);
     update_all_with_children();
     redraw();
     DBG(<< get_name() << "(window id:" << e.event.window.windowID << ") resized deal end");

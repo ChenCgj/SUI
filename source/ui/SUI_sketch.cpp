@@ -2,24 +2,31 @@
 #include "SDL_surface.h"
 #include "SDL_image.h"
 #include "SDL_render.h"
+
 #include "SUI_geometry.h"
+#include "SUI_in_main.h"
 #include "SUI_in_sketch.h"
 #include "SUI_in_debug.h"
+#include "SUI_in_texture_sdl_manager.h"
 
 namespace sui {
 
 Sketch::Sketch(int posX, int posY, int width, int height)
-    : Geometry(posX, posY, width, height), sketch_surface{nullptr}, sketch_texture{nullptr}, source_area{0, 0, 0, 0} {}
+    : Geometry(posX, posY, width, height), sketch_surface{nullptr},
+    image_texture_id{TEXTURE_SDL_MANAGER->alloc_texture_id()},
+    texture_id{TEXTURE_SDL_MANAGER->alloc_texture_id()},
+    source_area{0, 0, 0, 0} {
+
+    mask_texture_id = -1;
+}
 
 void Sketch::destroy_sketch() {
-    if (!sketch_texture) {
-        SDL_DestroyTexture(sketch_texture);
-    }
+    TEXTURE_SDL_MANAGER->set_texture(image_texture_id, nullptr, nullptr);
+    TEXTURE_SDL_MANAGER->set_texture(texture_id, nullptr, nullptr);
     if (!sketch_surface) {
         SDL_FreeSurface(sketch_surface);
     }
     sketch_surface = nullptr;
-    sketch_texture = nullptr;
 }
 
 unsigned Sketch::get_sketch_width() const {
@@ -82,7 +89,10 @@ void Sketch::draw_sketch(Canvas &canvas) {
     canvas.draw_sketch(*this);
 }
 
-Sketch::~Sketch() {
-    destroy_sketch();
+void Sketch::add_mask() {
+
 }
+
+Sketch::~Sketch() = default;
+
 }

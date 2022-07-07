@@ -21,13 +21,16 @@ public:
     unsigned get_sketch_width() const;
     unsigned get_sketch_height() const;
     void set_source_area(int x, int y, int w, int h);
+    void add_mask();
     ~Sketch();
 private:
     SDL_Surface *sketch_surface;
 /**
 * @todo use texture buffer rathder than surface
 */
-    SDL_Texture *sketch_texture;
+    long long image_texture_id;
+    long long texture_id;
+    long long mask_texture_id;
     SDL_Rect source_area;
     friend Canvas;
 };
