@@ -26,8 +26,8 @@ void Graphic_board::draw(Canvas &canvas) {
     canvas.save_env();
     draw_background(canvas, statu);
     draw_border(canvas, statu);
-    canvas.restore_env();
     draw_board(canvas);
+    canvas.restore_env();
 
     DBG(<< get_name() << "draw graphic board ok");
 }

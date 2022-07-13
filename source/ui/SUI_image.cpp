@@ -1,3 +1,4 @@
+#include <functional>
 #include "SUI_image.h"
 #include "SDL_render.h"
 #include "SDL_video.h"
@@ -5,12 +6,11 @@
 #include "SUI_graphic_board_base.h"
 #include "SUI_in_canvas.h"
 #include "SUI_in_sketch.h"
-#include <functional>
 
 namespace sui {
 
 Image::Image(int width, int height) : Geometry{0, 0, width, height}, pcanvas{new Canvas(0, 0, 0, width, height, 0)},
-    sketch{new Sketch(pcanvas->get_width(), pcanvas->get_height())}, mask{width, height} {
+    sketch{new Sketch{width, height}}, mask{width, height} {
     auto func = std::function<int (const int &)>([](const int &x)->int {return x;});
     pcanvas->get_width_property().bind(get_width_property(), func);
     pcanvas->get_height_property().bind(get_height_property(), func);
@@ -19,7 +19,7 @@ Image::Image(int width, int height) : Geometry{0, 0, width, height}, pcanvas{new
     // may be sketch doesn't need bind
     sketch->get_width_property().bind(get_width_property(), func);
     sketch->get_height_property().bind(get_height_property(), func);
-    mask.set_draw_callback([&](Graphic_board_base *arg){
+    mask.set_draw_callback([](Graphic_board_base *arg){
         arg->set_color(Color{255, 255, 255, 255});
         arg->clear();
     });
@@ -34,8 +34,9 @@ Image::~Image() {
     }
 }
 
-void Image::load_img(const std::string &file) {
+void Image::load_img(const std::string &file, const Rect &src_area) {
     sketch->load_sketch(file);
+    sketch->set_source_area(src_area.p1.x, src_area.p1.y, src_area.get_width(), src_area.get_height());
 }
 
 void Image::load_mask(const Graphic_board_base &board) {

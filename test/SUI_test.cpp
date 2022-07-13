@@ -17,7 +17,8 @@ int main(int argc, char *argv[]) {
     Window *pWindow = new Window("Hello Test", 800, 600, Window_flag::window_flag_resizable);
     pWindow->set_background_color(255, 125, 125, 255);
     Rect target_rect{0, 0, 600, 600};
-    pWindow->set_background_image("background.jpg", target_rect);
+    Rect src_rect{0, 0, 500, 500};
+    pWindow->set_background_image("background.jpg", target_rect, src_rect);
     pWindow->set_background_fill_style(Background_fill_style::full, dynamic_cast<Geometry *>(pWindow));
     // target_rect.p2.x = 800;
     // pWindow->set_background_fill_style(Background_fill_style::target_size, &target_rect);
@@ -25,7 +26,7 @@ int main(int argc, char *argv[]) {
 
     Button *pButton = new Button("Button", 150, 150, 200, 200);
     pButton->set_color(255, 0, 0, 125);
-    pButton->set_background_image("background.jpg", target_rect, Element_status::button_normal);
+    pButton->set_background_image("background.jpg", target_rect, Rect{0, 0, 2000, 2000}, Element_status::button_normal);
     pButton->set_background_fill_style(Background_fill_style::full, dynamic_cast<Geometry *>(pButton), Element_status::button_normal);
     pButton->get_posX_property().bind(pWindow->get_width_property(), function<int (const int &)>([](const int &x)->int {return x / 2;}));
     pButton->get_width_property().bind(pWindow->get_width_property(), function<int (const int &)>([](const int &x)->int {return x / 4;}));

@@ -115,7 +115,8 @@ void Button::draw_background(Canvas &canvas, Element_status statu) {
     Round_rect rrect{rect, radius};
     canvas.fill_shape(rrect);
     Image *bg = get_background_image(statu);
-    static int flag = 1;
+    static bool flag = true;
+    // it's ok to only set the mask one time for we will use this mask forever
     if (bg && flag) {
         Graphic_board_base graphic_board{bg->get_width(), bg->get_height()};
         graphic_board.set_draw_callback(std::function<void (Graphic_board_base *)>([=](Graphic_board_base *arg) {
@@ -127,8 +128,11 @@ void Button::draw_background(Canvas &canvas, Element_status statu) {
             Round_rect rrect{rect, radius};
             arg->fill_shape(Round_rect{rect, radius});
         }));
+        /**
+        * @bug when load new mask, this bg's board should be update
+        */
         bg->load_mask(graphic_board);
-        flag = 0;
+        flag = false;
     }
     if (bg) {
         bg->draw_image(canvas, 0, 0);

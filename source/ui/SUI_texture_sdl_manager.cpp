@@ -74,6 +74,7 @@ SDL_Texture *Texture_sdl_manager::set_texture(long long id, SDL_Renderer *prende
         Texture_sdl_manager_unit *unit = &texture_map[id];
         if (unit->texture) {
             SDL_DestroyTexture(unit->texture);
+            unit->valid = false;
         }
         unit->prenderer = prenderer;
         if (prenderer == nullptr) {
@@ -101,6 +102,7 @@ SDL_Texture *Texture_sdl_manager::set_texture(long long id, SDL_Renderer *prende
         Texture_sdl_manager_unit *unit = &texture_map[id];
         if (unit->texture) {
             SDL_DestroyTexture(unit->texture);
+            unit->valid = false;
         }
         unit->prenderer = prenderer;
         if (prenderer == nullptr) {
@@ -128,6 +130,7 @@ SDL_Texture *Texture_sdl_manager::set_texture(long long id, SDL_Renderer *prende
         Texture_sdl_manager_unit *unit = &texture_map[id];
         if (unit->texture) {
             SDL_DestroyTexture(unit->texture);
+            unit->valid = false;
         }
         unit->prenderer = prenderer;
         if (prenderer == nullptr) {
@@ -185,7 +188,7 @@ bool Texture_sdl_manager::is_valid(long long id) {
 void Texture_sdl_manager::invalid_texture(SDL_Renderer *prenderer) {
     for (auto iter = texture_map.begin(); iter != texture_map.end(); ++iter) {
         if (iter->second.prenderer == prenderer && !iter->second.static_access) {
-            if (iter->second.texture == nullptr) {
+            if (!iter->second.valid) {
                 continue;
             } else {
                 if (iter->second.auto_update) {
@@ -217,7 +220,7 @@ void Texture_sdl_manager::invalid_texture(long long id) {
         return;
     }
     Texture_sdl_manager_unit *unit = &texture_map[id];
-    if (unit->texture) {
+    if (unit->valid) {
         if (unit->auto_update) {
             SDL_DestroyTexture(unit->texture);
             unit->texture = unit->update_func();

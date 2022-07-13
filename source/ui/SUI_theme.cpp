@@ -119,7 +119,7 @@ Image *Theme::get_background_image(Element_status statu, Style_option background
     return image;
 }
 
-bool Theme::set_background_image(Element_status statu, Style_option bg_image, const std::string &image_file, const Rect &target_rect) {
+bool Theme::set_background_image(Element_status statu, Style_option bg_image, const std::string &image_file, const Rect &target_rect, const Rect &src_area) {
     Style *style = get_style(statu);
     if (!style) {
         ERR(<< "the style is nullptr");
@@ -131,7 +131,7 @@ bool Theme::set_background_image(Element_status statu, Style_option bg_image, co
     if (!style->background.background_image) {
         style->background.background_image = new Image(0, 0);
     }
-    style->background.background_image->load_img(image_file);
+    style->background.background_image->load_img(image_file, src_area);
     style->background.background_image->set_width(target_rect.get_width());
     style->background.background_image->set_height(target_rect.get_height());
     style->background.background_image->set_posX(target_rect.p1.x);

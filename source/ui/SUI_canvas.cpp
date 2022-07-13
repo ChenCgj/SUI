@@ -22,7 +22,7 @@ struct Canvas::Renderer_env {
 
 // static void store_env(SDL_Renderer *pRenderer, SDL_Texture *env_pOrigin_target, Uint8 o_r, Uint8 o_g, Uint8 o_b, Uint8 o_a);
 // static void load_env(SDL_Renderer *pRenderer, SDL_Texture *env_pOrigin_target, Uint8 o_r, Uint8 o_g, Uint8 o_b, Uint8 o_a);
-static SDL_Texture *recreate_texture(SDL_Renderer *pRenderer, SDL_Texture *origin, int origin_w, int origin_h, int new_w, int new_h);
+static SDL_Texture *recreate_texture(SDL_Renderer *pRenderer, long long texture_id, int origin_w, int origin_h, int new_w, int new_h);
 static const double math_pi = 4 * atan(1);
 static SDL_BlendMode mask_blend_mode = SDL_ComposeCustomBlendMode(SDL_BLENDFACTOR_DST_COLOR, SDL_BLENDFACTOR_ZERO, SDL_BLENDOPERATION_ADD, SDL_BLENDFACTOR_DST_ALPHA, SDL_BLENDFACTOR_ZERO, SDL_BLENDOPERATION_ADD);
 Canvas::Canvas(const Window &window, int posX, int posY, int posZ, int width, int height, int depth)
@@ -79,7 +79,9 @@ void Canvas::unload_renderer() {
 }
 
 Canvas::~Canvas() {
+    // may have problem when create static object
     unload_renderer();
+    TEXTURE_SDL_MANAGER->free_texture_id(texture_id);
     while (!env_stack.empty()) {
         delete env_stack.top();
         env_stack.pop();
@@ -306,6 +308,10 @@ void Canvas::draw_round_rect(const Rect &rect, double radius) {
 }
 
 void Canvas::draw_text(const Rect &rect, const std::string &str, const std::string &font_name, const Color &color, unsigned font_size) {
+    if (!prepare_texture()) {
+        ERR(<< "couldn't prepare the texture.");
+        return;
+    }
     TTF_Font *font = TTF_OpenFont(font_name.c_str(), font_size);
     if (font == nullptr) {
         ERR(<< "open font fail! TTF:" << TTF_GetError());
@@ -434,12 +440,12 @@ bool Canvas::prepare_texture() {
         ERR(<< "the renderer is not valid!");
         return false;
     }
-    // if the size has changed
+    // if the size has changed or window size change
     if (!isValid()) {
         DBG(<< "need to create a new texture...");
         save_env();
-        SDL_Texture *new_texture = recreate_texture(pRenderer, pTexture, width_bak, height_bak, get_width(), get_height());
-        TEXTURE_SDL_MANAGER->set_texture(texture_id, pRenderer, new_texture);
+        SDL_Texture *new_texture = recreate_texture(pRenderer, texture_id, width_bak, height_bak, get_width(), get_height());
+        // TEXTURE_SDL_MANAGER->set_texture(texture_id, pRenderer, new_texture);
         if (new_texture == nullptr) {
             ERR(<< "new texture create fail!");
             restore_env();
@@ -463,7 +469,6 @@ bool Canvas::prepare_texture() {
             env_bak.pop();
         }
         restore_env();
-        pTexture = new_texture;
         width_bak = get_width();
         height_bak = get_height();
         depth_bak = get_depth();
@@ -556,25 +561,27 @@ void Canvas::restore_env() {
 /**
 * @warning this function will chage the environment of the renderer
 */
-static SDL_Texture *recreate_texture(SDL_Renderer *pRenderer, SDL_Texture *origin, int origin_w, int origin_h, int new_w, int new_h) {
-    SDL_Texture *new_texture = SDL_CreateTexture(pRenderer,SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32,
-        SDL_TEXTUREACCESS_TARGET, new_w, new_h);
+static SDL_Texture *recreate_texture(SDL_Renderer *pRenderer, long long texture_id, int origin_w, int origin_h, int new_w, int new_h) {
+    // SDL_Texture *new_texture = SDL_CreateTexture(pRenderer,
+        // SDL_TEXTUREACCESS_TARGET, new_w, new_h);
+    SDL_Texture *new_texture = TEXTURE_SDL_MANAGER->set_texture(texture_id, pRenderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32,
+        SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, new_w, new_h, SDL_BlendMode::SDL_BLENDMODE_BLEND);
     if (new_texture == nullptr) {
         ERR(<< "create texture fail, SDL: " << SDL_GetError());
         return nullptr;
     }
     // should set the blend mode so that we can have the transparent effective
-    SDL_SetTextureBlendMode(new_texture, SDL_BlendMode::SDL_BLENDMODE_BLEND);
+    // SDL_SetTextureBlendMode(new_texture, SDL_BlendMode::SDL_BLENDMODE_BLEND);
     SDL_SetRenderTarget(pRenderer, new_texture);
     // clean the renderer
     SDL_SetRenderDrawColor(pRenderer, 0, 0, 0, 0);
     SDL_RenderClear(pRenderer);
-    SDL_Rect rect_src = {0, 0, origin_w, origin_h};
+    // SDL_Rect rect_src = {0, 0, origin_w, origin_h};
     // copy the content to the new
     /**
     * @warning if the window size change, the origin texture has the invalid content, and copy it to the new is incorrect, object need redraw
     */
-    DBG(<< "src and dest: " << rect_src.x << " " << rect_src.y << " " << rect_src.w << " " << rect_src.h);
+    // DBG(<< "src and dest: " << rect_src.x << " " << rect_src.y << " " << rect_src.w << " " << rect_src.h);
     // if (SDL_RenderCopy(pRenderer, origin, &rect_src, &rect_src) < 0) {
     //     ERR(<< "render copy origin texture fail. SDL: " << SDL_GetError());
     // }

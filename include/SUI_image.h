@@ -2,7 +2,8 @@
 #define SUI_IMAGE_H
 
 #include "SUI_geometry.h"
-#include "SUI_graphic_board.h"
+#include "SUI_graphic_board_base.h"
+#include "SUI_shape.h"
 #include <string>
 
 namespace sui {
@@ -15,7 +16,7 @@ class Image : public virtual Geometry {
 public:
     Image(int width, int height);
     ~Image();
-    void load_img(const std::string &file);
+    void load_img(const std::string &file, const Rect &src_area = Rect{0, 0, 0, 0});    // whole picture
     // void load_img(const Image &image);
     // void load_img(Sketch &sketch);
     void load_mask(const Graphic_board_base &board);

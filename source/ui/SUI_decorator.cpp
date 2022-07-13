@@ -61,9 +61,9 @@ void Decorator::get_background_color(uint8_t &red, uint8_t &green, uint8_t &blue
     alpha = color.alpha;
 }
 
-void Decorator::set_background_image(const std::string &image_file, const Rect &target_rect, Element_status statu) {
+void Decorator::set_background_image(const std::string &image_file, const Rect &target_rect, const Rect &src_area, Element_status statu) {
     set_theme(none_theme);
-    pData->theme->set_background_image(statu, Theme::Style_option::background_image, image_file, target_rect);
+    pData->theme->set_background_image(statu, Theme::Style_option::background_image, image_file, target_rect, src_area);
 }
 
 Image *Decorator::get_background_image(Element_status statu) {

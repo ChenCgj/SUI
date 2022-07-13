@@ -90,6 +90,11 @@ void Sketch::draw_sketch(Canvas &canvas, int posX, int posY) {
     canvas.restore_env();
 }
 
-Sketch::~Sketch() = default;
+Sketch::~Sketch() {
+    // may have problem when create static object
+    destroy_sketch();
+    TEXTURE_SDL_MANAGER->free_texture_id(image_texture_id);
+    TEXTURE_SDL_MANAGER->free_texture_id(texture_id);
+}
 
 }

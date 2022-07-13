@@ -41,8 +41,8 @@ namespace sui {
 // }
 
 // debug
-SDL_Window *pw = nullptr;
-SDL_Renderer *pr = nullptr;
+// SDL_Window *pw = nullptr;
+// SDL_Renderer *pr = nullptr;
 // debug
 
 Window::Window(const std::string &title, int width, int height,
@@ -77,8 +77,8 @@ Window::Window(const std::string &title, int width, int height,
     // Geometry::set_posY(0);
     pData->pRenderer = SDL_CreateRenderer(pData->pWnd, -1, 0);
 // debug
-    pw = pData->pWnd;
-    pr = pData->pRenderer;
+    // pw = pData->pWnd;
+    // pr = pData->pRenderer;
 // debug
     // the window manager should control the window, when the program quit, it will close all window
     // and we set false so the window is flag hiden and will not receive anyother message
