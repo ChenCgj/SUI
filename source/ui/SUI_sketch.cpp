@@ -11,18 +11,15 @@
 
 namespace sui {
 
-Sketch::Sketch(int posX, int posY, int width, int height)
-    : Geometry(posX, posY, width, height), sketch_surface{nullptr},
+Sketch::Sketch(int width, int height)
+    : Geometry(0, 0, width, height), sketch_surface{nullptr},
     image_texture_id{TEXTURE_SDL_MANAGER->alloc_texture_id()},
     texture_id{TEXTURE_SDL_MANAGER->alloc_texture_id()},
-    source_area{0, 0, 0, 0} {
-
-    mask_texture_id = -1;
-}
+    source_area{0, 0, 0, 0} {}
 
 void Sketch::destroy_sketch() {
-    TEXTURE_SDL_MANAGER->set_texture(image_texture_id, nullptr, nullptr);
-    TEXTURE_SDL_MANAGER->set_texture(texture_id, nullptr, nullptr);
+    TEXTURE_SDL_MANAGER->set_texture(image_texture_id, nullptr, (SDL_Surface *)nullptr);
+    TEXTURE_SDL_MANAGER->set_texture(texture_id, nullptr, (SDL_Surface*)nullptr);
     if (!sketch_surface) {
         SDL_FreeSurface(sketch_surface);
     }
@@ -64,7 +61,7 @@ bool Sketch::load_sketch(const std::string &sketch_file) {
         rtn = IMG_Init(IMG_INIT_PNG);
     } else if (suffix == ".JPG" || suffix == ".jpg") {
         rtn = IMG_Init(IMG_INIT_JPG);
-    } else if (suffix == ".WEBP" || suffix == ".tif") {
+    } else if (suffix == ".WEBP" || suffix == ".webp") {
         rtn = IMG_Init(IMG_INIT_WEBP);
     } else {
         return false;
@@ -85,12 +82,12 @@ bool Sketch::load_sketch(const std::string &sketch_file) {
     return true;
 }
 
-void Sketch::draw_sketch(Canvas &canvas) {
+void Sketch::draw_sketch(Canvas &canvas, int posX, int posY) {
+    set_posX(posX);
+    set_posY(posY);
+    canvas.save_env();
     canvas.draw_sketch(*this);
-}
-
-void Sketch::add_mask() {
-
+    canvas.restore_env();
 }
 
 Sketch::~Sketch() = default;

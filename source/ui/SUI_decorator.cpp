@@ -66,8 +66,8 @@ void Decorator::set_background_image(const std::string &image_file, const Rect &
     pData->theme->set_background_image(statu, Theme::Style_option::background_image, image_file, target_rect);
 }
 
-Sketch *Decorator::get_background_image(Element_status statu) {
-    Sketch *image = nullptr;
+Image *Decorator::get_background_image(Element_status statu) {
+    Image *image = nullptr;
     if (pData->index != none_theme) {
         image = THEME_MANAGER->get_theme(pData->index).get_background_image(statu, Theme::Style_option::background_image);
     } else {
@@ -77,7 +77,7 @@ Sketch *Decorator::get_background_image(Element_status statu) {
 }
 
 void Decorator::set_background_fill_style(Background_fill_style fill_style, void *data/* Geometry *geometry OR Rect *target_size */, Element_status statu) {
-    Sketch *image = get_background_image(statu);
+    Image *image = get_background_image(statu);
     if (image == nullptr) {
         return;
     }
@@ -95,8 +95,8 @@ void Decorator::set_background_fill_style(Background_fill_style fill_style, void
         */
         image->set_posX(0);
         image->set_posY(0);
-        image->set_width(image->get_sketch_width());
-        image->set_height(image->get_sketch_height());
+        image->set_width(image->get_image_width());
+        image->set_height(image->get_image_height());
     } else if (fill_style == Background_fill_style::target_size) {
         /**
         * @todo unbind all

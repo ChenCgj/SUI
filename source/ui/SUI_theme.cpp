@@ -112,8 +112,8 @@ bool Theme::set_background_color(Element_status statu, Style_option bg_colorm, c
     return true;
 }
 
-Sketch *Theme::get_background_image(Element_status statu, Style_option background_image) {
-    Sketch *image = nullptr;
+Image *Theme::get_background_image(Element_status statu, Style_option background_image) {
+    Image *image = nullptr;
     Style *style = get_style(statu);
     if (style) {image = style->background.background_image;}
     return image;
@@ -129,9 +129,9 @@ bool Theme::set_background_image(Element_status statu, Style_option bg_image, co
         return false;
     }
     if (!style->background.background_image) {
-        style->background.background_image = new Sketch(0, 0, 0, 0);
+        style->background.background_image = new Image(0, 0);
     }
-    style->background.background_image->load_sketch(image_file);
+    style->background.background_image->load_img(image_file);
     style->background.background_image->set_width(target_rect.get_width());
     style->background.background_image->set_height(target_rect.get_height());
     style->background.background_image->set_posX(target_rect.p1.x);

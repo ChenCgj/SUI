@@ -9,6 +9,7 @@
 #include "SDL_video.h"
 
 #include "SUI_button.h"
+#include "SUI_geometry.h"
 #include "SUI_in_canvas.h"
 #include "SUI_drawable.h"
 #include "SUI_event_handler.h"
@@ -40,12 +41,12 @@ namespace sui {
 // }
 
 // debug
-// SDL_Window *pw = nullptr;
-// SDL_Renderer *pr = nullptr;
+SDL_Window *pw = nullptr;
+SDL_Renderer *pr = nullptr;
 // debug
 
 Window::Window(const std::string &title, int width, int height,
-               int posX, int posY, Window_flag flag) : Drawable(width, height) {
+               int posX, int posY, Window_flag flag) : Geometry{0, 0, width, height}, Drawable(width, height) {
 
     object_name = "window";
     // all object except the root should be add to the trash_root initially
@@ -71,10 +72,13 @@ Window::Window(const std::string &title, int width, int height,
     }
     // create the render environment
     pData->pWnd = SDL_CreateWindow(title.c_str(), posX, posY, width, height, wflag | SDL_WINDOW_HIDDEN);
+    // because the canvas in Drawable is bind the posX and the posY of the Geometry, and when use window, we should make it zero
+    // Geometry::set_posX(0);
+    // Geometry::set_posY(0);
     pData->pRenderer = SDL_CreateRenderer(pData->pWnd, -1, 0);
 // debug
-    // pw = pData->pWnd;
-    // pr = pData->pRenderer;
+    pw = pData->pWnd;
+    pr = pData->pRenderer;
 // debug
     // the window manager should control the window, when the program quit, it will close all window
     // and we set false so the window is flag hiden and will not receive anyother message

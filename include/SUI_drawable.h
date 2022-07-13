@@ -17,7 +17,7 @@ class Canvas;
 * @class Drawable
 * @brief any element can be drawed on the window should be derived this class
 */
-class Drawable : public Geometry, public Decorator {
+class Drawable : public virtual Geometry, public Decorator {
 public:
     Drawable(int width, int height);
     Drawable(int posX, int posY, int width, int height);

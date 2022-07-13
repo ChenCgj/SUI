@@ -2,6 +2,8 @@
 #include <stdio.h>
 
 #include "SUI_button.h"
+#include "SUI_graphic_board.h"
+#include "SUI_graphic_board_base.h"
 #include "SUI_in_canvas.h"
 #include "SUI_element.h"
 #include "SUI_drawable.h"
@@ -11,9 +13,11 @@
 #include "SUI_in_debug.h"
 #include "SUI_main.h"
 #include "SUI_shape.h"
+#include "SUI_image.h"
+#include "SUI_in_sketch.h"
 
 namespace sui {
-Button::Button(const std::string &title, int x, int y, int w, int h) : Element(x, y, w, h) {
+Button::Button(const std::string &title, int x, int y, int w, int h) : Geometry{x, y, w, h}, Element(x, y, w, h) {
     object_name = "button";
     this->title = title;
     callback = nullptr;
@@ -110,12 +114,24 @@ void Button::draw_background(Canvas &canvas, Element_status statu) {
     double radius = std::min(get_width() / 4.0, get_height() / 4.0);
     Round_rect rrect{rect, radius};
     canvas.fill_shape(rrect);
-    /**
-    * @todo add mask to make the image radius
-    */
-    Sketch *image = get_background_image(statu);
-    if (image) {
-        canvas.draw_sketch(*image);
+    Image *bg = get_background_image(statu);
+    static int flag = 1;
+    if (bg && flag) {
+        Graphic_board_base graphic_board{bg->get_width(), bg->get_height()};
+        graphic_board.set_draw_callback(std::function<void (Graphic_board_base *)>([=](Graphic_board_base *arg) {
+            arg->set_color(Color{0, 0, 0, 0});
+            arg->clear();
+            arg->set_color(Color{255, 255, 255, 255});
+            Rect rect = {0, 0, static_cast<double>(this->get_width()), static_cast<double>(this->get_height())};
+            double radius = std::min(this->get_width() / 4.0, this->get_height() / 4.0);
+            Round_rect rrect{rect, radius};
+            arg->fill_shape(Round_rect{rect, radius});
+        }));
+        bg->load_mask(graphic_board);
+        flag = 0;
+    }
+    if (bg) {
+        bg->draw_image(canvas, 0, 0);
     }
     // Ellipse_arc ea(Point{get_width() / 2.0, get_height() / 2.0}, 20, 10, 0, 8 * atan(1));
     // canvas.draw_shape(ea);

@@ -1,5 +1,6 @@
 #include <functional>
 #include <stdint.h>
+#include "SUI_decorator.h"
 #include "SUI_drawable.h"
 #include "SUI_in_canvas.h"
 #include "SUI_geometry.h"
@@ -9,6 +10,7 @@
 #include "SUI_in_binder.h"
 #include "SUI_property.h"
 #include "SUI_in_debug.h"
+#include "SUI_image.h"
 
 namespace sui {
 extern template class Property<int>;
@@ -96,9 +98,9 @@ void Drawable::draw_background(Canvas &canvas, Element_status statu) {
     canvas.set_color(r, g, b, a);
     Rect rect = {0, 0, static_cast<double>(get_width()), static_cast<float>(get_height())};
     canvas.fill_shape(rect);
-    Sketch *image = get_background_image(statu);
+    Image *image = get_background_image(statu);
     if (image != nullptr) {
-        canvas.draw_sketch(*get_background_image(statu));
+        image->draw_image(canvas, 0, 0);
     }
 }
 }

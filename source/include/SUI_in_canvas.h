@@ -16,6 +16,7 @@
 
 #include "SUI_color.h"
 #include "SUI_geometry.h"
+#include "SUI_in_main.h"
 #include "SUI_shape.h"
 
 namespace sui {
@@ -65,6 +66,9 @@ public:
     void draw_shape(const Shape &shape);
     void fill_shape(const Shape &shape);
     void draw_sketch(const Sketch &image);
+    bool check_need_redraw();
+    void set_mask_mode(Mask_mode mask);
+    void set_need_redraw(bool redraw);
     /**
     * @todo add the fill graph funcitons
     */
@@ -120,12 +124,15 @@ public:
     */
     void present();
     void unload_renderer();
-private:
-    SDL_Texture *pTexture;
+// private:
+    long long texture_id;
+    // SDL_Texture *pTexture;
     SDL_Renderer *pRenderer;
 
     struct Renderer_env;
     std::stack<Renderer_env*> env_stack;
+    Mask_mode mask_mode;
+    bool need_redraw;
     // backup the size, so that when size change we can recreate new content
     int width_bak, height_bak, depth_bak;
     // detect if the size change and realloc the new content

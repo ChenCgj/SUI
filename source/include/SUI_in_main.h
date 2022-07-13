@@ -19,5 +19,11 @@ enum Event_type {
     none_event = SDL_USEREVENT,
     quit_after_all_window_closed
 };
+
+enum Mask_mode {
+    be_masked,
+    none_mask,
+    to_mask
+};
 }
 #endif

@@ -15,7 +15,7 @@ using namespace sui;
 
 int main(int argc, char *argv[]) {
     Window *pWindow = new Window("Hello Test", 800, 600, Window_flag::window_flag_resizable);
-    pWindow->set_background_color(255, 255, 255, 255);
+    pWindow->set_background_color(255, 125, 125, 255);
     Rect target_rect{0, 0, 600, 600};
     pWindow->set_background_image("background.jpg", target_rect);
     pWindow->set_background_fill_style(Background_fill_style::full, dynamic_cast<Geometry *>(pWindow));
@@ -34,17 +34,17 @@ int main(int argc, char *argv[]) {
     });
 
     Graphic_board *pboard = new Graphic_board(300, 300, 100, 100);
-    pboard->set_draw_callback(function<void ()>([=]() {
-        pboard->set_color(Color{0, 125, 125, 255});
-        pboard->fill();
-        pboard->set_color(Color{125, 125, 0, 255});
-        pboard->move_to(50, 50);
-        pboard->line_to(50, 25);
-        pboard->line_to(75, 25);
-        pboard->line_to(75, 75);
-        pboard->line_to(25, 75);
-        pboard->line_to(25, 25);
-        pboard->draw_line(0, 0, 100, 100);
+    pboard->set_draw_callback(function<void (Graphic_board_base *)>([](Graphic_board_base *arg) {
+        arg->set_color(Color{0, 125, 125, 255});
+        arg->clear();
+        arg->set_color(Color{255, 125, 0, 255});
+        arg->move_to(50, 50);
+        arg->line_to(50, 25);
+        arg->line_to(75, 25);
+        arg->line_to(75, 75);
+        arg->line_to(25, 75);
+        arg->line_to(25, 25);
+        arg->draw_line(0, 0, 100, 100);
     }));
 
     Button *pButton2 = new Button("Button", 100, 100, 100, 100);
@@ -61,38 +61,38 @@ int main(int argc, char *argv[]) {
     pWindow->add_node(pboard);
     pWindow->show();
 
-    Window *pWindow2 = new Window("Test2", 800, 600, 100, 100, Window_flag::window_flag_resizable);
-    pWindow2->set_background_color(0, 125, 125, 200);
-    pWindow2->set_posX(200);
-    pWindow2->set_posY(300);
-    Button *pButton3 = new Button();
-    pButton3->set_posX(0);
-    pButton3->set_posY(0);
-    pButton3->set_width(100);
-    pButton3->set_height(100);
-    pButton3->add_listener([=](){
-        Button *btn = new Button();
-        btn->get_posX_property().bind(pWindow2->get_width_property(),
-            std::function<int (const int &)>([](const int &x) {
-                if (x - 10 > 0)
-                    return rand() % (x - 20);
-                else return 0;
-            }));
-        btn->get_posY_property().bind(pWindow2->get_height_property(),
-            std::function<int (const int &)>([](const int &x) {
-                if (x - 10 > 0)
-                    return rand() % (x - 20);
-                else return 0;
-            }));
-        btn->add_listener([=](){
-            btn->set_background_color(rand() %255, rand() %255, rand() %255, rand() %255, Element_status::button_normal);
-        });
-        btn->set_background_color(rand() % 255, rand() % 255, rand() % 255, rand() % 255, Element_status::button_normal);
-        pWindow2->add_node(btn);
-        present_all();
-    });
-    pWindow2->add_node(pButton3);
-    pWindow2->show();
+    // Window *pWindow2 = new Window("Test2", 800, 600, 100, 100, Window_flag::window_flag_resizable);
+    // pWindow2->set_background_color(0, 125, 125, 200);
+    // pWindow2->set_posX(200);
+    // pWindow2->set_posY(300);
+    // Button *pButton3 = new Button();
+    // pButton3->set_posX(0);
+    // pButton3->set_posY(0);
+    // pButton3->set_width(100);
+    // pButton3->set_height(100);
+    // pButton3->add_listener([=](){
+    //     Button *btn = new Button();
+    //     btn->get_posX_property().bind(pWindow2->get_width_property(),
+    //         std::function<int (const int &)>([](const int &x) {
+    //             if (x - 10 > 0)
+    //                 return rand() % (x - 20);
+    //             else return 0;
+    //         }));
+    //     btn->get_posY_property().bind(pWindow2->get_height_property(),
+    //         std::function<int (const int &)>([](const int &x) {
+    //             if (x - 10 > 0)
+    //                 return rand() % (x - 20);
+    //             else return 0;
+    //         }));
+    //     btn->add_listener([=](){
+    //         btn->set_background_color(rand() %255, rand() %255, rand() %255, rand() %255, Element_status::button_normal);
+    //     });
+    //     btn->set_background_color(rand() % 255, rand() % 255, rand() % 255, rand() % 255, Element_status::button_normal);
+    //     pWindow2->add_node(btn);
+    //     present_all();
+    // });
+    // pWindow2->add_node(pButton3);
+    // pWindow2->show();
     return 0;
 }
 

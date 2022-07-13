@@ -1,4 +1,5 @@
 #include "SUI_element.h"
+#include "SUI_geometry.h"
 #include "SUI_in_canvas.h"
 #include "SUI_drawable.h"
 #include "SUI_in_main.h"
@@ -6,7 +7,7 @@
 #include "SUI_main.h"
 namespace sui {
 
-Element::Element(int posX, int posY, int width, int height) : Drawable(posX, posY, width, height) {
+Element::Element(int posX, int posY, int width, int height) : Geometry{posX, posY, width, height}, Drawable(posX, posY, width, height) {
     object_name = "Element";
     // we should add the sub object to the trash root until it was add to a parent
     if (!TRASH_ROOT->add_node(this)) {
