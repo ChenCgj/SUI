@@ -3,6 +3,7 @@
 #include "SDL_surface.h"
 #include "SUI_in_texture_sdl_manager.h"
 #include "SUI_in_debug.h"
+#include <cstddef>
 
 namespace sui {
 
@@ -74,6 +75,8 @@ SDL_Texture *Texture_sdl_manager::set_texture(long long id, SDL_Renderer *prende
         Texture_sdl_manager_unit *unit = &texture_map[id];
         if (unit->texture) {
             SDL_DestroyTexture(unit->texture);
+            DBG(<< "texture destroy: " << (void*)unit->texture);
+            unit->texture = nullptr;
             unit->valid = false;
         }
         unit->prenderer = prenderer;
@@ -90,6 +93,7 @@ SDL_Texture *Texture_sdl_manager::set_texture(long long id, SDL_Renderer *prende
             SDL_SetTextureBlendMode(unit->texture, blend_mode);
         }
         unit->valid = true;
+        DBG(<< "texture alloc: " << (void*)unit->texture);
         return unit->texture;
     } else {
         ERR(<< "use a invalid sdl_texture id");
@@ -102,6 +106,8 @@ SDL_Texture *Texture_sdl_manager::set_texture(long long id, SDL_Renderer *prende
         Texture_sdl_manager_unit *unit = &texture_map[id];
         if (unit->texture) {
             SDL_DestroyTexture(unit->texture);
+            DBG(<< "texture destroy: " << (void*)unit->texture);
+            unit->texture = nullptr;
             unit->valid = false;
         }
         unit->prenderer = prenderer;
@@ -118,6 +124,7 @@ SDL_Texture *Texture_sdl_manager::set_texture(long long id, SDL_Renderer *prende
             unit->static_access = true;
         }
         unit->valid = true;
+        DBG(<< "texture alloc: " << (void*)unit->texture);
         return unit->texture;
     } else {
         ERR(<< "use a invalid sdl_texture id");
@@ -130,6 +137,8 @@ SDL_Texture *Texture_sdl_manager::set_texture(long long id, SDL_Renderer *prende
         Texture_sdl_manager_unit *unit = &texture_map[id];
         if (unit->texture) {
             SDL_DestroyTexture(unit->texture);
+            DBG(<< "texture destroy: " << (void*)unit->texture);
+            unit->texture = nullptr;
             unit->valid = false;
         }
         unit->prenderer = prenderer;

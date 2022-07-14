@@ -44,15 +44,11 @@ Button::~Button() {
     DBG(<< get_name() << "was destroy.");
 }
 
-void Button::deal_key_down_event(Keyboard_event &key_event) {
-    
-}
-
-void Button::deal_key_up_event(Keyboard_event &key_event) {
-
-}
-
 void Button::deal_mouse_button_down_event(Mouse_button_event &mouse_button) {
+    Element::deal_mouse_button_down_event(mouse_button);
+    if (mouse_button.handle()) {
+        return;
+    }
     int mouse_x = mouse_button.event.button.x;
     int mouse_y = mouse_button.event.button.y;
     if (mouse_x < get_width() + get_posX()
@@ -66,10 +62,15 @@ void Button::deal_mouse_button_down_event(Mouse_button_event &mouse_button) {
         }
         set_redraw_flag(true);
         present_all();
+        mouse_button.set_handle(true);
     }
 }
 
 void Button::deal_mouse_button_up_event(Mouse_button_event &mouse_button) {
+    Element::deal_mouse_button_up_event(mouse_button);
+    if (mouse_button.handle()) {
+        return;
+    }
     int mouse_x = mouse_button.event.button.x;
     int mouse_y = mouse_button.event.button.y;
     if (mouse_x < get_width() + get_posX()
@@ -81,19 +82,8 @@ void Button::deal_mouse_button_up_event(Mouse_button_event &mouse_button) {
 
         set_redraw_flag(true);
         present_all();
+        mouse_button.set_handle(true);
     }
-}
-
-void Button::deal_mouse_wheel_event(Mouse_wheel_event &mouse_wheel) {
-    
-}
-
-void Button::deal_mouse_move_event(Mouse_motion_event &mouse_motion) {
-
-}
-
-void Button::deal_other_event(Event &event) {
-
 }
 
 void Button::draw_border(Canvas &canvas, Element_status statu) {

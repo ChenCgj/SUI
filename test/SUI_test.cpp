@@ -16,18 +16,18 @@ using namespace sui;
 int main(int argc, char *argv[]) {
     Window *pWindow = new Window("Hello Test", 800, 600, Window_flag::window_flag_resizable);
     pWindow->set_background_color(255, 125, 125, 255);
-    Rect target_rect{0, 0, 600, 600};
-    Rect src_rect{0, 0, 500, 500};
-    pWindow->set_background_image("background.jpg", target_rect, src_rect);
-    pWindow->set_background_fill_style(Background_fill_style::full, dynamic_cast<Geometry *>(pWindow));
+    // Rect target_rect{0, 0, 600, 600};
+    // Rect src_rect{0, 0, 500, 500};
+    // pWindow->set_background_image("background.jpg", target_rect, src_rect);
+    // pWindow->set_background_fill_style(Background_fill_style::full, dynamic_cast<Geometry *>(pWindow));
     // target_rect.p2.x = 800;
     // pWindow->set_background_fill_style(Background_fill_style::target_size, &target_rect);
 
 
     Button *pButton = new Button("Button", 150, 150, 200, 200);
     pButton->set_color(255, 0, 0, 125);
-    pButton->set_background_image("background.jpg", target_rect, Rect{0, 0, 2000, 2000}, Element_status::button_normal);
-    pButton->set_background_fill_style(Background_fill_style::full, dynamic_cast<Geometry *>(pButton), Element_status::button_normal);
+    // pButton->set_background_image("background.jpg", target_rect, Rect{0, 0, 2000, 2000}, Element_status::button_normal);
+    // pButton->set_background_fill_style(Background_fill_style::full, dynamic_cast<Geometry *>(pButton), Element_status::button_normal);
     pButton->get_posX_property().bind(pWindow->get_width_property(), function<int (const int &)>([](const int &x)->int {return x / 2;}));
     pButton->get_width_property().bind(pWindow->get_width_property(), function<int (const int &)>([](const int &x)->int {return x / 4;}));
     pButton->add_listener([=](){
@@ -62,15 +62,15 @@ int main(int argc, char *argv[]) {
     pWindow->add_node(pboard);
     pWindow->show();
 
-    // Window *pWindow2 = new Window("Test2", 800, 600, 100, 100, Window_flag::window_flag_resizable);
-    // pWindow2->set_background_color(0, 125, 125, 200);
-    // pWindow2->set_posX(200);
-    // pWindow2->set_posY(300);
-    // Button *pButton3 = new Button();
-    // pButton3->set_posX(0);
-    // pButton3->set_posY(0);
-    // pButton3->set_width(100);
-    // pButton3->set_height(100);
+    Window *pWindow2 = new Window("Test2", 800, 600, 100, 100, Window_flag::window_flag_resizable);
+    pWindow2->set_background_color(0, 125, 125, 200);
+    pWindow2->set_posX(200);
+    pWindow2->set_posY(300);
+    Button *pButton3 = new Button();
+    pButton3->set_posX(0);
+    pButton3->set_posY(0);
+    pButton3->set_width(100);
+    pButton3->set_height(100);
     // pButton3->add_listener([=](){
     //     Button *btn = new Button();
     //     btn->get_posX_property().bind(pWindow2->get_width_property(),
@@ -92,8 +92,8 @@ int main(int argc, char *argv[]) {
     //     pWindow2->add_node(btn);
     //     present_all();
     // });
-    // pWindow2->add_node(pButton3);
-    // pWindow2->show();
+    pWindow2->add_node(pButton3);
+    pWindow2->show();
     return 0;
 }
 

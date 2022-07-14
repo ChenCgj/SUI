@@ -74,7 +74,7 @@ void Canvas::unload_renderer() {
     //     SDL_DestroyTexture(pTexture);
     //     pTexture = nullptr;
     // }
-    TEXTURE_SDL_MANAGER->set_texture(texture_id, nullptr, (SDL_Texture *)nullptr);
+    TEXTURE_SDL_MANAGER->set_texture(texture_id, nullptr, (SDL_Surface *)nullptr);
     pRenderer = nullptr;
 }
 

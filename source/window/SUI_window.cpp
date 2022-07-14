@@ -318,51 +318,58 @@ void Window::draw_all(Canvas &canvas) {
 * @bug when the window patch events to its children, the child should not deletable anything object, otherwise it will may cause hand point
 */
 void Window::deal_key_down_event(Keyboard_event &key_event) {
-    for (auto p : get_node_list()) {
+    std::list<Object *> node_list = get_node_list();
+    for (auto p = node_list.rbegin(); p != node_list.rend(); ++p) {
         // use dynamic_cast here because the object is multi-inherit
-        Event_handler *e_p = dynamic_cast<Event_handler *>(p);
+        Event_handler *e_p = dynamic_cast<Event_handler *>(*p);
         HANDLER_HELPER->deal_key_down_event(e_p, key_event);
     }
 }
 
 void Window::deal_mouse_button_down_event(Mouse_button_event &mouse_button) {
-    for (auto p : get_node_list()) {
-        Event_handler *e_p = dynamic_cast<Event_handler *>(p);
+    std::list<Object *> node_list = get_node_list();
+    for (auto p = node_list.rbegin(); p != node_list.rend(); ++p) {
+        Event_handler *e_p = dynamic_cast<Event_handler *>(*p);
         HANDLER_HELPER->deal_mouse_button_down_event(e_p, mouse_button);
     }
 }
 
 void Window::deal_mouse_button_up_event(Mouse_button_event &mouse_button) {
-    for (auto p : get_node_list()) {
-        Event_handler *e_p = dynamic_cast<Event_handler *>(p);
+    std::list<Object *> node_list = get_node_list();
+    for (auto p = node_list.rbegin(); p != node_list.rend(); ++p) {
+        Event_handler *e_p = dynamic_cast<Event_handler *>(*p);
         HANDLER_HELPER->deal_mouse_button_up_event(e_p, mouse_button);
     }
 }
 
 void Window::deal_mouse_wheel_event(Mouse_wheel_event &mouse_wheel) {
-    for (auto p : get_node_list()) {
-        Event_handler *e_p = dynamic_cast<Event_handler *>(p);
+    std::list<Object *> node_list = get_node_list();
+    for (auto p = node_list.rbegin(); p != node_list.rend(); ++p) {
+        Event_handler *e_p = dynamic_cast<Event_handler *>(*p);
         HANDLER_HELPER->deal_mouse_wheel_event(e_p, mouse_wheel);
     }
 }
 
 void Window::deal_mouse_move_event(Mouse_motion_event &mouse_motion) {
-    for (auto p : get_node_list()) {
-        Event_handler *e_p = dynamic_cast<Event_handler *>(p);
+    std::list<Object *> node_list = get_node_list();
+    for (auto p = node_list.rbegin(); p != node_list.rend(); ++p) {
+        Event_handler *e_p = dynamic_cast<Event_handler *>(*p);
         HANDLER_HELPER->deal_mouse_move_event(e_p, mouse_motion);
     }
 }
 
 void Window::deal_key_up_event(Keyboard_event &key_event) {
-    for (auto p : get_node_list()) {
-        Event_handler *e_p = dynamic_cast<Event_handler *>(p);
+    std::list<Object *> node_list = get_node_list();
+    for (auto p = node_list.rbegin(); p != node_list.rend(); ++p) {
+        Event_handler *e_p = dynamic_cast<Event_handler *>(*p);
         HANDLER_HELPER->deal_key_up_event(e_p, key_event);
     }
 }
 
 void Window::deal_other_event(Event &event) {
-    for (auto p : get_node_list()) {
-        Event_handler *e_p = dynamic_cast<Event_handler *>(p);
+    std::list<Object *> node_list = get_node_list();
+    for (auto p = node_list.rbegin(); p != node_list.rend(); ++p) {
+        Event_handler *e_p = dynamic_cast<Event_handler *>(*p);
         HANDLER_HELPER->deal_other_event(e_p, event);
     }
 }
