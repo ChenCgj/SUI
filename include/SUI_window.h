@@ -28,7 +28,7 @@ enum Window_flag {
     window_flag_borderless = 0x1000,
     window_flag_resizable = 0x10000
 };
-
+struct Window_data;
 /**
 * @class Window
 * @brief window is ususaly created to show ui element and use to contain all element showed on the window
@@ -60,6 +60,7 @@ public:
     void set_height(int h) override;
     void set_position(int x, int y);
     void set_size(int w, int h);
+    uint32_t get_window_id() const;
 private:
     void deal_window_resized_event(Event &event);
     void deal_key_down_event(Keyboard_event &key_event) override;
@@ -70,13 +71,8 @@ private:
     void deal_mouse_move_event(Mouse_motion_event &mouse_motion) override;
     void deal_window_close_event(Event &event);
     void deal_other_event(Event &event) override;
-    uint32_t get_window_id() const;
-    struct Window_data;
-    std::unique_ptr<Window_data> pData;
-    // this function make all children's redraw flag to true
-    friend class Window_manager;
+    uint32_t id;
     friend class Event_handler_helper;
-    friend class Canvas;
 };
 
 } // End of namespace sui

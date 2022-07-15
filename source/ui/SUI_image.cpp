@@ -39,10 +39,10 @@ void Image::load_img(const std::string &file, const Rect &src_area) {
     sketch->set_source_area(src_area.p1.x, src_area.p1.y, src_area.get_width(), src_area.get_height());
 }
 
-void Image::unload() {
+void Image::unload_data() {
     pcanvas->unload_renderer();
-    sketch->unload();
-    mask.unload();
+    sketch->unload_data();
+    mask.unload_data();
 }
 
 void Image::load_mask(const Graphic_board_base &board) {

@@ -23,8 +23,8 @@ class Window;
 
 class Object {
 public:
-    static Object *get_trash_root();
-    static Object *get_root();
+    static Object *trash_root_instance();
+    static Object *root_instance();
 
     bool add_node(Object * pObject);
     bool add_nodes(const std::list<Object *> pObjects);

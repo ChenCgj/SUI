@@ -6,6 +6,7 @@
 #include "SUI_in_main.h"
 #include "SUI_object.h"
 #include "SUI_in_debug.h"
+#include "SUI_in_managers.h"
 
 namespace sui {
 
@@ -45,27 +46,28 @@ Object::Object() : object_name{"Object"}, ID{-1}, parent{nullptr}, object_list{}
     ID = id_count++;
 }
 
-Object *Object::get_root() {
+Object *Object::root_instance() {
     // sould use static instead of new, otherwise you will not know when to destroy it
-    static Object root;
+    // static Object root;
+    static Object *root = new Object();
     static bool first = true;
     if (first) {
         first = false;
-        root.object_name += "_init_root";
+        root->object_name += "_init_root";
     }
-    return &root;
+    return root;
 }
 
-Object *Object::get_trash_root() {
-    // static Object *trash_root = new Object();
-    static Object trash_root;
+Object *Object::trash_root_instance() {
+    static Object *trash_root = new Object();
+    // static Object trash_root;
     static bool first = true;
     if (first) {
         // clean_thread = SDL_CreateThread(clean_trash, "clean trash", nullptr);
-        trash_root.object_name += "_trash_root";
+        trash_root->object_name += "_trash_root";
         first = false;
     }
-    return &trash_root;
+    return trash_root;
 }
 
 bool Object::add_node(Object *pObject) {

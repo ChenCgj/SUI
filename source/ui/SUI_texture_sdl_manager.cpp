@@ -1,8 +1,9 @@
 #include "SDL_error.h"
 #include "SDL_render.h"
 #include "SDL_surface.h"
-#include "SUI_in_texture_sdl_manager.h"
+#include "SUI_in_main.h"
 #include "SUI_in_debug.h"
+#include "SUI_in_managers.h"
 #include <cstddef>
 
 namespace sui {
@@ -15,9 +16,9 @@ long long Texture_sdl_manager::alloc_texture_id() {
     Texture_sdl_manager_unit *unit = &texture_map[curr_id];
     unit->texture = nullptr;
     unit->prenderer = nullptr;
-    unit->auto_update = false;
+    // unit->auto_update = false;
     unit->static_access = false;
-    unit->update_func = nullptr;
+    // unit->update_func = nullptr;
     unit->id = curr_id;
     unit->valid = false;
     return curr_id++;
@@ -28,14 +29,16 @@ Texture_sdl_manager::~Texture_sdl_manager() {
         if (iter->second.texture) {
             SDL_DestroyTexture(iter->second.texture);
             iter->second.texture = nullptr;
+            WINDOW_MANAGER->update_texture_count(iter->second.prenderer, -1);
         }
+        ERR(<< "not free all the texture!");
     }
     DBG(<< "texture_sdl_manager delete ok");
 }
 
 Texture_sdl_manager *Texture_sdl_manager::instance() {
-    static Texture_sdl_manager manager;
-    return &manager;
+    static Texture_sdl_manager *manager = new Texture_sdl_manager();
+    return manager;
 }
 
 bool Texture_sdl_manager::free_texture_id(long long id) {
@@ -46,10 +49,11 @@ bool Texture_sdl_manager::free_texture_id(long long id) {
         if (unit->texture) {
             SDL_DestroyTexture(unit->texture);
             unit->texture = nullptr;
+            WINDOW_MANAGER->update_texture_count(unit->prenderer, -1);
         }
         texture_map.erase(id);
+        return true;
     }
-    return true;
 }
 
 SDL_Texture *Texture_sdl_manager::get_texture(long long id) {
@@ -77,6 +81,7 @@ SDL_Texture *Texture_sdl_manager::set_texture(long long id, SDL_Renderer *prende
             SDL_DestroyTexture(unit->texture);
             DBG(<< "texture destroy: " << (void*)unit->texture);
             unit->texture = nullptr;
+            WINDOW_MANAGER->update_texture_count(unit->prenderer, -1);
             unit->valid = false;
         }
         unit->prenderer = prenderer;
@@ -91,9 +96,10 @@ SDL_Texture *Texture_sdl_manager::set_texture(long long id, SDL_Renderer *prende
         } else {
             unit->static_access = access == SDL_TEXTUREACCESS_STATIC;
             SDL_SetTextureBlendMode(unit->texture, blend_mode);
+            unit->valid = true;
+            WINDOW_MANAGER->update_texture_count(unit->prenderer, 1);
+            DBG(<< "texture alloc: " << (void*)unit->texture);
         }
-        unit->valid = true;
-        DBG(<< "texture alloc: " << (void*)unit->texture);
         return unit->texture;
     } else {
         ERR(<< "use a invalid sdl_texture id");
@@ -107,6 +113,7 @@ SDL_Texture *Texture_sdl_manager::set_texture(long long id, SDL_Renderer *prende
         if (unit->texture) {
             SDL_DestroyTexture(unit->texture);
             DBG(<< "texture destroy: " << (void*)unit->texture);
+            WINDOW_MANAGER->update_texture_count(unit->prenderer, -1);
             unit->texture = nullptr;
             unit->valid = false;
         }
@@ -122,9 +129,10 @@ SDL_Texture *Texture_sdl_manager::set_texture(long long id, SDL_Renderer *prende
         } else {
             SDL_SetTextureBlendMode(unit->texture, blend_mode);
             unit->static_access = true;
+            unit->valid = true;
+            WINDOW_MANAGER->update_texture_count(unit->prenderer, 1);
+            DBG(<< "texture alloc: " << (void*)unit->texture);
         }
-        unit->valid = true;
-        DBG(<< "texture alloc: " << (void*)unit->texture);
         return unit->texture;
     } else {
         ERR(<< "use a invalid sdl_texture id");
@@ -132,29 +140,29 @@ SDL_Texture *Texture_sdl_manager::set_texture(long long id, SDL_Renderer *prende
     }
 }
 
-SDL_Texture *Texture_sdl_manager::set_texture(long long id, SDL_Renderer *prenderer, SDL_Texture *pTexture) {
-    if (texture_map.find(id) != texture_map.end()) {
-        Texture_sdl_manager_unit *unit = &texture_map[id];
-        if (unit->texture) {
-            SDL_DestroyTexture(unit->texture);
-            DBG(<< "texture destroy: " << (void*)unit->texture);
-            unit->texture = nullptr;
-            unit->valid = false;
-        }
-        unit->prenderer = prenderer;
-        if (prenderer == nullptr) {
-            unit->texture = nullptr;
-            unit->valid = false;
-            return nullptr;
-        }
-        unit->texture = pTexture;
-        unit->valid = true;
-        return pTexture;
-    } else {
-        ERR(<< "use a invalid_sdl_texture_id");
-        return nullptr;
-    }
-}
+// SDL_Texture *Texture_sdl_manager::set_texture(long long id, SDL_Renderer *prenderer, SDL_Texture *pTexture) {
+//     if (texture_map.find(id) != texture_map.end()) {
+//         Texture_sdl_manager_unit *unit = &texture_map[id];
+//         if (unit->texture) {
+//             SDL_DestroyTexture(unit->texture);
+//             DBG(<< "texture destroy: " << (void*)unit->texture);
+//             unit->texture = nullptr;
+//             unit->valid = false;
+//         }
+//         unit->prenderer = prenderer;
+//         if (prenderer == nullptr) {
+//             unit->texture = nullptr;
+//             unit->valid = false;
+//             return nullptr;
+//         }
+//         unit->texture = pTexture;
+//         unit->valid = true;
+//         return pTexture;
+//     } else {
+//         ERR(<< "use a invalid_sdl_texture_id");
+//         return nullptr;
+//     }
+// }
 
 bool Texture_sdl_manager::set_texture_blend_mode(long long id, SDL_BlendMode blend_mode) {
     if (texture_map.find(id) == texture_map.end()) {
@@ -168,23 +176,23 @@ bool Texture_sdl_manager::set_texture_blend_mode(long long id, SDL_BlendMode ble
     return true;
 }
 
-bool Texture_sdl_manager::set_texture_update_func(long long id, std::function<SDL_Texture *()> func, bool auto_update_flag) {
-    if (texture_map.find(id) == texture_map.end()) {
-        return false;
-    }
-    Texture_sdl_manager_unit *unit = &texture_map[id];
-    unit->update_func = func;
-    unit->auto_update = auto_update_flag;
-    return true;
-}
+// bool Texture_sdl_manager::set_texture_update_func(long long id, std::function<SDL_Texture *()> func, bool auto_update_flag) {
+//     if (texture_map.find(id) == texture_map.end()) {
+//         return false;
+//     }
+//     Texture_sdl_manager_unit *unit = &texture_map[id];
+//     unit->update_func = func;
+//     unit->auto_update = auto_update_flag;
+//     return true;
+// }
 
-bool Texture_sdl_manager::set_auto_update(long long id, bool auto_update_flag) {
-    if (texture_map.find(id) == texture_map.end()) {
-        return false;
-    }
-    texture_map[id].auto_update = auto_update_flag;
-    return true;
-}
+// bool Texture_sdl_manager::set_auto_update(long long id, bool auto_update_flag) {
+//     if (texture_map.find(id) == texture_map.end()) {
+//         return false;
+//     }
+//     texture_map[id].auto_update = auto_update_flag;
+//     return true;
+// }
 
 bool Texture_sdl_manager::is_valid(long long id) {
     if (texture_map.find(id) == texture_map.end()) {
@@ -197,17 +205,7 @@ bool Texture_sdl_manager::is_valid(long long id) {
 void Texture_sdl_manager::invalid_texture(SDL_Renderer *prenderer) {
     for (auto iter = texture_map.begin(); iter != texture_map.end(); ++iter) {
         if (iter->second.prenderer == prenderer && !iter->second.static_access) {
-            if (!iter->second.valid) {
-                continue;
-            } else {
-                if (iter->second.auto_update) {
-                    SDL_DestroyTexture(iter->second.texture);
-                    iter->second.texture = iter->second.update_func();
-                } else {
-                    // iter->second.texture = nullptr;
-                    iter->second.valid = false;
-                }
-            }
+            iter->second.valid = false;
         }
     }
 }
@@ -220,7 +218,8 @@ bool Texture_sdl_manager::destroy_texture(long long id) {
     Texture_sdl_manager_unit *unit = &texture_map[id];
     SDL_DestroyTexture(unit->texture);
     unit->texture = nullptr;
-    unit->valid = false;
+    unit->valid = false; 
+    WINDOW_MANAGER->update_texture_count(unit->prenderer, -1);
     return true;
 }
 
@@ -228,15 +227,6 @@ void Texture_sdl_manager::invalid_texture(long long id) {
     if (texture_map.find(id) == texture_map.end()) {
         return;
     }
-    Texture_sdl_manager_unit *unit = &texture_map[id];
-    if (unit->valid) {
-        if (unit->auto_update) {
-            SDL_DestroyTexture(unit->texture);
-            unit->texture = unit->update_func();
-        } else {
-            // unit->texture = nullptr;
-            unit->valid = false;
-        }
-    }
+    texture_map[id].valid = false;
 }
 }

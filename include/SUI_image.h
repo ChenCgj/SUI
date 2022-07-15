@@ -24,7 +24,8 @@ public:
     void draw_image(Canvas &canvas, int posX = 0, int posY = 0);
     unsigned get_image_width();
     unsigned get_image_height();
-    void unload();
+    // for destroy texture
+    void unload_data();
 private:
     void update_image(Canvas &target_canvas);
     Canvas *pcanvas;

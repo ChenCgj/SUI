@@ -4,12 +4,13 @@
 #include "SDL_events.h"
 #include "SUI_in_event_handler_helper.h"
 
-#define ROOT Object::get_root()
-#define TRASH_ROOT Object::get_trash_root()
-#define WINDOW_MANAGER Window_manager::get_window_manager()
+#define MANAGERS Managers::instance()
+#define ROOT MANAGERS->get_root()
+#define TRASH_ROOT MANAGERS->get_trash_root()
+#define WINDOW_MANAGER MANAGERS->get_window_manager()
 #define HANDLER_HELPER Event_handler_helper::instance()
-#define THEME_MANAGER Theme_manager::instance()
-#define TEXTURE_SDL_MANAGER Texture_sdl_manager::instance()
+#define THEME_MANAGER MANAGERS->get_theme_manager()
+#define TEXTURE_SDL_MANAGER MANAGERS->get_texture_sdl_manager()
 
 extern int SUI_main(int argc, char *argv[]);
 

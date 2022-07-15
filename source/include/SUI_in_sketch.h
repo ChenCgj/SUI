@@ -21,7 +21,8 @@ public:
     unsigned get_sketch_width() const;
     unsigned get_sketch_height() const;
     void set_source_area(int x, int y, int w, int h);
-    void unload();
+    // for unload_texture
+    void unload_data();
     ~Sketch();
 private:
     SDL_Surface *sketch_surface;

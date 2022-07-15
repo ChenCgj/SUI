@@ -7,7 +7,7 @@
 #include "SUI_in_main.h"
 #include "SUI_in_sketch.h"
 #include "SUI_in_debug.h"
-#include "SUI_in_texture_sdl_manager.h"
+#include "SUI_in_managers.h"
 
 namespace sui {
 
@@ -17,13 +17,13 @@ Sketch::Sketch(int width, int height)
     texture_id{TEXTURE_SDL_MANAGER->alloc_texture_id()},
     source_area{0, 0, 0, 0} {}
 
-void Sketch::unload() {
-    TEXTURE_SDL_MANAGER->set_texture(image_texture_id, nullptr, (SDL_Surface *)nullptr);
-    TEXTURE_SDL_MANAGER->set_texture(texture_id, nullptr, (SDL_Surface*)nullptr);
+void Sketch::unload_data() {
+    TEXTURE_SDL_MANAGER->set_texture(image_texture_id, nullptr, nullptr);
+    TEXTURE_SDL_MANAGER->set_texture(texture_id, nullptr, nullptr);
 }
 
 void Sketch::destroy_sketch() {
-    unload();
+    unload_data();
     if (!sketch_surface) {
         SDL_FreeSurface(sketch_surface);
     }

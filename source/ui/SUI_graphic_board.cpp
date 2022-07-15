@@ -35,7 +35,7 @@ void Graphic_board::draw(Canvas &canvas) {
 }
 
 void Graphic_board::destroy_content() {
-    unload();
+    unload_data();
     Element::destroy_content();
 }
 

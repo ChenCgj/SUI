@@ -11,7 +11,7 @@
 #include "SUI_in_window_data.h"
 #include "SUI_in_debug.h"
 #include "SUI_in_sketch.h"
-#include "SUI_in_texture_sdl_manager.h"
+#include "SUI_in_managers.h"
 
 namespace sui {
 
@@ -29,7 +29,7 @@ Canvas::Canvas(const Window &window, int posX, int posY, int posZ, int width, in
     : Canvas(posX, posY, posZ, width, height, depth) {
 
     // load the render from a window
-    pRenderer = window.pData->pRenderer;
+    pRenderer = WINDOW_MANAGER->get_sdl_renderer(&window);
     // pTexture = SDL_CreateTexture(pRenderer,
     //     SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, width, height);
     TEXTURE_SDL_MANAGER->set_texture(texture_id, pRenderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, width, height);
@@ -56,6 +56,9 @@ void Canvas::load_renderer(Canvas &canvas) {
     }
     pRenderer = canvas.pRenderer;
     TEXTURE_SDL_MANAGER->set_texture(texture_id, pRenderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, get_width(), get_height());
+    width_bak = get_width();
+    height_bak = get_height();
+    depth_bak = get_depth();
     // if (pTexture) {
     //     SDL_DestroyTexture(pTexture);
     // }
@@ -74,7 +77,7 @@ void Canvas::unload_renderer() {
     //     SDL_DestroyTexture(pTexture);
     //     pTexture = nullptr;
     // }
-    TEXTURE_SDL_MANAGER->set_texture(texture_id, nullptr, (SDL_Surface *)nullptr);
+    TEXTURE_SDL_MANAGER->set_texture(texture_id, nullptr, nullptr);
     pRenderer = nullptr;
 }
 
@@ -358,28 +361,29 @@ void Canvas::paint_on_window(const Window &window) {
     }
     SDL_Rect rect_dst = {get_posX(), get_posY(), get_width(), get_height()};
     SDL_Rect rect_src = {0, 0, get_width(), get_height()};
+    SDL_Renderer *pRenderer = WINDOW_MANAGER->get_sdl_renderer(&window);
     DBG(<< "src: " << rect_src.x << " " << rect_src.y << " " << rect_src.w << " " << rect_src.h);
     DBG(<< "dest: " << rect_dst.x << " " << rect_dst.y << " " << rect_dst.w << " " << rect_dst.h);
-    SDL_SetRenderTarget(window.pData->pRenderer, nullptr);
-    SDL_SetRenderDrawColor(window.pData->pRenderer, 0, 0, 0, 0);
-    SDL_RenderClear(window.pData->pRenderer);
+    SDL_SetRenderTarget(pRenderer, nullptr);
+    SDL_SetRenderDrawColor(pRenderer, 0, 0, 0, 0);
+    SDL_RenderClear(pRenderer);
     SDL_Texture *pTexture = TEXTURE_SDL_MANAGER->get_texture(texture_id);
     if (mask_mode == Mask_mode::to_mask) {
         SDL_BlendMode mode_bak = SDL_BLENDMODE_INVALID;
         SDL_GetTextureBlendMode(pTexture, &mode_bak);
         SDL_SetTextureBlendMode(pTexture, SDL_BLENDMODE_MOD);
-        if (SDL_RenderCopy(window.pData->pRenderer, pTexture, &rect_src, &rect_dst) < 0) {
+        if (SDL_RenderCopy(pRenderer, pTexture, &rect_src, &rect_dst) < 0) {
             ERR(<< "render copy error. SDL: " << SDL_GetError());
         }
         SDL_SetTextureBlendMode(pTexture, mask_blend_mode);
-        if (SDL_RenderCopy(window.pData->pRenderer, pTexture, &rect_src, &rect_dst) < 0) {
+        if (SDL_RenderCopy(pRenderer, pTexture, &rect_src, &rect_dst) < 0) {
             ERR(<< "render copy error. SDL: " << SDL_GetError());
         }
         SDL_SetTextureBlendMode(pTexture, mode_bak);
-    } else if (SDL_RenderCopy(window.pData->pRenderer, pTexture, &rect_src, &rect_dst) < 0) {
+    } else if (SDL_RenderCopy(pRenderer, pTexture, &rect_src, &rect_dst) < 0) {
         ERR(<< "render copy error. SDL: " << SDL_GetError());
     };
-    SDL_RenderPresent(window.pData->pRenderer);
+    SDL_RenderPresent(pRenderer);
 }
 
 /**
@@ -522,7 +526,7 @@ void Canvas::save_env() {
     if (SDL_SetRenderTarget(pRenderer, pTexture) == -1) {
         ERR(<< "couldn't set the target. SDL: " << SDL_GetError());
     }
-    // notice that tht target we get and we set is not equal!!!
+    // notice that the target we get and we set is not equal!!!
     // printf("the set texture is %p, and the get texture is %p\n", pCanvas_data->pTexture, SDL_GetRenderTarget(pCanvas_data->pRenderer));
 }
 

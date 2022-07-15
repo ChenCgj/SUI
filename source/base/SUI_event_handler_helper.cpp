@@ -1,5 +1,6 @@
 #include "SUI_event_handler.h"
 #include "SUI_in_event_handler_helper.h"
+#include "SUI_window.h"
 
 namespace sui {
 
@@ -39,4 +40,10 @@ void Event_handler_helper::deal_other_event(Event_handler* handler, Event &event
     handler->deal_other_event(event);
 }
 
+void Event_handler_helper::deal_window_close_event(Window *pWindow, Event &window_event) const {
+    pWindow->deal_window_close_event(window_event);
+}
+void Event_handler_helper::deal_window_resized_event(Window *pWindow, Event &window_event) const {
+    pWindow->deal_window_resized_event(window_event);
+}
 }

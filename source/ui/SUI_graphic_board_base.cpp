@@ -18,7 +18,7 @@ Graphic_board_base::~Graphic_board_base() {
     delete board;
 }
 
-void Graphic_board_base::unload() {
+void Graphic_board_base::unload_data() {
     board->unload_renderer();
 }
 

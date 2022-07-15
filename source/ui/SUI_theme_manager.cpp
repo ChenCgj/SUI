@@ -8,8 +8,8 @@ Theme_manager::Theme_manager() :
     index{default_theme}, all_theme(int(custom_theme) + 1) {}
 
 Theme_manager *Theme_manager::instance() {
-    static Theme_manager manager;
-    return &manager;
+    static Theme_manager *manager = new Theme_manager();
+    return manager;
 }
 
 Theme &Theme_manager::get_theme(Theme_index index) {

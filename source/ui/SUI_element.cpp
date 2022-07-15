@@ -6,6 +6,7 @@
 #include "SUI_in_main.h"
 #include "SUI_in_debug.h"
 #include "SUI_main.h"
+#include "SUI_in_managers.h"
 namespace sui {
 
 Element::Element(int posX, int posY, int width, int height) : Geometry{posX, posY, width, height}, Drawable(posX, posY, width, height) {

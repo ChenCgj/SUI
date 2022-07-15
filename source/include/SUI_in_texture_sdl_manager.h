@@ -14,10 +14,8 @@
 namespace sui {
 
 struct Texture_sdl_manager_unit {
-    std::function<SDL_Texture *(void)> update_func;
     SDL_Texture *texture;
     SDL_Renderer *prenderer;
-    bool auto_update;
     bool static_access;
     bool valid;
     long long id;
@@ -28,13 +26,14 @@ public:
     static Texture_sdl_manager *instance();
     SDL_Texture *get_texture(long long id);
     SDL_Renderer *get_renderer(long long id);
+    // if the prenderer is nullptr, this function actually will destroy the texture only
     SDL_Texture *set_texture(long long id, SDL_Renderer *prenderer, Uint32 format, int access, int w, int h, SDL_BlendMode blend_mode = SDL_BlendMode::SDL_BLENDMODE_BLEND);
     SDL_Texture *set_texture(long long id, SDL_Renderer *prenderer, SDL_Surface *surface, SDL_BlendMode blend_mode = SDL_BlendMode::SDL_BLENDMODE_BLEND);
-    SDL_Texture *set_texture(long long id, SDL_Renderer *prenderer, SDL_Texture *pTexture);
+    // SDL_Texture *set_texture(long long id, SDL_Renderer *prenderer, SDL_Texture *pTexture);
     bool destroy_texture(long long id);
     bool set_texture_blend_mode(long long id, SDL_BlendMode blend_mode);
-    bool set_texture_update_func(long long id, std::function<SDL_Texture *()> func, bool auto_update_flag = true);
-    bool set_auto_update(long long id, bool auto_update_flag);
+    // bool set_texture_update_func(long long id, std::function<SDL_Texture *()> func, bool auto_update_flag = true);
+    // bool set_auto_update(long long id, bool auto_update_flag);
     bool is_valid(long long id);
     void invalid_texture(SDL_Renderer *prenderer);
     void invalid_texture(long long id);
