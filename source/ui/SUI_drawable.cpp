@@ -38,8 +38,11 @@ Drawable::~Drawable() {
     delete canvas_buffer;
 }
 
+// when we destroy window, we should call this first to destroy all texture
+// if you use another canvas, remmber to rewrite this function and call this function
 void Drawable::destroy_content() {
     canvas_buffer->unload_renderer();
+    /*if have background, we should unload the background image's canvas's texture*/
 }
 
 void Drawable::draw_all(Canvas &canvas) {

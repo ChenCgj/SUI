@@ -18,6 +18,10 @@ Graphic_board_base::~Graphic_board_base() {
     delete board;
 }
 
+void Graphic_board_base::unload() {
+    board->unload_renderer();
+}
+
 void Graphic_board_base::set_draw_callback(const std::function<void (Graphic_board_base *)> draw_func/*, void *func_arg, bool del_arg*/) {
     draw_callback = draw_func;
     // arg = func_arg;

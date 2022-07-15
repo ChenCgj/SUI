@@ -1,5 +1,7 @@
 #include <functional>
+#include <stdlib.h>
 
+#include "SUI_drawable.h"
 #include "SUI_geometry.h"
 #include "SUI_graphic_board.h"
 #include "SDL_render.h"
@@ -30,6 +32,11 @@ void Graphic_board::draw(Canvas &canvas) {
     canvas.restore_env();
 
     DBG(<< get_name() << "draw graphic board ok");
+}
+
+void Graphic_board::destroy_content() {
+    unload();
+    Element::destroy_content();
 }
 
 }

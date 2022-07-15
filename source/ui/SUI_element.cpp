@@ -28,6 +28,17 @@ void Element::draw(Canvas &canvas) {
 
 Element::~Element() = default;
 
+void Element::destroy_content() {
+    /**
+    * @bug you should manager the render and texture together...
+    */
+    // Image *image = get_background_image(statu);
+    // if (image) {
+    //     image->unload();
+    // }
+    Drawable::destroy_content();
+}
+
 void Element::deal_key_down_event(Keyboard_event &key_event) {
     std::list<Object *> node_list = get_node_list();
     for (auto p = node_list.rbegin(); p != node_list.rend(); ++p) {

@@ -19,6 +19,7 @@ class Graphic_board : public Graphic_board_base, public Element {
 public:
     Graphic_board(int posX, int posY, int width, int height);
     void draw(Canvas &canvas) override;
+    void destroy_content() override;
     ~Graphic_board();
 private:
     // void deal_key_down_event(Keyboard_event &key_event) override;

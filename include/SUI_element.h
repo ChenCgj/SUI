@@ -28,6 +28,7 @@ public:
     void deal_mouse_wheel_event(Mouse_wheel_event &mouse_wheel) override;
     void deal_mouse_move_event(Mouse_motion_event &mouse_motion) override;
     void deal_other_event(Event &event) override;
+    void destroy_content() override;
 protected:
     Element_status statu;
 };

@@ -17,9 +17,13 @@ Sketch::Sketch(int width, int height)
     texture_id{TEXTURE_SDL_MANAGER->alloc_texture_id()},
     source_area{0, 0, 0, 0} {}
 
-void Sketch::destroy_sketch() {
+void Sketch::unload() {
     TEXTURE_SDL_MANAGER->set_texture(image_texture_id, nullptr, (SDL_Surface *)nullptr);
     TEXTURE_SDL_MANAGER->set_texture(texture_id, nullptr, (SDL_Surface*)nullptr);
+}
+
+void Sketch::destroy_sketch() {
+    unload();
     if (!sketch_surface) {
         SDL_FreeSurface(sketch_surface);
     }

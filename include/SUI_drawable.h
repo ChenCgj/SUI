@@ -31,7 +31,7 @@ public:
     // set the element should be redraw to the buffer canvas or not
     void set_redraw_flag(bool flag);
     bool get_redraw_flag();
-    void destroy_content();
+    virtual void destroy_content();
     virtual ~Drawable();
 protected:
     virtual void draw_border(Canvas &canvas, Element_status statu = Element_status::normal);

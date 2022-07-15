@@ -24,6 +24,8 @@ public:
     void clear();
     void set_color(const Color &color);
     void fill_shape(const Shape &shape);
+    // to destroy texture before destroy the renderer
+    void unload();
     virtual ~Graphic_board_base();
 private:
     std::function<void (Graphic_board_base *)> draw_callback;
