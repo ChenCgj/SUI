@@ -11,7 +11,7 @@ this version was "single" thread
   1. install SDL2 library
 
      ```sh
-     sudo apt-get install libsdl2-dev
+     sudo apt-get install libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev
      ```
 
   2. build
