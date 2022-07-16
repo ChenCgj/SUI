@@ -2,8 +2,6 @@
 
 A simple UI library built base on SDL2
 
-this version was "single" thread
-
 ## Build
 
 - build on ubuntu
@@ -24,26 +22,29 @@ this version was "single" thread
 
      ```sh
      make test
+     # before you run this test, you are supposed to prepare a background.jpg under the `./`
+     # and you are supposed to modified the font used for button
+     # if you are using ubuntu, may you can modified the font to `"/usr/share/fonts/truetype/ubuntu/UbuntuMono-B.ttf"` in `source/ui/SUI_button.cpp:23:32`
      ./test/sui_test
      ```
 
 - build on widnow
 
-  1. install SDL2
+  1. install SDL2, SDL2_ttf and SDL2_image
   2. change the %PATH% or make the header files with the code
   3. build
 
-tips: you can define `DEBUG_OPEN` to output the information of running
+tips: you can define `DEBUG_OPEN` in `source/include/SUI_in_debug.h` to output the information of running
 
 ## Quickly start
 
-When you finish building, you will get the static library in /build.
+When you finish building, you will get the static library in `build`.
 
 you could move the `include` folder and the `libsui.a` to your project root.
 
 You can simply create a window just call `Window *pw = new Window(title_name, width, height)` and then show the window by calling `pw->show()`
 
-You can create a button by calling `Button *pb = new Button(x, y, w, h)` and then show it on thw widnow by calling `pw->add_node(pb)`
+You can create a button by calling `Button *pb = new Button(infomation, x, y, w, h)` and then show it on the widnow by calling `pw->add_node(pb)`
 
 ```cpp
 // this is a demo
@@ -54,11 +55,11 @@ using namespace sui;
 // notice that you should use the prototype int main(int, char **)
 int main(int argc, char *argv[]) {
     Window *pw = new Window("demo", 800, 600);
-    Button *pb = new Button(20, 20, 50, 50);
+    Button *pb = new Button("demo", 100, 100, 160, 90);
 
     pb->add_listener([=](){
         // when click the button, change the background color
-        pb->set_background_color(rand() % 255, rand() % 255, rand() % 255, rand() % 255);
+        pb->set_background_color(rand() % 255, rand() % 255, rand() % 255, rand() % 255, Element_status::button_normal);
         // you need to update the window and the button as you change the color
         // button should be redraw
         pb->set_redraw_flag(true);
@@ -73,11 +74,11 @@ int main(int argc, char *argv[]) {
 ```
 
 ```sh
-g++ -g -Wall -Iinclude -o demo demo.cpp -L. -lsui -lSDL2 -lSDL2_ttf
+g++ -g -Wall -Iinclude -o demo demo.cpp -L. -lsui -lSDL2 -lSDL2_ttf -lSDL2_image
 ./demo
 ```
 
-May be you can add `-no-pie` flag to chieve that the program can be executed by double clicking if you use the high version g++.
+May be you can add `-no-pie` flag to achieve that the program can be executed by double clicking if you use the high version g++.
 
 ## Notice
 
