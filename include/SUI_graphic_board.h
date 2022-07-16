@@ -6,13 +6,8 @@
 #ifndef SUI_GRAPHIC_BOARD
 #define SUI_GRAPHIC_BOARD
 
-#include <functional>
-#include "SUI_color.h"
 #include "SUI_element.h"
-#include "SUI_event_handler.h"
 #include "SUI_graphic_board_base.h"
-#include "SUI_main.h"
-#include "SUI_shape.h"
 
 namespace sui {
 class Graphic_board : public Graphic_board_base, public Element {

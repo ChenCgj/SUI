@@ -1,17 +1,9 @@
-#include <unordered_map>
-
-#include "SDL_events.h"
-#include "SDL_mutex.h"
-#include "SDL_render.h"
-#include "SDL_stdinc.h"
-#include "SDL_timer.h"
-#include "SDL_video.h"
 #include "SUI_in_events.h"
-#include "SUI_in_window_data.h"
 #include "SUI_in_window_manager.h"
-#include "SUI_window.h"
+#include "SUI_in_event_handler_helper.h"
 #include "SUI_in_main.h"
 #include "SUI_in_debug.h"
+#include "SUI_window.h"
 
 namespace sui {
 
@@ -24,6 +16,14 @@ namespace sui {
 //     pwm->update_all_window();
 //     return interval;
 // }
+
+struct Window_manager::Window_data {
+    SDL_Window *pWnd;
+    SDL_Renderer *pRenderer;
+    Window_manager::Window_listen_status listen_statu;
+    long long texture_count;
+    bool destroyable;
+};
 
 Window_manager::Window_manager() : window_count{0} {}
 

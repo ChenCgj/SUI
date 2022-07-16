@@ -1,6 +1,4 @@
 #include "SUI_geometry.h"
-#include "SUI_property.h"
-#include "SUI_window.h"
 
 namespace sui {
 extern template class Property<int>;

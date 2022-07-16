@@ -1,9 +1,4 @@
-#include <functional>
 #include "SUI_image.h"
-#include "SDL_render.h"
-#include "SDL_video.h"
-#include "SUI_graphic_board.h"
-#include "SUI_graphic_board_base.h"
 #include "SUI_in_canvas.h"
 #include "SUI_in_sketch.h"
 

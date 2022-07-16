@@ -8,8 +8,6 @@
 
 #include "SUI_decorator.h"
 #include "SUI_geometry.h"
-#include "SUI_main.h"
-#include "SUI_shape.h"
 
 namespace sui {
 class Canvas;

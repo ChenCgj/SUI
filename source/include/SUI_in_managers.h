@@ -1,11 +1,11 @@
 #ifndef SUI_IN_MANAGERS_H
 #define SUI_IN_MANAGERS_H
 
-#include "SUI_in_texture_sdl_manager.h"
-#include "SUI_in_theme_manager.h"
-#include "SUI_in_window_manager.h"
-#include "SUI_object.h"
 namespace sui {
+class Window_manager;
+class Texture_sdl_manager;
+class Theme_manager;
+class Object;
 
 class Managers {
 public:

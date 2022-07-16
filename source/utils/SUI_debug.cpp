@@ -1,8 +1,8 @@
-#include "SUI_in_debug.h"
-#include <iostream>
-#include <ostream>
+// #include "SUI_in_debug.h"
+// #include <iostream>
+// #include <ostream>
 
-namespace sui {
+// namespace sui {
 
 // Debug_tool::Debug_tool(std::ostream &out) : o{out} {}
 
@@ -20,4 +20,4 @@ namespace sui {
 //     static Debug_tool debug_print(std::cout);
 //     return debug_print;
 // }
-}
+// }

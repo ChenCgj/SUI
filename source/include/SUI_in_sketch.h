@@ -4,14 +4,15 @@
 */
 #ifndef SUI_IN_SKETCH_H
 #define SUI_IN_SKETCH_H
+
 #include <string>
-#include "SDL_render.h"
+
 #include "SDL_surface.h"
-#include "SUI_in_canvas.h"
+
 #include "SUI_geometry.h"
 
 namespace sui {
-
+class Canvas;
 class Sketch : public Geometry {
 public:
     Sketch(int width, int height);

@@ -8,9 +8,11 @@
 #define SUI_IN_EVENTS_H
 
 #include <utility>
+
 #include "SDL_events.h"
-#include "SDL_stdinc.h"
-#include "SUI_main.h"
+
+#include "SUI_mouse_button.h"
+#include "SUI_key_code.h"
 
 namespace sui {
 

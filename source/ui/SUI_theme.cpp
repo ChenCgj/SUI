@@ -1,10 +1,7 @@
-#include "SDL_render.h"
-#include "SUI_color.h"
-#include "SUI_in_main.h"
-#include "SUI_in_styles.h"
 #include "SUI_in_theme.h"
 #include "SUI_in_debug.h"
-#include "SUI_main.h"
+
+#include "SUI_image.h"
 
 namespace sui {
 

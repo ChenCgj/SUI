@@ -8,8 +8,8 @@
 
 #include "SUI_drawable.h"
 #include "SUI_event_handler.h"
-#include "SUI_main.h"
 #include "SUI_object.h"
+
 namespace sui {
 
 /**

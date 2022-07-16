@@ -1,4 +1,8 @@
 #include "SUI_in_managers.h"
+#include "SUI_in_window_manager.h"
+#include "SUI_in_texture_sdl_manager.h"
+#include "SUI_in_theme_manager.h"
+#include "SUI_object.h"
 
 namespace sui {
 

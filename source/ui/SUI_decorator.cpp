@@ -1,16 +1,9 @@
-#include <cstddef>
-#include <memory>
-#include <string.h>
-
-#include "SUI_decorator.h"
-#include "SUI_geometry.h"
-#include "SUI_in_decorator_data.h"
 #include "SUI_in_main.h"
-#include "SUI_in_styles.h"
-#include "SUI_in_theme.h"
-#include "SUI_main.h"
 #include "SUI_in_managers.h"
+#include "SUI_in_theme_manager.h"
 #include "SUI_in_debug.h"
+#include "SUI_in_decorator_data.h"
+#include "SUI_image.h"
 
 namespace sui {
 Decorator::Decorator() : pData(nullptr) {

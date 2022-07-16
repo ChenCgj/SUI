@@ -6,12 +6,8 @@
 
 #ifndef SUI_BUTTON_H
 #define SUI_BUTTON_H
-#include <functional>
-#include <string>
-#include "SUI_event_handler.h"
+
 #include "SUI_element.h"
-#include "SUI_decorator.h"
-#include "SUI_main.h"
 
 namespace sui {
 

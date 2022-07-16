@@ -1,11 +1,4 @@
-#include "SDL_events.h"
-#include "SDL_keycode.h"
-#include "SDL_mouse.h"
-#include "SDL_stdinc.h"
-#include "SDL_version.h"
 #include "SUI_in_events.h"
-#include "SUI_main.h"
-#include <utility>
 
 namespace sui {
 

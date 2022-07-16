@@ -2,8 +2,9 @@
 #define SUI_IN_THEME_MANAGER_H
 
 #include <vector>
-#include "SUI_main.h"
 #include "SUI_in_theme.h"
+#include "SUI_theme_index.h"
+
 namespace sui {
 
 class Theme_manager {

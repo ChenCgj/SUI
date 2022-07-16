@@ -1,14 +1,15 @@
 #ifndef SUI_IN_THEME_H
 #define SUI_IN_THEME_H
+
 #include <string>
-#include "SDL_render.h"
-#include "SUI_in_canvas.h"
-#include "SUI_in_main.h"
+
 #include "SUI_in_styles.h"
-#include "SUI_styles.h"
-#include "SUI_main.h"
+#include "SUI_element_status.h"
+#include "SUI_shape.h"
 
 namespace sui {
+
+class Image;
 
 class Theme {
 public:

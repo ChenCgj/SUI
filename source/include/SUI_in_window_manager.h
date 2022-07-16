@@ -7,17 +7,14 @@
 #define SUI_IN_WINDOW_MANAGER_H
 
 #include <map>
-#include <stdint.h>
-#include <utility>
 
-#include "SDL_events.h"
-#include "SDL_render.h"
 #include "SDL_video.h"
-
-#include "SUI_window.h"
+#include "SDL_render.h"
+#include "SDL_events.h"
 
 namespace sui {
 
+class Window;
 class Window_manager {
 public:
     enum Window_listen_status {
@@ -43,7 +40,7 @@ public:
     SDL_Renderer *get_sdl_renderer(const Window *pWindow);
     SDL_Renderer *get_window_id();
 private:
-    // <window_no, <Window *, is_showing flag>>
+    struct Window_data;
     std::map<Uint32, std::pair<Window *, Window_data>> window_map;
     void push_event(Window *pw, const SDL_Event &event);
     long long get_window_by_renderer(SDL_Renderer *pRenderer);

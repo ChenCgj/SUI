@@ -1,13 +1,10 @@
-#include <string>
-#include "SDL_surface.h"
 #include "SDL_image.h"
-#include "SDL_render.h"
 
-#include "SUI_geometry.h"
-#include "SUI_in_main.h"
+#include "SUI_in_canvas.h"
 #include "SUI_in_sketch.h"
 #include "SUI_in_debug.h"
 #include "SUI_in_managers.h"
+#include "SUI_in_texture_sdl_manager.h"
 
 namespace sui {
 

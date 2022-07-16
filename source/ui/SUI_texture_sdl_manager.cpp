@@ -1,10 +1,8 @@
-#include "SDL_error.h"
-#include "SDL_render.h"
-#include "SDL_surface.h"
 #include "SUI_in_main.h"
 #include "SUI_in_debug.h"
 #include "SUI_in_managers.h"
-#include <cstddef>
+#include "SUI_in_window_manager.h"
+#include "SUI_in_texture_sdl_manager.h"
 
 namespace sui {
 

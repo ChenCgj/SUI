@@ -1,15 +1,6 @@
-#include <functional>
-#include <stdlib.h>
-
-#include "SUI_drawable.h"
-#include "SUI_geometry.h"
-#include "SUI_graphic_board.h"
-#include "SDL_render.h"
-#include "SUI_graphic_board_base.h"
 #include "SUI_in_canvas.h"
-#include "SUI_element.h"
-#include "SUI_main.h"
 #include "SUI_in_debug.h"
+#include "SUI_graphic_board.h"
 
 namespace sui {
 

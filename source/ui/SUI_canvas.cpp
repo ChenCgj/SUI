@@ -1,17 +1,11 @@
 #include <algorithm>
 
-#include "SDL_blendmode.h"
-#include "SDL_error.h"
-#include "SDL_pixels.h"
-#include "SDL_rect.h"
-#include "SDL_render.h"
-#include "SDL_surface.h"
 #include "SDL_ttf.h"
 
 #include "SUI_in_canvas.h"
-#include "SUI_in_main.h"
-#include "SUI_in_window_data.h"
 #include "SUI_in_debug.h"
+#include "SUI_in_window_manager.h"
+#include "SUI_in_texture_sdl_manager.h"
 #include "SUI_in_sketch.h"
 #include "SUI_in_managers.h"
 

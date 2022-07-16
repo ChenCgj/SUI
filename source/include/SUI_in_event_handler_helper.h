@@ -5,10 +5,10 @@
 
 #ifndef SUI_IN_EVENT_HANDLER_HELPER
 #define SUI_IN_EVENT_HANDLER_HELPER
-#include "SUI_in_events.h"
-#include "SUI_event_handler.h"
-#include "SUI_object.h"
+#include "SUI_events.h"
 namespace sui {
+class Event_handler;
+class Window;
 class Event_handler_helper {
 public:
     static const Event_handler_helper *instance();

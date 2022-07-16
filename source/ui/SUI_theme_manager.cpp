@@ -1,7 +1,6 @@
-#include "SUI_in_theme.h"
 #include "SUI_in_theme_manager.h"
-#include "SUI_main.h"
 #include "SUI_in_debug.h"
+
 namespace sui {
 
 Theme_manager::Theme_manager() :

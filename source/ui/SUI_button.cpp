@@ -1,20 +1,9 @@
-#include <stdint.h>
-#include <stdio.h>
-
-#include "SUI_button.h"
-#include "SUI_graphic_board.h"
-#include "SUI_graphic_board_base.h"
 #include "SUI_in_canvas.h"
-#include "SUI_element.h"
-#include "SUI_drawable.h"
-#include "SUI_geometry.h"
 #include "SUI_in_events.h"
-#include "SUI_in_main.h"
 #include "SUI_in_debug.h"
-#include "SUI_main.h"
-#include "SUI_shape.h"
+#include "SUI_tool.h"
 #include "SUI_image.h"
-#include "SUI_in_sketch.h"
+#include "SUI_button.h"
 
 namespace sui {
 Button::Button(const std::string &title, int x, int y, int w, int h) : Geometry{x, y, w, h}, Element(x, y, w, h) {

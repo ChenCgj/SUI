@@ -1,4 +1,3 @@
-#include <functional>
 #include "SUI_property.h"
 #include "SUI_in_binder.h"
 

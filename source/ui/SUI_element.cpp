@@ -1,12 +1,10 @@
-#include "SUI_element.h"
-#include "SUI_geometry.h"
 #include "SUI_in_canvas.h"
-#include "SUI_drawable.h"
 #include "SUI_in_events.h"
-#include "SUI_in_main.h"
 #include "SUI_in_debug.h"
-#include "SUI_main.h"
 #include "SUI_in_managers.h"
+#include "SUI_in_event_handler_helper.h"
+#include "SUI_element.h"
+
 namespace sui {
 
 Element::Element(int posX, int posY, int width, int height) : Geometry{posX, posY, width, height}, Drawable(posX, posY, width, height) {

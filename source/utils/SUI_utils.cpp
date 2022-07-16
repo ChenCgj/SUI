@@ -1,8 +1,7 @@
-#include "SUI_utils.h"
 #include "SDL_keyboard.h"
 #include "SDL_mouse.h"
-#include "SDL_scancode.h"
-#include <utility>
+
+#include "SUI_utils.h"
 
 bool is_mouse_left_button_down() {
     return SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON_LMASK;

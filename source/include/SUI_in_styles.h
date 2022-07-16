@@ -1,16 +1,12 @@
 #ifndef SUI_IN_STYLES_H
 #define SUI_IN_STYLES_H
 
-#include <stdint.h>
-
-#include "SDL_render.h"
-
-#include "SUI_image.h"
-#include "SUI_in_canvas.h"
 #include "SUI_styles.h"
 #include "SUI_color.h"
 
 namespace sui {
+class Image;
+
 struct Border_style {
     Color border_left_color;
     Color border_top_color;

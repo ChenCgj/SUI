@@ -1,7 +1,6 @@
-#include "SUI_graphic_board_base.h"
-#include "SUI_geometry.h"
 #include "SUI_in_canvas.h"
 #include "SUI_in_debug.h"
+#include "SUI_graphic_board_base.h"
 
 namespace sui {
 

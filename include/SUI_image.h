@@ -1,10 +1,9 @@
 #ifndef SUI_IMAGE_H
 #define SUI_IMAGE_H
 
-#include "SUI_geometry.h"
+#include <string>
 #include "SUI_graphic_board_base.h"
 #include "SUI_shape.h"
-#include <string>
 
 namespace sui {
 

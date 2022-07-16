@@ -1,15 +1,9 @@
-#include "SDL.h"
-#include "SDL_filesystem.h"
 #include "SDL_ttf.h"
 
-#include "SDL_version.h"
-#include "SUI_object.h"
 #include "SUI_in_main.h"
 #include "SUI_in_managers.h"
-#include "SUI_window.h"
+#include "SUI_in_window_manager.h"
 #include "SUI_in_debug.h"
-#include "SUI_in_events.h"
-#include <fstream>
 
 using namespace sui;
 

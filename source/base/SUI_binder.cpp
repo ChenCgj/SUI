@@ -1,7 +1,4 @@
 #include "SUI_in_binder.h"
-#include "SUI_property.h"
-#include <functional>
-#include <iterator>
 
 namespace sui {
 

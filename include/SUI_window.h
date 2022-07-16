@@ -5,17 +5,10 @@
 
 #ifndef SUI_WINDOW_H
 #define SUI_WINDOW_H
-#include <queue>
-#include <stdint.h>
-#include <string>
-#include <memory>
 
-#include "SUI_decorator.h"
 #include "SUI_drawable.h"
-#include "SUI_geometry.h"
 #include "SUI_object.h"
 #include "SUI_event_handler.h"
-#include "SUI_property.h"
 
 namespace sui {
 class Canvas;
@@ -28,7 +21,6 @@ enum Window_flag {
     window_flag_borderless = 0x1000,
     window_flag_resizable = 0x10000
 };
-struct Window_data;
 /**
 * @class Window
 * @brief window is ususaly created to show ui element and use to contain all element showed on the window

@@ -5,11 +5,8 @@
 #ifndef SUI_IN_TEXTURE_SDL_MANAGER_H
 #define SUI_IN_TEXTURE_SDL_MANAGER_H
 
-#include <functional>
 #include <unordered_map>
-#include "SDL_blendmode.h"
 #include "SDL_render.h"
-#include "SDL_surface.h"
 
 namespace sui {
 

@@ -1,14 +1,6 @@
 #include <functional>
-#include <stdlib.h>
 
 #include "SUI.h"
-#include "SUI_button.h"
-#include "SUI_geometry.h"
-#include "SUI_graphic_board.h"
-#include "SUI_main.h"
-#include "SUI_shape.h"
-#include "SUI_styles.h"
-#include "SUI_window.h"
 
 using namespace std;
 using namespace sui;

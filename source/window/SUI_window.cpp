@@ -1,26 +1,14 @@
-#include <cstddef>
-#include <memory>
-#include <string>
 #include <queue>
-#include <unordered_map>
 
-#include "SDL_events.h"
-#include "SDL_render.h"
-#include "SDL_video.h"
-
-#include "SUI_button.h"
-#include "SUI_geometry.h"
 #include "SUI_in_canvas.h"
-#include "SUI_drawable.h"
-#include "SUI_event_handler.h"
 #include "SUI_in_events.h"
-#include "SUI_in_main.h"
-#include "SUI_in_window_data.h"
-#include "SUI_object.h"
-#include "SUI_property.h"
-#include "SUI_window.h"
 #include "SUI_in_debug.h"
+#include "SUI_in_window_manager.h"
+#include "SUI_in_texture_sdl_manager.h"
+#include "SUI_in_event_handler_helper.h"
 #include "SUI_in_managers.h"
+
+#include "SUI_window.h"
 
 namespace sui {
 

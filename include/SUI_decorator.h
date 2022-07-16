@@ -10,18 +10,17 @@
 #include <stdint.h>
 #include <string>
 
-#include "SUI_main.h"
-#include "SUI_geometry.h"
 #include "SUI_styles.h"
-#include "SUI_main.h"
 #include "SUI_shape.h"
-#include "SUI_image.h"
+#include "SUI_element_status.h"
+#include "SUI_theme_index.h"
 
 namespace sui {
 /**
 * @class Decorator
 * @brief decorate some element which derived from this class
 */
+class Image;
 
 class Decorator {
 public:
