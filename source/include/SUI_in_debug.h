@@ -1,7 +1,7 @@
 #include <iostream>
 
 #define LOG_OPEN
-#define DEBUG_OPEN
+// #define DEBUG_OPEN
 #define ERROR_OPEN
 
 #ifndef __FILE_NAME__
