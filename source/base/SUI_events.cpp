@@ -2,6 +2,7 @@
 #include "SDL_keycode.h"
 #include "SDL_mouse.h"
 #include "SDL_stdinc.h"
+#include "SDL_version.h"
 #include "SUI_in_events.h"
 #include "SUI_main.h"
 #include <utility>
@@ -108,10 +109,18 @@ int Mouse_button_event::click_count() {
 Mouse_wheel_event::Mouse_wheel_event(const SDL_Event &e) : Event{e} {}
 
 float Mouse_wheel_event::get_scrolled_x() {
+#if SDL_MAJOR_VERSION >= 2 && SDL_PATCHLEVEL >= 18
     return event.wheel.preciseX;
+#else
+    return event.wheel.x;
+#endif
 }
 
 float Mouse_wheel_event::get_scrolled_y() {
+#if SDL_MAJOR_VERSION >= 2 && SDL_PATCHLEVEL >= 18
     return event.wheel.preciseY;
+#else
+    return event.wheel.y;
+#endif
 }
 }

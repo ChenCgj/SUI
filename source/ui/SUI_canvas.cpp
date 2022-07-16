@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "SDL_blendmode.h"
 #include "SDL_error.h"
 #include "SDL_pixels.h"

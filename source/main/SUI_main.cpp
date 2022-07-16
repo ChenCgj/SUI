@@ -2,6 +2,7 @@
 #include "SDL_filesystem.h"
 #include "SDL_ttf.h"
 
+#include "SDL_version.h"
 #include "SUI_object.h"
 #include "SUI_in_main.h"
 #include "SUI_in_managers.h"
@@ -16,6 +17,9 @@ static void clean();
 static int event_filter(void *data, SDL_Event *event);
 
 int main(int argc, char *argv[]) {
+    SDL_version version;
+    SDL_VERSION(&version);
+    DBG(<< "SDL version: major: " << int(version.major) << " minor: " << int(version.minor) << " patch: " << int(version.patch));
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
     TTF_Init();
     SDL_SetEventFilter(event_filter, nullptr);
