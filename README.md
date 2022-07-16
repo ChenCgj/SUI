@@ -2,6 +2,16 @@
 
 A simple UI library built base on SDL2
 
+## Show
+
+![ubuntu run test](https://github.com/ChenCgj/image-host/blob/6e06c64b2c01e11e00b39975513b595e8b644504/SUI/test.gif)
+
+![ubuntu run demo](https://github.com/ChenCgj/image-host/blob/6e06c64b2c01e11e00b39975513b595e8b644504/SUI/demo.gif)
+
+![window run test](https://github.com/ChenCgj/image-host/blob/6e06c64b2c01e11e00b39975513b595e8b644504/SUI/test2.png)
+
+![window run test](https://github.com/ChenCgj/image-host/blob/6e06c64b2c01e11e00b39975513b595e8b644504/SUI/hello%20test.png)
+
 ## Build
 
 - build on ubuntu
