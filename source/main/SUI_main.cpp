@@ -35,20 +35,20 @@ int main(int argc, char *argv[]) {
                 event.window.event = SDL_WINDOWEVENT_CLOSE;
                 WINDOW_MANAGER->patch_event_to_all(event, sui::Window_manager::window_listening_ignore);
                 break;
-            case SDL_KEYDOWN:
-            case SDL_KEYUP:
-                WINDOW_MANAGER->patch_event_to(event.key.windowID, event, sui::Window_manager::window_message_listening);
-                break;
-            case SDL_MOUSEBUTTONDOWN:
-            case SDL_MOUSEBUTTONUP:
-                WINDOW_MANAGER->patch_event_to(event.button.windowID, event, sui::Window_manager:: window_message_listening);
-                break;
-            case SDL_MOUSEWHEEL:
-                WINDOW_MANAGER->patch_event_to(event.wheel.windowID, event, sui::Window_manager::  window_message_listening);
-                break;
-            case SDL_MOUSEMOTION:
-                WINDOW_MANAGER->patch_event_to(event.motion.windowID, event, sui::Window_manager:: window_message_listening);
-                break;
+            // case SDL_KEYDOWN:
+            // case SDL_KEYUP:
+            //     WINDOW_MANAGER->patch_event_to(event.key.windowID, event, sui::Window_manager::window_message_listening);
+            //     break;
+            // case SDL_MOUSEBUTTONDOWN:
+            // case SDL_MOUSEBUTTONUP:
+            //     WINDOW_MANAGER->patch_event_to(event.button.windowID, event, sui::Window_manager:: window_message_listening);
+            //     break;
+            // case SDL_MOUSEWHEEL:
+            //     WINDOW_MANAGER->patch_event_to(event.wheel.windowID, event, sui::Window_manager::  window_message_listening);
+            //     break;
+            // case SDL_MOUSEMOTION:
+            //     WINDOW_MANAGER->patch_event_to(event.motion.windowID, event, sui::Window_manager:: window_message_listening);
+            //     break;
             case SDL_WINDOWEVENT:
                 WINDOW_MANAGER->patch_event_to(event.window.windowID, event, sui::Window_manager:: window_message_listening);
                 break;
@@ -64,8 +64,21 @@ int main(int argc, char *argv[]) {
 }
 
 int event_filter(void *data, SDL_Event *event) {
-    if (event->type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_RESIZED) {
+    Uint32 type = event->type;
+    if (type == SDL_WINDOWEVENT && event->window.event == SDL_WINDOWEVENT_RESIZED) {
         WINDOW_MANAGER->patch_event_to(event->window.windowID, *event, sui::Window_manager::window_message_listening);
+        return 0;
+    } else if (type == SDL_KEYDOWN || type == SDL_KEYUP) {
+        WINDOW_MANAGER->patch_event_to(event->key.windowID, *event, sui::Window_manager::window_message_listening);
+        return 0;
+    } else if (type == SDL_MOUSEBUTTONDOWN || type == SDL_MOUSEBUTTONUP) {
+        WINDOW_MANAGER->patch_event_to(event->button.windowID, *event, sui::Window_manager:: window_message_listening);
+        return 0;
+    } else if (type == SDL_MOUSEWHEEL) {
+        WINDOW_MANAGER->patch_event_to(event->wheel.windowID, *event, sui::Window_manager::  window_message_listening);
+        return 0;
+    } else if (type == SDL_MOUSEMOTION) {
+        WINDOW_MANAGER->patch_event_to(event->motion.windowID, *event, sui::Window_manager:: window_message_listening);
         return 0;
     }
     if (event->type == SDL_QUIT) {
