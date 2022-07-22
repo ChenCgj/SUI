@@ -30,9 +30,13 @@ public:
     // bind to others, when other porperty change, this property can update
     template<typename Origin>
     void bind(Property<Origin> &property, std::function<T (const Origin &)>);
+    template<typename Origin>
+    void unbind(Property<Origin> &property);
     // bind to self, when the value of this object is change, it will update these property
     template<typename Target>
     void add_binded(Property<Target> &property, std::function<Target (const T &)> func);
+    template<typename Target>
+    void remove_binded(Property<Target> &property);
 private:
     T value;
     std::list<Binder_base *> binders;

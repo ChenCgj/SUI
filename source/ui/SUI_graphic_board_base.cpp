@@ -1,6 +1,7 @@
 #include "SUI_in_canvas.h"
 #include "SUI_in_debug.h"
 #include "SUI_graphic_board_base.h"
+#include "SUI_image.h"
 
 namespace sui {
 
@@ -81,6 +82,22 @@ void Graphic_board_base::fill_rect(const Rect &rect) {
     board->fill_rect(rect);
 }
 
+void Graphic_board_base::draw_rect(const Rect &rect) {
+    board->draw_rect(rect);
+}
+
+void Graphic_board_base::draw_point(const Point &point) {
+    board->draw_point(point);
+}
+
+void Graphic_board_base::draw_text(const Rect &rect, const std::string &str, const std::string &font_name, const Color &color, unsigned int font_size) {
+    board->draw_text(rect, str, font_name, color, font_size);
+}
+
+void Graphic_board_base::draw_image(Image &img, int x, int y) {
+    img.draw_image(*board, x, y);
+}
+
 void Graphic_board_base::clear() {
     board->clear();
 }
@@ -92,4 +109,9 @@ void Graphic_board_base::set_color(const Color &color) {
 void Graphic_board_base::fill_shape(const Shape &shape) {
     board->fill_shape(shape);
 }
+
+void Graphic_board_base::draw_shape(const Shape &shape) {
+    board->draw_shape(shape);
+}
+
 }

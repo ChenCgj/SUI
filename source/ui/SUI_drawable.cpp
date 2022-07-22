@@ -80,7 +80,8 @@ void Drawable::using_buffer_draw(Canvas &canvas) {
 
 void Drawable::draw_border(Canvas &canvas, Element_status statu) {
     uint8_t r, g, b, a;
-    get_color(r, g, b, a, statu);
+    // get_color(r, g, b, a, statu);
+    get_border_color(r, g, b, a, statu);
     canvas.set_color(r, g, b, a);
     Rect rect = {0, 0, static_cast<double>(get_width()), static_cast<double>(get_height())};
     canvas.draw_shape(rect);

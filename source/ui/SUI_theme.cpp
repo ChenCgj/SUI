@@ -26,6 +26,17 @@ Theme::Theme() {
     button_style.pressed.background.background_image = nullptr;
     button_style.pressed.background.fill_style = Background_fill_style::target_size;
     button_style.normal.color = Color{0, 0, 0, 255};
+
+    graphic_board_style.border.border_bottom_color =
+    graphic_board_style.border.border_left_color =
+    graphic_board_style.border.border_right_color =
+    graphic_board_style.border.border_top_color =
+    graphic_board_style.background.background_color = Color{0, 0, 0, 0};
+    graphic_board_style.background.background_image = nullptr;
+    graphic_board_style.background.fill_style = Background_fill_style::target_size;
+    graphic_board_style.color = Color{0, 0, 0, 255};
+
+    pane_style = graphic_board_style;
 }
 
 Color Theme::get_border_color(Element_status statu, Style_option edge) {
@@ -34,6 +45,7 @@ Color Theme::get_border_color(Element_status statu, Style_option edge) {
     if (!style) {return color;}
 
     switch (edge) {
+    case border_color:  // default the left border
     case border_left_color:
         return style->border.border_left_color;
         break;
@@ -68,6 +80,9 @@ bool Theme::set_border_color(Element_status statu, Style_option edge, const Colo
         break;
     case border_top_color:
         style->border.border_top_color = color;
+        break;
+    case border_color:
+        style->border.border_bottom_color = style->border.border_left_color = style->border.border_right_color = style->border.border_top_color = color;
         break;
     default:
         ERR(<< "use invalid Style_option");
@@ -191,6 +206,12 @@ Style *Theme::get_style(Element_status statu) {
         break;
     case button_hover:
         pstyle = &button_style.hover;
+        break;
+    case graphic_board_normal:
+        pstyle = &graphic_board_style;
+        break;
+    case pane_normal:
+        pstyle = &pane_style;
         break;
     default:
         ERR(<< "invalid element statu");

@@ -18,6 +18,7 @@ public:
         border_right_color,
         border_top_color,
         border_bottom_color,
+        border_color,
         border_radius,
         color,
         background_color,
@@ -41,6 +42,8 @@ private:
     Style *get_style(Element_status statu);
     Button_style button_style;
     Style normal_style;
+    Style graphic_board_style;
+    Style pane_style;
 };
 
 }

@@ -114,6 +114,24 @@ void Decorator::set_border_radius(unsigned int radius, Element_status statu) {
     pData->theme->set_border_radius(statu, Theme::Style_option::border_radius, radius);
 }
 
+void Decorator::get_border_color(uint8_t &red, uint8_t &green, uint8_t &blue, uint8_t &alpha, Element_status statu) const {
+    Color color;
+    if (pData->index != none_theme) {
+        color = THEME_MANAGER->get_theme(pData->index).get_border_color(statu, Theme::Style_option::border_color);
+    } else {
+        color = pData->theme->get_border_color(statu, Theme::Style_option::border_color);
+    }
+    red = color.red;
+    green = color.green;
+    blue = color.blue;
+    alpha = color.alpha;
+}
+
+void Decorator::set_border_color(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha, Element_status statu) {
+    set_theme(none_theme);
+    pData->theme->set_border_color(statu, Theme::Style_option::border_color, Color{red, green, blue, alpha});
+}
+
 void Decorator::set_theme(Theme_index index) {
     if (index == pData->index) {
         return;

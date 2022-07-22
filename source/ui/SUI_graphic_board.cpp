@@ -9,7 +9,7 @@ Graphic_board::Graphic_board(int posX, int posY, int width, int height)
     object_name = "graphic_board";
     // arg = this;
     // delete_arg = false;
-    statu = Element_status::normal;
+    statu = Element_status::graphic_board_normal;
 }
 
 Graphic_board::~Graphic_board() = default;
