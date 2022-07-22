@@ -20,5 +20,9 @@
 #include "SUI_styles.h"
 #include "SUI_utils.h"
 #include "SUI_tool.h"
+#include "SUI_pane.h"
+#include "SUI_pane_grid.h"
+#include "SUI_pane_horizontal.h"
+#include "SUI_pane_vertical.h"
 
 #endif

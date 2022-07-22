@@ -20,8 +20,10 @@ Element::Element(int posX, int posY, int width, int height) : Geometry{posX, pos
 void Element::draw(Canvas &canvas) {
     DBG(<< "draw element...");
     canvas.save_env();
-    canvas.set_color(255, 255, 255, 255);
-    canvas.draw_rect(Rect{0, 0, static_cast<double>(get_width()), static_cast<double>(get_height())});
+    // canvas.set_color(255, 255, 255, 255);
+    // canvas.draw_rect(Rect{0, 0, static_cast<double>(get_width()), static_cast<double>(get_height())});
+    draw_border(canvas, statu);
+    draw_background(canvas, statu);
     canvas.restore_env();
 }
 

@@ -437,7 +437,7 @@ void Canvas::paint_on_canvas(Canvas &canvas) {
 bool Canvas::prepare_texture() {
     SDL_Texture *pTexture = TEXTURE_SDL_MANAGER->get_texture(texture_id);
     if (pRenderer == nullptr || pTexture == nullptr) {
-        ERR(<< "the renderer is not valid!");
+        ERR(<< "the renderer or the texture is not valid!");
         return false;
     }
     // if the size has changed or window size change
