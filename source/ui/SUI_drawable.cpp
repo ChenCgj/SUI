@@ -9,7 +9,7 @@ extern template void Property<int>::add_binded<>(Property<int> &property, std::f
 
 Drawable::Drawable(int posX, int posY, int posZ, int width, int height, int depth)
     : Geometry{posX, posY, posZ, width, height, depth},
-    canvas_buffer{new Canvas(posX, posY, posZ, width, height, depth)}, redraw_flag(true) {
+    canvas_buffer{new Canvas(posX, posY, posZ, width, height, depth)} {
     
     // to detect the size change, the canvas size should bind to the drawable element
     auto orign_value_func = std::function<int (const int &)>([](const int &v){return v;});
@@ -41,11 +41,13 @@ void Drawable::draw_all(Canvas &canvas) {
 }
 
 void Drawable::set_redraw_flag(bool flag) {
-    redraw_flag = flag;
+    // redraw_flag = flag;
+    canvas_buffer->set_need_redraw(flag);
 }
 
 bool Drawable::get_redraw_flag() {
-    return redraw_flag;
+    // return redraw_flag;
+    return canvas_buffer->check_need_redraw();
 }
 
 void Drawable::save_buffer(Canvas &canvas) {

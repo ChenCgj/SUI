@@ -1,8 +1,13 @@
 #include "SDL_keyboard.h"
 #include "SDL_mouse.h"
 
+#include "SUI_in_main.h"
+#include "SUI_in_managers.h"
+#include "SUI_in_timer_manager.h"
+#include "SUI_in_events.h"
 #include "SUI_utils.h"
 
+namespace sui {
 bool is_mouse_left_button_down() {
     return SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON_LMASK;
 }
@@ -58,4 +63,18 @@ bool is_alt_down() {
         ralt = key_state[SDL_SCANCODE_RALT];
     }
     return lalt || ralt;
+}
+
+Key_code get_key(Keyboard_event &event) {
+    return event.get_key();
+}
+
+int add_timer(int interval, uint32_t (*func)(uint32_t, void *), void *param) {
+    return TIMER_MANAGER->add_timer(interval, func, param);
+}
+
+void remove_timer(int id) {
+    TIMER_MANAGER->remove_timer(id);
+}
+
 }

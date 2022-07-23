@@ -14,6 +14,14 @@ Graphic_board::Graphic_board(int posX, int posY, int width, int height)
 
 Graphic_board::~Graphic_board() = default;
 
+void Graphic_board::set_redraw_flag(bool flag) {
+    Drawable::set_redraw_flag(flag);
+    if (flag) {
+        // if we need update the content when the window's size doesn't change
+        set_need_redraw(flag);
+    }
+}
+
 void Graphic_board::draw(Canvas &canvas) {
     DBG(<< get_name() << "draw graphic board start...");
     canvas.save_env();

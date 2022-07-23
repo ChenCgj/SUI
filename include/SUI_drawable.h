@@ -27,7 +27,7 @@ public:
     // call this function to prevent repeating draw
     void using_buffer_draw(Canvas &canvas);
     // set the element should be redraw to the buffer canvas or not
-    void set_redraw_flag(bool flag);
+    virtual void set_redraw_flag(bool flag);
     bool get_redraw_flag();
     virtual void destroy_content();
     virtual ~Drawable();
@@ -39,7 +39,7 @@ private:
     void save_buffer(Canvas &canvas);
     // the buffer
     Canvas *canvas_buffer;
-    bool redraw_flag;
+    // bool redraw_flag;
 };
 }
 #endif

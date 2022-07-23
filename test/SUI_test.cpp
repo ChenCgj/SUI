@@ -31,7 +31,7 @@ int main(int argc, char *argv[]) {
     pButton->get_height_property().bind(ppane->get_height_property(), func_div4);
     pButton->add_listener([=](){
         pButton->set_background_color(rand() %255, rand() %255, rand() %255, rand() %255, Element_status::button_normal);
-    });
+    }, sui::Button::Button_event::up);
 
     Button *pButton_control = new Button("Control", 0, 0, 100, 100);
     pButton_control->set_color(255, 0, 0, 125);
@@ -52,7 +52,7 @@ int main(int argc, char *argv[]) {
             pButton->set_redraw_flag(true);
             present_all();
         }
-    });
+    }, sui::Button::Button_event::up);
     Graphic_board *pboard = new Graphic_board(300, 300, 300, 300);
     pboard->set_draw_callback(function<void (Graphic_board_base *)>([](Graphic_board_base *arg) {
         static Image img(150, 150);
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]) {
     pButton2->set_color(0, 0, 0, 125);
     pButton2->add_listener([=](){
         pButton2->set_background_color(rand() %255, rand() %255, rand() %255, rand() %255, Element_status::button_normal);
-    });
+    }, sui::Button::Button_event::up);
 
     Grid_pane *gpane = new Grid_pane(800, 600, 300, 300, 3, 3);
     gpane->set_gap(10, 10);
@@ -167,11 +167,11 @@ int main(int argc, char *argv[]) {
             }));
         btn->add_listener([=](){
             btn->set_background_color(rand() %255, rand() %255, rand() %255, rand() %255, Element_status::button_normal);
-        });
+        }, sui::Button::Button_event::up);
         btn->set_background_color(rand() % 255, rand() % 255, rand() % 255, rand() % 255, Element_status::button_normal);
         pWindow2->add_node(btn);
         present_all();
-    });
+    }, sui::Button::Button_event::up);
     pWindow2->add_node(pButton3);
     pWindow2->show();
     return 0;

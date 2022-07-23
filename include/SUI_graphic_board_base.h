@@ -33,6 +33,7 @@ public:
     void draw_image(Image &img, int x = 0, int y = 0);
     // to destroy texture before destroy the renderer
     void unload_data();
+    void set_need_redraw(bool flag);
     virtual ~Graphic_board_base();
 private:
     std::function<void (Graphic_board_base *)> draw_callback;

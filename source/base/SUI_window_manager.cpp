@@ -115,7 +115,7 @@ void Window_manager::remove_window(Uint32 window_no) {
     DBG(<< "window manager remove " << window_map[window_no].first->get_name() << "(window id:" << window_no << ")");
     // window_map.erase(window_no);
     window_map[window_no].second.destroyable = true;
-    window_map[window_no].second.listen_statu = Window_manager::window_listening_ignore;
+    window_map[window_no].second.listen_statu = Window_manager::window_message_unlistening;
     check_and_delete_window_data(window_no);
     // in multiwindows program, close window will not send the SDL_QUIT event
     // if the program can quit?

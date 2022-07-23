@@ -6,10 +6,9 @@
 #include "SUI_button.h"
 
 namespace sui {
-Button::Button(const std::string &title, int x, int y, int w, int h) : Geometry{x, y, w, h}, Element(x, y, w, h) {
+Button::Button(const std::string &title, int x, int y, int w, int h) : Geometry{x, y, w, h}, Element(x, y, w, h), callback{nullptr}, in_button{-1} {
     object_name = "button";
     this->title = title;
-    callback = nullptr;
     statu = Element_status::button_normal;
 }
 
@@ -25,8 +24,8 @@ void Button::draw(Canvas &canvas) {
     DBG(<< get_name() << "draw button ok");
 }
 
-void Button::add_listener(std::function<void (void)> func) {
-    this->callback = func;
+void Button::add_listener(std::function<void (void)> func, Button_event event) {
+    this->callback[event] = func;
 }
 
 Button::~Button() {
@@ -46,8 +45,8 @@ void Button::deal_mouse_button_down_event(Mouse_button_event &mouse_button) {
         && mouse_y > get_posY()) {
         statu = button_press;
         
-        if (callback) {
-            callback();
+        if (callback[down]) {
+            callback[down]();
         }
         set_redraw_flag(true);
         present_all();
@@ -68,11 +67,76 @@ void Button::deal_mouse_button_up_event(Mouse_button_event &mouse_button) {
         && mouse_y > get_posY()) {
         statu = button_normal;
         
-
+        if (callback[up]) {
+            callback[up]();
+        }
         set_redraw_flag(true);
         present_all();
         mouse_button.set_handle(true);
     }
+}
+
+void Button::deal_mouse_move_event(Mouse_motion_event &move_event) {
+    Element::deal_mouse_move_event(move_event);
+    if (move_event.handle()) {
+        return;
+    }
+    bool leave_out = false;
+    bool leave_in = false;
+    int mouse_x = move_event.get_pos().first;
+    int mouse_y = move_event.get_pos().second;
+    if (mouse_x < get_width() + get_posX()
+        && mouse_x > get_posX()
+        && mouse_y < get_height() + get_posY()
+        && mouse_y > get_posY()) {
+
+        if (statu != Element_status::button_press) {
+            statu = Element_status::button_hover;
+        }
+
+        if (in_button == 0) {
+            leave_in = true;
+        }
+        in_button = 1;
+
+        if (callback[move]) {
+            callback[move]();
+            // move_event.set_handle(true);
+        }
+        set_redraw_flag(true);
+        present_all();
+    } else {
+        if (in_button == 1) {
+            leave_out = true;
+        }
+        in_button = 0;
+    }
+    if (leave_in) {
+        deal_mouse_move_in(move_event);
+    }
+    if (leave_out) {
+        deal_mouse_move_out(move_event);
+    }
+}
+
+void Button::deal_mouse_move_out(Mouse_motion_event &move_event) {
+    statu = Element_status::button_normal;
+    if (callback[move_out]) {
+        callback[move_out]();
+    }
+    set_redraw_flag(true);
+    present_all();
+}
+
+void Button::deal_mouse_move_in(Mouse_motion_event &move_event) {
+    if (statu != Element_status::button_press) {
+        statu = Element_status::button_hover;
+    }
+    if (callback[move_in]) {
+        callback[move_in]();
+    }
+    set_redraw_flag(true);
+    present_all();
 }
 
 void Button::draw_border(Canvas &canvas, Element_status statu) {

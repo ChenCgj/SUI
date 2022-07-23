@@ -56,6 +56,10 @@ void Graphic_board_base::draw_board(Canvas &canvas, int posX, int posY) {
     board->paint_on_canvas(canvas);
 }
 
+void Graphic_board_base::set_need_redraw(bool flag) {
+    board->set_need_redraw(flag);
+}
+
 void Graphic_board_base::move_to(int x, int y) {
     curr_pos.x = x;
     curr_pos.y = y;

@@ -226,6 +226,10 @@ void Window::update_all_with_children() {
     }
 }
 
+void Window::add_listener(std::function<void (Keyboard_event &)> func, Key_event event) {
+    callback[event] = func;
+}
+
 void Window::deal_window_resized_event(Event &e) {
     DBG(<< get_name() << "(window id:" << e.event.window.windowID << ") resized");
     Drawable::set_width(e.event.window.data1);
@@ -300,6 +304,9 @@ void Window::draw_all(Canvas &canvas) {
 * @bug when the window patch events to its children, the child should not deletable anything object, otherwise it will may cause hand point
 */
 void Window::deal_key_down_event(Keyboard_event &key_event) {
+    if (callback[Key_event::down]) {
+        callback[Key_event::down](key_event);
+    }
     std::list<Object *> node_list = get_node_list();
     for (auto p = node_list.rbegin(); p != node_list.rend(); ++p) {
         // use dynamic_cast here because the object is multi-inherit
@@ -341,6 +348,9 @@ void Window::deal_mouse_move_event(Mouse_motion_event &mouse_motion) {
 }
 
 void Window::deal_key_up_event(Keyboard_event &key_event) {
+    if (callback[Key_event::up]) {
+        callback[Key_event::up](key_event);
+    }
     std::list<Object *> node_list = get_node_list();
     for (auto p = node_list.rbegin(); p != node_list.rend(); ++p) {
         Event_handler *e_p = dynamic_cast<Event_handler *>(*p);

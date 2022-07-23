@@ -15,6 +15,7 @@ public:
     Graphic_board(int posX, int posY, int width, int height);
     void draw(Canvas &canvas) override;
     void destroy_content() override;
+    void set_redraw_flag(bool flag) override;
     ~Graphic_board();
 private:
     // void deal_key_down_event(Keyboard_event &key_event) override;

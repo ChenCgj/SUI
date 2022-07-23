@@ -57,13 +57,13 @@ bool Sketch::load_sketch(const std::string &sketch_file) {
     }
     std::string::size_type pos = sketch_file.find_last_of('.');
     std::string suffix = sketch_file.substr(pos);
-    int rtn = -1;
+    int rtn = 1;
     if (suffix == ".PNG" || suffix == ".png") {
-        rtn = IMG_Init(IMG_INIT_PNG);
+        // rtn = IMG_Init(IMG_INIT_PNG);
     } else if (suffix == ".JPG" || suffix == ".jpg") {
-        rtn = IMG_Init(IMG_INIT_JPG);
+        // rtn = IMG_Init(IMG_INIT_JPG);
     } else if (suffix == ".WEBP" || suffix == ".webp") {
-        rtn = IMG_Init(IMG_INIT_WEBP);
+        // rtn = IMG_Init(IMG_INIT_WEBP);
     } else {
         return false;
     }
@@ -79,7 +79,7 @@ bool Sketch::load_sketch(const std::string &sketch_file) {
         return false;
     }
     set_source_area(0, 0, get_sketch_width(), get_sketch_height());
-    IMG_Quit();
+    // IMG_Quit();
     return true;
 }
 

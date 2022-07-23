@@ -9,6 +9,7 @@
 #include "SUI_drawable.h"
 #include "SUI_object.h"
 #include "SUI_event_handler.h"
+#include "SUI_key_event.h"
 
 namespace sui {
 class Canvas;
@@ -52,6 +53,7 @@ public:
     void set_height(int h) override;
     void set_position(int x, int y);
     void set_size(int w, int h);
+    void add_listener(std::function<void (Keyboard_event &)> func, Key_event event);
     uint32_t get_window_id() const;
 private:
     void deal_window_resized_event(Event &event);
@@ -64,6 +66,7 @@ private:
     void deal_window_close_event(Event &event);
     void deal_other_event(Event &event) override;
     uint32_t id;
+    std::function<void (Keyboard_event &)> callback[2];
     friend class Event_handler_helper;
 };
 
