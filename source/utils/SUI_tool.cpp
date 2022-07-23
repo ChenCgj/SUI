@@ -26,6 +26,7 @@ void present(Window *pWindow) {
     static SDL_Event event;
     event.type = Event_type::update_window;
     event.user.data1 = static_cast<void *>(pWindow);
+    SDL_PushEvent(&event);
 }
 
 void set_run_mode(Run_mode mode) {

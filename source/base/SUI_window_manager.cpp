@@ -62,24 +62,24 @@ long long Window_manager::get_window_by_renderer(SDL_Renderer *pRenderer) {
 
 SDL_Window *Window_manager::get_sdl_window(const Window *pWindow) {
     Uint32 id = pWindow->get_window_id();
-    if (id == -1) {
-        ERR(<< "this window doesn't register.");
-        return nullptr;
-    }
+    // if (id == -1) {
+    //     ERR(<< "this window doesn't register.");
+    //     return nullptr;
+    // }
     return window_map[id].second.pWnd;
 }
 
 SDL_Renderer *Window_manager::get_sdl_renderer(const Window *pWindow) {
-        Uint32 id = pWindow->get_window_id();
-    if (id == -1) {
-        ERR(<< "this window doesn't register.");
-        return nullptr;
-    }
+    Uint32 id = pWindow->get_window_id();
+    // if (id == -1) {
+    //     ERR(<< "this window doesn't register.");
+    //     return nullptr;
+    // }
     return window_map[id].second.pRenderer;
 }
 
 void Window_manager::update_texture_count(SDL_Renderer *pRenderer, int count) {
-    Uint32 id = get_window_by_renderer(pRenderer);
+    long long id = get_window_by_renderer(pRenderer);
     // id will be the UINT_MAX
     if (id == -1) {
         return;

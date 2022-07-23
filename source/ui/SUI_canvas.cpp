@@ -122,7 +122,7 @@ void Canvas::draw_lines(const std::vector<Point> &points) {
         ERR(<< "draw lines failure");
         return;
     }
-    for (int i = 0; i < points.size(); ++i) {
+    for (unsigned i = 0; i < points.size(); ++i) {
         sdl_points[i] = SDL_FPoint{static_cast<float>(points[i].x), static_cast<float>(points[i].y)};
     }
     if (SDL_RenderDrawLinesF(pRenderer, sdl_points, points.size()) < 0) {
