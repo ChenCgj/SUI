@@ -14,10 +14,12 @@ Image::Image(int width, int height) : Geometry{0, 0, width, height}, pcanvas{new
     // may be sketch doesn't need bind
     sketch->get_width_property().bind(get_width_property(), func);
     sketch->get_height_property().bind(get_height_property(), func);
-    mask.set_draw_callback([](Graphic_board_base *arg){
-        arg->set_color(Color{255, 255, 255, 255});
-        arg->clear();
-    });
+    // mask.set_draw_callback([](Graphic_board_base *arg){
+    //     arg->set_color(Color{255, 255, 255, 255}, true);
+    //     arg->clear(true);
+    // });
+    mask.set_color(Color{255, 255, 255, 255});
+    mask.clear();
 }
 
 Image::~Image() {
@@ -40,15 +42,18 @@ void Image::unload_data() {
     mask.unload_data();
 }
 
+/**
+* @bug consider the Graphic_board_base::draw_operations
+*/
 void Image::load_mask(const Graphic_board_base &board) {
     mask.set_draw_callback(board.get_draw_callback());
 }
 
 void Image::unload_mask() {
-    mask.set_draw_callback([&](Graphic_board_base *arg){
-        arg->set_color(Color{255, 255, 255, 255});
-        arg->clear();
-    });
+    mask.clear_draw_operation();
+    mask.set_color(Color{255, 255, 255, 255});
+    mask.clear();
+    mask.set_draw_callback(nullptr);
 }
 
 void Image::update_image(Canvas &target_canvas) {

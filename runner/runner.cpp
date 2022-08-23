@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
     set_board();
     pWindow->add_node(pmain_pane);
     pWindow->show();
-    timer_id = add_timer(100, timer_update, nullptr);
+    timer_id = add_timer(50, timer_update, nullptr);
     register_clean(clean);
     return 0;
 }
@@ -128,15 +128,15 @@ Graphic_board *get_board() {
 void set_board() {
     Graphic_board *board = get_board();
     board->set_draw_callback(std::function<void (Graphic_board_base *)>([](Graphic_board_base *pb){
-        pb->set_color(color);
-        pb->clear();
-        pb->set_color(Color{200, 0, 0, 255});
+        pb->set_color(color, true);
+        pb->clear(true);
+        pb->set_color(Color{200, 0, 0, 255}, true);
         for (auto iter = rect_list.begin(); iter != rect_list.end(); ++iter) {
-            pb->fill_rect(*iter);
+            pb->fill_rect(*iter, true);
         }
-        pb->set_color(Color{0, 0, 0, 255});
-        pb->draw_line(0, HEIGHT / 2, WIDTH, HEIGHT / 2);
-        pb->draw_line(WIDTH / 2, HEIGHT / 2, WIDTH / 2, HEIGHT / 2 + 50 * up_down);
+        pb->set_color(Color{0, 0, 0, 255}, true);
+        pb->draw_line(0, HEIGHT / 2, WIDTH, HEIGHT / 2, true);
+        pb->draw_line(WIDTH / 2, HEIGHT / 2, WIDTH / 2, HEIGHT / 2 + 50 * up_down, true);
     }));
 }
 
@@ -182,7 +182,7 @@ uint32_t timer_update(uint32_t interval, void *param) {
     }
 
     get_board()->set_redraw_flag(true);
-    present(get_window());
+    // present(get_window());
     if (game_over) {
         return 0;
     }

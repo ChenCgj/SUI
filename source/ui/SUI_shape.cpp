@@ -11,6 +11,10 @@ Shape::~Shape() = default;
 
 Point::Point(double x, double y, double z) : x(x), y(y), z(z) {}
 
+Point *Point::clone() const {
+    return new Point{*this};
+}
+
 void Point::draw_shape(Canvas &canvas) const {
     canvas.draw_point(*this);
 }
@@ -23,6 +27,10 @@ Rect::Rect(double x1, double y1, double z1, double x2, double y2, double z2)
     : p1{x1, y1, z1}, p2{x2, y2, z2} {}
 
 Rect::Rect(double x1, double y1, double x2, double y2) : Rect{x1, y1, 0, x2, y2, 0} {}
+
+Rect *Rect::clone() const {
+    return new Rect{*this};
+}
 
 double Rect::get_width() const {
     return p2.x - p1.x;
@@ -42,6 +50,10 @@ void Rect::fill_shape(Canvas &canvas) const {
 
 Ellipse_arc::Ellipse_arc(const Point &center, double semiX_axis, double semiY_axis, double start_angle, double end_angle)
     : center{center}, semiX_axis{semiX_axis}, semiY_axis{semiY_axis}, start_angle{start_angle}, end_angle{end_angle} {}
+
+Ellipse_arc *Ellipse_arc::clone() const {
+    return new Ellipse_arc{*this};
+}
 
 void Ellipse_arc::draw_shape(Canvas &canvas) const {
     if (semiX_axis <= 0 || semiY_axis <= 0) {
@@ -89,6 +101,10 @@ void Ellipse_arc::fill_shape(Canvas &canvas) const {
 }
 
 Round_rect::Round_rect(const Rect &rect, double radius) : rect{rect}, radius{radius} {}
+
+Round_rect *Round_rect::clone() const {
+    return new Round_rect{*this};
+}
 
 void Round_rect::draw_shape(Canvas &canvas) const {
     double new_radius = std::min({fabs(rect.get_width()) / 2, fabs(rect.get_height()) / 2, radius});

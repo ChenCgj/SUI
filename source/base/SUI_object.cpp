@@ -11,19 +11,28 @@ namespace sui {
 
 /**
 * @todo this function should be static, but friend function can't set to static, avoid friend function!
+* what's more is make this function run in other thread to increase the performence of the program
 */
 // very very terrible design to use object_list
 /*static */int clean_trash(void *data) {
-    bool flag = true;
-    while (flag) {
-        for (auto iter = TRASH_ROOT->object_list.begin(); iter != TRASH_ROOT->object_list.end(); ++iter) {
-            if (*iter == TRASH_ROOT) {
-                flag = false;
-                break;
-            } else if ((*iter)->set_destroy(false) == true) {
-                delete *iter;
-                iter = TRASH_ROOT->object_list.erase(iter);
-            }
+    // bool flag = true;
+    // while (flag) {
+    //     for (auto iter = TRASH_ROOT->object_list.begin(); iter != TRASH_ROOT->object_list.end(); ++iter) {
+    //         if (*iter == TRASH_ROOT) {
+    //             flag = false;
+    //             break;
+    //         } else if ((*iter)->set_destroy(false) == true) {
+    //             delete *iter;
+    //             iter = TRASH_ROOT->object_list.erase(iter);
+    //         }
+    //     }
+    // }
+    for (auto iter = TRASH_ROOT->object_list.begin(); iter != TRASH_ROOT->object_list.end();) {
+        if ((*iter)->set_destroy(false) == true) {
+            delete *iter;
+            iter = TRASH_ROOT->object_list.erase(iter);
+        } else {
+            iter = ++iter;
         }
     }
     return 0;

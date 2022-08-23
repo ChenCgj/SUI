@@ -17,6 +17,7 @@ using namespace sui;
 static void clean();
 static int event_filter(void *data, SDL_Event *event);
 static int get_event(SDL_Event *event, uint32_t interval);
+extern int sui::clean_trash(void *data);
 
 int main(int argc, char *argv[]) {
     SDL_version version;
@@ -59,6 +60,7 @@ int main(int argc, char *argv[]) {
                 break;
             }
         }
+        clean_trash(nullptr);
         present_all();
     }
     DBG(<< "Main circle exit");

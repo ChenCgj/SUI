@@ -19,7 +19,7 @@ void Button::draw(Canvas &canvas) {
     draw_border(canvas, statu);
     Color color = {0, 0, 0, 255};
     Rect r = {0, 0, static_cast<double>(get_width()), static_cast<double>(get_height())};
-    canvas.draw_text(r, title, "Inkfree.ttf", color, 18);
+    canvas.draw_text(r, title, "consola.ttf", color, 18);
     canvas.restore_env();
     DBG(<< get_name() << "draw button ok");
 }
@@ -163,13 +163,13 @@ void Button::draw_background(Canvas &canvas, Element_status statu) {
     if (bg && flag) {
         Graphic_board_base graphic_board{bg->get_width(), bg->get_height()};
         graphic_board.set_draw_callback(std::function<void (Graphic_board_base *)>([=](Graphic_board_base *arg) {
-            arg->set_color(Color{0, 0, 0, 0});
-            arg->clear();
-            arg->set_color(Color{255, 255, 255, 255});
+            arg->set_color(Color{0, 0, 0, 0}, true);
+            arg->clear(true);
+            arg->set_color(Color{255, 255, 255, 255}, true);
             Rect rect = {0, 0, static_cast<double>(this->get_width()), static_cast<double>(this->get_height())};
             double radius = std::min(this->get_width() / 4.0, this->get_height() / 4.0);
             Round_rect rrect{rect, radius};
-            arg->fill_shape(Round_rect{rect, radius});
+            arg->fill_shape(Round_rect{rect, radius}, true);
         }));
         /**
         * @bug when load new mask, this bg's board should be update

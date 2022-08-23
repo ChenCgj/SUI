@@ -56,20 +56,20 @@ int main(int argc, char *argv[]) {
     Graphic_board *pboard = new Graphic_board(300, 300, 300, 300);
     pboard->set_draw_callback(function<void (Graphic_board_base *)>([](Graphic_board_base *arg) {
         static Image img(150, 150);
-        arg->set_color(Color{0, 125, 125, 255});
-        arg->clear();
+        arg->set_color(Color{0, 125, 125, 255}, true);
+        arg->clear(true);
         img.load_img("background.jpg");;
-        arg->draw_image(img, 75, 75);
+        arg->draw_image(img, 75, 75, true);
         img.unload_data();
-        arg->set_color(Color{255, 125, 0, 255});
-        arg->move_to(50, 50);
-        arg->line_to(50, 25);
-        arg->line_to(75, 25);
-        arg->line_to(75, 75);
-        arg->line_to(25, 75);
-        arg->line_to(25, 25);
-        arg->draw_line(0, 0, 100, 100);
-        arg->draw_text(Rect{125, 225, 300, 300}, "Hello World! Nice to meet you.", "Inkfree.ttf", Color{0, 0, 0, 255}, 20);
+        arg->set_color(Color{255, 125, 0, 255}, true);
+        arg->move_to(50, 50, true);
+        arg->line_to(50, 25, true);
+        arg->line_to(75, 25, true);
+        arg->line_to(75, 75, true);
+        arg->line_to(25, 75, true);
+        arg->line_to(25, 25, true);
+        arg->draw_line(0, 0, 100, 100, true);
+        arg->draw_text(Rect{125, 225, 300, 300}, "Hello World! Nice to meet you.", "Inkfree.ttf", Color{0, 0, 0, 255}, 20, true);
     }));
 
     Button *pButton2 = new Button("Button", 100, 100, 100, 100);
