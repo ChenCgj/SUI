@@ -21,7 +21,7 @@ struct Canvas::Renderer_env {
 static SDL_Texture *recreate_texture(SDL_Renderer *pRenderer, long long texture_id, int origin_w, int origin_h, int new_w, int new_h);
 static const double math_pi = 4 * atan(1);
 static SDL_BlendMode mask_blend_mode = SDL_ComposeCustomBlendMode(SDL_BLENDFACTOR_DST_COLOR, SDL_BLENDFACTOR_ZERO, SDL_BLENDOPERATION_ADD, SDL_BLENDFACTOR_DST_ALPHA, SDL_BLENDFACTOR_ZERO, SDL_BLENDOPERATION_ADD);
-Canvas::Canvas(const Window &window, int posX, int posY, int posZ, int width, int height, int depth)
+Canvas::Canvas(const Window_base &window, int posX, int posY, int posZ, int width, int height, int depth)
     : Canvas(posX, posY, posZ, width, height, depth) {
 
     // load the render from a window
@@ -351,7 +351,7 @@ void Canvas::set_need_redraw(bool redraw) {
 * @warning the canvas should connect to the window or renderer
 * @warning this function will clean all on the window
 */
-void Canvas::paint_on_window(const Window &window) {
+void Canvas::paint_on_window(const Window_base &window) {
     if (!prepare_texture()) {
         ERR(<< "couldn't preapre the texture.");
         return;

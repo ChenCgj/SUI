@@ -21,7 +21,7 @@
 
 namespace sui {
 
-class Window;
+class Window_base;
 class Sketch;
 /**
 * @class Canvas
@@ -45,7 +45,7 @@ public:
     * @param [in] height
     * @param [in] depth
     */
-    Canvas(const Window &window, int posX, int posY, int posZ, int width, int height, int depth);
+    Canvas(const Window_base &window, int posX, int posY, int posZ, int width, int height, int depth);
     /**
     * @fn Canvas
     * when you not provide a window, it will load the render information from it's parent if possible
@@ -77,7 +77,7 @@ public:
     * @param window a window the canvas connect to
     * @warning this function will change the window's render render target to the window and clean all on the window
     */
-    void paint_on_window(const Window &window);
+    void paint_on_window(const Window_base &window);
     /**
     * @fn paint_on_canvas
     * @param canvas the destination to render

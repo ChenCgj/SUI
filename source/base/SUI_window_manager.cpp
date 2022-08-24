@@ -3,7 +3,7 @@
 #include "SUI_in_event_handler_helper.h"
 #include "SUI_in_main.h"
 #include "SUI_in_debug.h"
-#include "SUI_window.h"
+#include "SUI_window_base.h"
 
 namespace sui {
 
@@ -60,7 +60,7 @@ long long Window_manager::get_window_by_renderer(SDL_Renderer *pRenderer) {
     return -1;
 }
 
-SDL_Window *Window_manager::get_sdl_window(const Window *pWindow) {
+SDL_Window *Window_manager::get_sdl_window(const Window_base *pWindow) {
     Uint32 id = pWindow->get_window_id();
     // if (id == -1) {
     //     ERR(<< "this window doesn't register.");
@@ -69,7 +69,7 @@ SDL_Window *Window_manager::get_sdl_window(const Window *pWindow) {
     return window_map[id].second.pWnd;
 }
 
-SDL_Renderer *Window_manager::get_sdl_renderer(const Window *pWindow) {
+SDL_Renderer *Window_manager::get_sdl_renderer(const Window_base *pWindow) {
     Uint32 id = pWindow->get_window_id();
     // if (id == -1) {
     //     ERR(<< "this window doesn't register.");
@@ -91,7 +91,7 @@ void Window_manager::update_texture_count(SDL_Renderer *pRenderer, int count) {
     DBG(<< "window(id: " << id << ")'s texture count: " << window_map[id].second.texture_count << ".");
 }
 
-void Window_manager::add_window(Window *pWindow, Window_listen_status statu, SDL_Window *pSDL_window, SDL_Renderer *pRenderer) {
+void Window_manager::add_window(Window_base *pWindow, Window_listen_status statu, SDL_Window *pSDL_window, SDL_Renderer *pRenderer) {
     Uint32 id = pWindow->get_window_id();
     if (window_map.find(id) == window_map.end()) {
         window_map[pWindow->get_window_id()] = std::make_pair(pWindow, Window_data{pSDL_window, pRenderer, statu, 0, false});
@@ -103,7 +103,7 @@ void Window_manager::add_window(Window *pWindow, Window_listen_status statu, SDL
     }
 }
 
-void Window_manager::update_window_statu(Window *pWindow, Window_listen_status statu) {
+void Window_manager::update_window_statu(Window_base *pWindow, Window_listen_status statu) {
     Uint32 id = pWindow->get_window_id();
     if (window_map.count(id) == 0) {
         ERR(<< "not add this window to window manager.");
@@ -125,7 +125,7 @@ void Window_manager::remove_window(Uint32 window_no) {
     could_quit();
 }
 
-void Window_manager::remove_window(Window *pWindow) {
+void Window_manager::remove_window(Window_base *pWindow) {
     remove_window(pWindow->get_window_id());
 }
 
@@ -141,7 +141,7 @@ void Window_manager::patch_event_to(Uint32 window_no, const SDL_Event &event, Wi
         flag = false;
     }
     if (flag) {
-        Window *pWnd = window_map[window_no].first;
+        Window_base *pWnd = window_map[window_no].first;
         Window_listen_status wnd_lis_statu = window_map[window_no].second.listen_statu;
         if (statu == window_listening_ignore || (statu == wnd_lis_statu)) {
             push_event(pWnd, event);
@@ -167,12 +167,12 @@ void Window_manager::update_all_window() {
     }
 }
 
-void Window_manager::update_window(Window *pWindow) {
+void Window_manager::update_window(Window_base *pWindow) {
     pWindow->redraw();
 }
 
-Window *Window_manager::get_window(Uint32 window_no) {
-    Window *pWnd = nullptr;
+Window_base *Window_manager::get_window(Uint32 window_no) {
+    Window_base *pWnd = nullptr;
     if (window_map.find(window_no) != window_map.end()) {
         pWnd = window_map[window_no].first;
     }
@@ -189,7 +189,7 @@ void Window_manager::could_quit() {
     }
 }
 
-void Window_manager::push_event(Window *pWnd, const SDL_Event &event) {
+void Window_manager::push_event(Window_base *pWnd, const SDL_Event &event) {
     switch (event.type) {
     case SDL_KEYDOWN: {
         Keyboard_event key_down{event};

@@ -191,5 +191,8 @@ int main(int argc, char *argv[]) {
     }, sui::Button::Button_event::up);
     pWindow2->add_node(pButton3);
     pWindow2->show();
+
+    Dialog *dlg = new Dialog(pWindow2, "message...", "dialog", 250, 200);
+    dlg->show();
     return 0;
 }

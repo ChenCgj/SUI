@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
                 WINDOW_MANAGER->update_all_window();
                 break;
             case Event_type::update_window:
-                WINDOW_MANAGER->update_window(static_cast<Window *>(event.user.data1));
+                WINDOW_MANAGER->update_window(static_cast<Window_base *>(event.user.data1));
                 break;
             case SDL_QUIT:
                 // maybe have some window not be closed, when we sent message to close them

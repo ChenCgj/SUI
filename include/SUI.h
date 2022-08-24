@@ -24,5 +24,6 @@
 #include "SUI_pane_grid.h"
 #include "SUI_pane_horizontal.h"
 #include "SUI_pane_vertical.h"
+#include "SUI_dialog.h"
 
 #endif
