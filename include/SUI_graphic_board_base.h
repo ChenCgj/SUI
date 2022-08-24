@@ -26,7 +26,7 @@ public:
     void fill_rect(const Rect &rect, bool callback_flag = false);
     void draw_rect(const Rect &rect, bool callback_flag = false);
     void clear(bool callback_flag = false);
-    void set_color(const Color &color, bool callback_flag = false);
+    void set_draw_color(const Color &color, bool callback_flag = false);
     void fill_shape(const Shape &shape, bool callback_flag = false);
     void draw_shape(const Shape &shape, bool callback_flag = false);
     void draw_point(const Point &point, bool callback_flag = false);

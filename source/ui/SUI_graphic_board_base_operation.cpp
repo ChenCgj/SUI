@@ -62,10 +62,10 @@ void GBBOP_clear::execute_operation(Graphic_board_base *board) {
     board->clear(true);
 }
 
-GBBOP_set_color::GBBOP_set_color(const Color &color) : mcolor{color} {}
+GBBOP_set_draw_color::GBBOP_set_draw_color(const Color &color) : mcolor{color} {}
 
-void GBBOP_set_color::execute_operation(Graphic_board_base *board) {
-    board->set_color(mcolor, true);
+void GBBOP_set_draw_color::execute_operation(Graphic_board_base *board) {
+    board->set_draw_color(mcolor, true);
 }
 
 GBBOP_fill_shape::GBBOP_fill_shape(const Shape &shape) : mshape{shape.clone()} {}

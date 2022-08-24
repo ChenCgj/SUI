@@ -6,6 +6,7 @@ using namespace std;
 using namespace sui;
 
 int main(int argc, char *argv[]) {
+    set_run_mode(Run_mode::wait);
     Window *pWindow = new Window("Hello Test", 1280, 960, Window_flag::window_flag_resizable);
     pWindow->set_background_color(255, 125, 125, 255);
     Rect target_rect{0, 0, 600, 600};
@@ -54,23 +55,39 @@ int main(int argc, char *argv[]) {
         }
     }, sui::Button::Button_event::up);
     Graphic_board *pboard = new Graphic_board(300, 300, 300, 300);
-    pboard->set_draw_callback(function<void (Graphic_board_base *)>([](Graphic_board_base *arg) {
-        static Image img(150, 150);
-        arg->set_color(Color{0, 125, 125, 255}, true);
-        arg->clear(true);
-        img.load_img("background.jpg");;
-        arg->draw_image(img, 75, 75, true);
-        img.unload_data();
-        arg->set_color(Color{255, 125, 0, 255}, true);
-        arg->move_to(50, 50, true);
-        arg->line_to(50, 25, true);
-        arg->line_to(75, 25, true);
-        arg->line_to(75, 75, true);
-        arg->line_to(25, 75, true);
-        arg->line_to(25, 25, true);
-        arg->draw_line(0, 0, 100, 100, true);
-        arg->draw_text(Rect{125, 225, 300, 300}, "Hello World! Nice to meet you.", "Inkfree.ttf", Color{0, 0, 0, 255}, 20, true);
-    }));
+    // pboard->set_draw_callback(function<void (Graphic_board_base *)>([](Graphic_board_base *arg) {
+    //     static Image img(150, 150);
+    //     arg->set_draw_color(Color{0, 125, 125, 255}, true);
+    //     arg->clear(true);
+    //     img.load_img("background.jpg");
+    //     arg->draw_image(img, 75, 75, true);
+    //     img.unload_data();  // why should I add this?
+    //     arg->set_draw_color(Color{255, 125, 0, 255}, true);
+    //     arg->move_to(50, 50, true);
+    //     arg->line_to(50, 25, true);
+    //     arg->line_to(75, 25, true);
+    //     arg->line_to(75, 75, true);
+    //     arg->line_to(25, 75, true);
+    //     arg->line_to(25, 25, true);
+    //     arg->draw_line(0, 0, 100, 100, true);
+    //     arg->draw_text(Rect{125, 225, 300, 300}, "Hello World! Nice to meet you.", "Inkfree.ttf", Color{0, 0, 0, 255}, 20, true);
+    // }));
+    // bug
+    static Image img(150, 150);
+    pboard->set_draw_color(Color{0, 125, 125, 255});
+    pboard->clear();
+    img.load_img("background.jpg");;
+    pboard->draw_image(img, 75, 75);
+    // img.unload_data();
+    pboard->set_draw_color(Color{255, 125, 0, 255});
+    pboard->move_to(50, 50);
+    pboard->line_to(50, 25);
+    pboard->line_to(75, 25);
+    pboard->line_to(75, 75);
+    pboard->line_to(25, 75);
+    pboard->line_to(25, 25);
+    pboard->draw_line(0, 0, 100, 100);
+    pboard->draw_text(Rect{125, 225, 300, 300}, "Hello World! Nice to meet you.", "Inkfree.ttf", Color{0, 0, 0, 255}, 20);
 
     Button *pButton2 = new Button("Button", 100, 100, 100, 100);
     pButton2->set_color(0, 0, 0, 125);

@@ -161,11 +161,11 @@ void Graphic_board_base::clear(bool callback_flag) {
     }
 }
 
-void Graphic_board_base::set_color(const Color &color, bool callback_flag) {
+void Graphic_board_base::set_draw_color(const Color &color, bool callback_flag) {
     if (callback_flag) {
         board->set_color(color.red, color.green, color.blue, color.alpha);
     } else {
-        GBB_operation *op = new GBBOP_set_color{color};
+        GBB_operation *op = new GBBOP_set_draw_color{color};
         draw_operations.push_back(op);
     }
 }

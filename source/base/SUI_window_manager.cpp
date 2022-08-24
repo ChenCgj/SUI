@@ -96,6 +96,7 @@ void Window_manager::add_window(Window *pWindow, Window_listen_status statu, SDL
     if (window_map.find(id) == window_map.end()) {
         window_map[pWindow->get_window_id()] = std::make_pair(pWindow, Window_data{pSDL_window, pRenderer, statu, 0, false});
         ++window_count;
+        target_map[get_sdl_renderer(pWindow)] = nullptr;
         DBG(<< "window manager add " << pWindow->get_name() << "(window id: " << id << ")");
     } else {
         ERR(<< "add a window has added register.");
@@ -113,6 +114,7 @@ void Window_manager::update_window_statu(Window *pWindow, Window_listen_status s
 
 void Window_manager::remove_window(Uint32 window_no) {
     DBG(<< "window manager remove " << window_map[window_no].first->get_name() << "(window id:" << window_no << ")");
+    target_map.erase(get_sdl_renderer(get_window(window_no)));
     // window_map.erase(window_no);
     window_map[window_no].second.destroyable = true;
     window_map[window_no].second.listen_statu = Window_manager::window_message_unlistening;
@@ -242,6 +244,15 @@ void Window_manager::push_event(Window *pWnd, const SDL_Event &event) {
         break;
     }
     }
+}
+
+SDL_Texture *Window_manager::get_render_target(SDL_Renderer *pRenderer) {
+    return target_map[pRenderer];
+}
+
+int Window_manager::set_render_target(SDL_Renderer *pRenderer, SDL_Texture *texture) {
+    target_map[pRenderer] = texture;
+    return SDL_SetRenderTarget(pRenderer, texture);
 }
 
 }

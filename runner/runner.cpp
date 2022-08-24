@@ -128,13 +128,13 @@ Graphic_board *get_board() {
 void set_board() {
     Graphic_board *board = get_board();
     board->set_draw_callback(std::function<void (Graphic_board_base *)>([](Graphic_board_base *pb){
-        pb->set_color(color, true);
+        pb->set_draw_color(color, true);
         pb->clear(true);
-        pb->set_color(Color{200, 0, 0, 255}, true);
+        pb->set_draw_color(Color{200, 0, 0, 255}, true);
         for (auto iter = rect_list.begin(); iter != rect_list.end(); ++iter) {
             pb->fill_rect(*iter, true);
         }
-        pb->set_color(Color{0, 0, 0, 255}, true);
+        pb->set_draw_color(Color{0, 0, 0, 255}, true);
         pb->draw_line(0, HEIGHT / 2, WIDTH, HEIGHT / 2, true);
         pb->draw_line(WIDTH / 2, HEIGHT / 2, WIDTH / 2, HEIGHT / 2 + 50 * up_down, true);
     }));

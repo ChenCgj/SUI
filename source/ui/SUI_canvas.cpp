@@ -248,7 +248,8 @@ void Canvas::draw_sketch(const Sketch &image) {
             ERR(<< "create texture fail. " << SDL_GetError());
         }
         save_env();
-        SDL_SetRenderTarget(pRenderer, texture);
+        // SDL_SetRenderTarget(pRenderer, texture);
+        WINDOW_MANAGER->set_render_target(pRenderer, texture);
         if (image_texture) {
             SDL_RenderCopy(pRenderer, image_texture, nullptr, nullptr);
         } else {
@@ -360,7 +361,8 @@ void Canvas::paint_on_window(const Window &window) {
     SDL_Renderer *pRenderer = WINDOW_MANAGER->get_sdl_renderer(&window);
     DBG(<< "src: " << rect_src.x << " " << rect_src.y << " " << rect_src.w << " " << rect_src.h);
     DBG(<< "dest: " << rect_dst.x << " " << rect_dst.y << " " << rect_dst.w << " " << rect_dst.h);
-    SDL_SetRenderTarget(pRenderer, nullptr);
+    // SDL_SetRenderTarget(pRenderer, nullptr);
+    WINDOW_MANAGER->set_render_target(pRenderer, nullptr);
     SDL_SetRenderDrawColor(pRenderer, 0, 0, 0, 0);
     SDL_RenderClear(pRenderer);
     SDL_Texture *pTexture = TEXTURE_SDL_MANAGER->get_texture(texture_id);
@@ -459,7 +461,7 @@ bool Canvas::prepare_texture() {
             // it was finded that the **target = texture + 0x98** instead of **target == texture**
             // so we make the target which is not nullptr in stack point to the new texture
             // however, we wouldn't use this canvas render anything but the window and the texture in the canvas itself.
-            if (e->pOrigin_target/* == pTexture*/) {
+            if (e->pOrigin_target == pTexture /*== (SDL_Texture *)((intptr_t)pTexture + 0x98)*/) {
                 e->pOrigin_target = new_texture;
             }
             env_bak.push(e);
@@ -512,16 +514,22 @@ void Canvas::save_env() {
     // store_env(pRenderer, env);
     if (pRenderer != nullptr) {
         SDL_GetRenderDrawColor(pRenderer, &env->o_r, &env->o_g, &env->o_b, &env->o_a);
-        env->pOrigin_target = SDL_GetRenderTarget(pRenderer);
+        env->pOrigin_target = WINDOW_MANAGER->get_render_target(pRenderer);
+        // env->pOrigin_target = SDL_GetRenderTarget(pRenderer);
+        // if (env->pOrigin_target != nullptr) {
+        //     env->pOrigin_target = (SDL_Texture *)((intptr_t)env->pOrigin_target - 0x98);
+        // }
     }
     env_stack.push(env);
     if (env_stack.size() > 1) {
         DBG(<< "WARNING: some canvas push two env!");
     }
     SDL_Texture *pTexture = TEXTURE_SDL_MANAGER->get_texture(texture_id);
-    if (SDL_SetRenderTarget(pRenderer, pTexture) == -1) {
+    // if (SDL_SetRenderTarget(pRenderer, pTexture) == -1) {
+    if (WINDOW_MANAGER->set_render_target(pRenderer, pTexture) == -1) {
         ERR(<< "couldn't set the target. SDL: " << SDL_GetError());
     }
+    // LOG(<< "target: " << (intptr_t) SDL_GetRenderTarget(pRenderer) << " p: " << (intptr_t)pTexture);
     // notice that the target we get and we set is not equal!!!
     // printf("the set texture is %p, and the get texture is %p\n", pCanvas_data->pTexture, SDL_GetRenderTarget(pCanvas_data->pRenderer));
 }
@@ -531,8 +539,9 @@ void Canvas::restore_env() {
     env_stack.pop();
     if (pRenderer != nullptr) {
         set_color(env->o_r, env->o_g, env->o_b, env->o_a);
-        if (SDL_SetRenderTarget(pRenderer, env->pOrigin_target) == -1) {
-            ERR(<< "Set target failure " << SDL_GetError());
+        // if (SDL_SetRenderTarget(pRenderer, env->pOrigin_target) == -1) {
+        if (WINDOW_MANAGER->set_render_target(pRenderer, env->pOrigin_target) == -1) {
+            ERR(<< "Set target texture " << (void *)env->pOrigin_target << " SDL failure: " << SDL_GetError());
         }
     }
     delete env;
@@ -572,7 +581,8 @@ static SDL_Texture *recreate_texture(SDL_Renderer *pRenderer, long long texture_
     }
     // should set the blend mode so that we can have the transparent effective
     // SDL_SetTextureBlendMode(new_texture, SDL_BlendMode::SDL_BLENDMODE_BLEND);
-    SDL_SetRenderTarget(pRenderer, new_texture);
+    // SDL_SetRenderTarget(pRenderer, new_texture);
+    WINDOW_MANAGER->set_render_target(pRenderer, new_texture);
     // clean the renderer
     SDL_SetRenderDrawColor(pRenderer, 0, 0, 0, 0);
     SDL_RenderClear(pRenderer);

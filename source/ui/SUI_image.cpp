@@ -18,7 +18,7 @@ Image::Image(int width, int height) : Geometry{0, 0, width, height}, pcanvas{new
     //     arg->set_color(Color{255, 255, 255, 255}, true);
     //     arg->clear(true);
     // });
-    mask.set_color(Color{255, 255, 255, 255});
+    mask.set_draw_color(Color{255, 255, 255, 255});
     mask.clear();
 }
 
@@ -51,7 +51,7 @@ void Image::load_mask(const Graphic_board_base &board) {
 
 void Image::unload_mask() {
     mask.clear_draw_operation();
-    mask.set_color(Color{255, 255, 255, 255});
+    mask.set_draw_color(Color{255, 255, 255, 255});
     mask.clear();
     mask.set_draw_callback(nullptr);
 }

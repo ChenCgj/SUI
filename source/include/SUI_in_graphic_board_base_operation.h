@@ -97,9 +97,9 @@ public:
     void execute_operation(Graphic_board_base *board) override;
 };
 
-class GBBOP_set_color : public GBB_operation {
+class GBBOP_set_draw_color : public GBB_operation {
 public:
-    GBBOP_set_color(const Color &color);
+    GBBOP_set_draw_color(const Color &color);
     void execute_operation(Graphic_board_base *board) override;
 private:
     Color mcolor;

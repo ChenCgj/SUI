@@ -39,9 +39,12 @@ public:
     SDL_Window *get_sdl_window(const Window *pWindow);
     SDL_Renderer *get_sdl_renderer(const Window *pWindow);
     SDL_Renderer *get_window_id();
+    SDL_Texture *get_render_target(SDL_Renderer *pRenderer);
+    int set_render_target(SDL_Renderer *pRenderer, SDL_Texture *texture);
 private:
     struct Window_data;
     std::map<Uint32, std::pair<Window *, Window_data>> window_map;
+    std::map<SDL_Renderer *, SDL_Texture *> target_map;
     void push_event(Window *pw, const SDL_Event &event);
     long long get_window_by_renderer(SDL_Renderer *pRenderer);
     void could_quit();

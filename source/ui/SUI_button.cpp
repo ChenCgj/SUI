@@ -163,9 +163,9 @@ void Button::draw_background(Canvas &canvas, Element_status statu) {
     if (bg && flag) {
         Graphic_board_base graphic_board{bg->get_width(), bg->get_height()};
         graphic_board.set_draw_callback(std::function<void (Graphic_board_base *)>([=](Graphic_board_base *arg) {
-            arg->set_color(Color{0, 0, 0, 0}, true);
+            arg->set_draw_color(Color{0, 0, 0, 0}, true);
             arg->clear(true);
-            arg->set_color(Color{255, 255, 255, 255}, true);
+            arg->set_draw_color(Color{255, 255, 255, 255}, true);
             Rect rect = {0, 0, static_cast<double>(this->get_width()), static_cast<double>(this->get_height())};
             double radius = std::min(this->get_width() / 4.0, this->get_height() / 4.0);
             Round_rect rrect{rect, radius};
