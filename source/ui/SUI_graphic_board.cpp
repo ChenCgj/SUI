@@ -1,6 +1,8 @@
 #include "SUI_in_canvas.h"
 #include "SUI_in_debug.h"
+#include "SUI_in_events.h"
 #include "SUI_graphic_board.h"
+#include "SUI_tool.h"
 
 namespace sui {
 
@@ -38,4 +40,67 @@ void Graphic_board::destroy_content() {
     Element::destroy_content();
 }
 
+void Graphic_board::add_listener(std::function<void ()> func, Graphic_board_event event) {
+    callback[event] = func;
+}
+
+void Graphic_board::deal_mouse_button_down_event(Mouse_button_event &mouse_button) {
+    if (mouse_button.handle()) {
+        return;
+    }
+    int mouse_x = mouse_button.event.button.x;
+    int mouse_y = mouse_button.event.button.y;
+    if (mouse_x < get_width() + get_posX()
+        && mouse_x > get_posX()
+        && mouse_y < get_height() + get_posY()
+        && mouse_y > get_posY()) {
+        
+        if (callback[down]) {
+            callback[down]();
+        }
+        set_redraw_flag(true);
+        present_all();
+        mouse_button.set_handle(true);
+    }
+}
+
+void Graphic_board::deal_mouse_button_up_event(Mouse_button_event &mouse_button) {
+    if (mouse_button.handle()) {
+        return;
+    }
+    int mouse_x = mouse_button.event.button.x;
+    int mouse_y = mouse_button.event.button.y;
+    if (mouse_x < get_width() + get_posX()
+        && mouse_x > get_posX()
+        && mouse_y < get_height() + get_posY()
+        && mouse_y > get_posY()) {
+        
+        if (callback[up]) {
+            callback[up]();
+        }
+        set_redraw_flag(true);
+        present_all();
+        mouse_button.set_handle(true);
+    }
+}
+
+void Graphic_board::deal_mouse_move_event(Mouse_motion_event &mouse_motion) {
+    if (mouse_motion.handle()) {
+        return;
+    }
+    int mouse_x = mouse_motion.event.button.x;
+    int mouse_y = mouse_motion.event.button.y;
+    if (mouse_x < get_width() + get_posX()
+        && mouse_x > get_posX()
+        && mouse_y < get_height() + get_posY()
+        && mouse_y > get_posY()) {
+        
+        if (callback[move]) {
+            callback[move]();
+        }
+        set_redraw_flag(true);
+        present_all();
+        mouse_motion.set_handle(true);
+    }
+}
 }

@@ -1,3 +1,4 @@
+#include <iostream>
 #include <functional>
 
 #include "SUI.h"
@@ -88,6 +89,16 @@ int main(int argc, char *argv[]) {
     pboard->line_to(25, 25);
     pboard->draw_line(0, 0, 100, 100);
     pboard->draw_text(Rect{125, 225, 300, 300}, "Hello World! Nice to meet you.", "Inkfree.ttf", Color{0, 0, 0, 255}, 20);
+    pboard->add_listener([&](void) {
+        auto pos = get_mouse_pos();
+        cout << "x: " << pos.first << " y: " << pos.second << endl;
+    }, Graphic_board::Graphic_board_event::move);
+    pboard->add_listener([&]() {
+        cout << "button down in graphic board" << endl;
+    }, Graphic_board::Graphic_board_event::down);
+    pboard->add_listener([&]() {
+        cout << "button up in graphic board" << endl;
+    }, Graphic_board::Graphic_board_event::up);
 
     Button *pButton2 = new Button("Button", 100, 100, 100, 100);
     pButton2->set_color(0, 0, 0, 125);

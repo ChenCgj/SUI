@@ -44,7 +44,7 @@ void Button::deal_mouse_button_down_event(Mouse_button_event &mouse_button) {
         && mouse_y < get_height() + get_posY()
         && mouse_y > get_posY()) {
         statu = button_press;
-        
+ 
         if (callback[down]) {
             callback[down]();
         }

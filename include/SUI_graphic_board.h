@@ -12,23 +12,28 @@
 namespace sui {
 class Graphic_board : public Graphic_board_base, public Element {
 public:
+    enum Graphic_board_event {
+        down, up, move
+    };
     Graphic_board(int posX, int posY, int width, int height);
     void draw(Canvas &canvas) override;
     void destroy_content() override;
     void set_redraw_flag(bool flag) override;
+    void add_listener(std::function<void (void)> func, Graphic_board_event event);
     ~Graphic_board();
 private:
     // void deal_key_down_event(Keyboard_event &key_event) override;
     // void deal_key_up_event(Keyboard_event &key_event) override;
-    // void deal_mouse_button_down_event(Mouse_button_event &mouse_button) override;
-    // void deal_mouse_button_up_event(Mouse_button_event &mouse_button) override;
+    void deal_mouse_button_down_event(Mouse_button_event &mouse_button) override;
+    void deal_mouse_button_up_event(Mouse_button_event &mouse_button) override;
     // void deal_mouse_wheel_event(Mouse_wheel_event &mouse_wheel) override;
-    // void deal_mouse_move_event(Mouse_motion_event &mouse_motion) override;
+    void deal_mouse_move_event(Mouse_motion_event &mouse_motion) override;
     // void deal_other_event(Event &event) override;
     // Element_status statu;
     // std::function<void (void *arg)> free_arg;
     // void *arg;
     // bool delete_arg;
+    std::function<void (void)> callback[3];
     friend class Event_handler_helper;
 };
 }
