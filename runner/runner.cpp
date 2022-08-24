@@ -74,7 +74,8 @@ Pane *get_main_pane() {
         pButton_quit_game->add_listener([](){
             quit();
         }, sui::Button::Button_event::up);
-        Label *label = new Label("PLAY GAME", 50, 0, 0, 100, 100);
+        string text = "Hello, I'm a developer. Welcome to this simple game. Player should avoid being touched by the red sticks, use the W and S to flip the black stick.";
+        Text_area *label = new Text_area(text, 18, 0, 0, 100, 100);
         vpane->add_node(label);
         vpane->add_node(pButton_start_game);
         vpane->add_node(pButton_quit_game);

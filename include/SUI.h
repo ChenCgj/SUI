@@ -25,5 +25,6 @@
 #include "SUI_pane_vertical.h"
 #include "SUI_dialog.h"
 #include "SUI_label.h"
+#include "SUI_text_area.h"
 
 #endif
