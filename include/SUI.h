@@ -7,7 +7,6 @@
 #include "SUI_color.h"
 #include "SUI_decorator.h"
 #include "SUI_drawable.h"
-#include "SUI_element.h"
 #include "SUI_event_handler.h"
 #include "SUI_events.h"
 #include "SUI_geometry.h"
@@ -25,5 +24,6 @@
 #include "SUI_pane_horizontal.h"
 #include "SUI_pane_vertical.h"
 #include "SUI_dialog.h"
+#include "SUI_label.h"
 
 #endif

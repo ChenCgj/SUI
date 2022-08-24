@@ -74,8 +74,11 @@ Pane *get_main_pane() {
         pButton_quit_game->add_listener([](){
             quit();
         }, sui::Button::Button_event::up);
+        Label *label = new Label("PLAY GAME", 50, 0, 0, 100, 100);
+        vpane->add_node(label);
         vpane->add_node(pButton_start_game);
         vpane->add_node(pButton_quit_game);
+        vpane->add_content(*label);
         vpane->add_content(*pButton_start_game);
         vpane->add_content(*pButton_quit_game);
     }
