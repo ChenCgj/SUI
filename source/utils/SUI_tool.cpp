@@ -18,7 +18,7 @@ void quit() {
     SDL_PushEvent(&event);
 }
 
-void register_clean(void (*func)()) {
+void register_clean(std::function<void (void)> func) {
     clean_last = func;
 }
 

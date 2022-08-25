@@ -1,6 +1,8 @@
 #ifndef SUI_IN_MAIN_H
 #define SUI_IN_MAIN_H
 
+#include <functional>
+
 #include "SDL_events.h"
 #include "SUI_run_mode.h"
 // #include "SUI_in_event_handler_helper.h"
@@ -19,7 +21,7 @@ extern int SUI_main(int argc, char *argv[]);
 
 namespace sui {
 
-extern void (*clean_last)();
+extern std::function<void (void)> clean_last;
 extern Run_mode run_mode;
 
 enum Event_type {

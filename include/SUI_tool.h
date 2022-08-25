@@ -10,7 +10,7 @@ void present_all();
 void present(Window_base *pWindow);
 void set_theme(Theme_index index);
 void quit();
-void register_clean(void (*func)());
+void register_clean(std::function<void (void)> func);
 void set_run_mode(Run_mode mode);
 }
 

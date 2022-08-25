@@ -32,7 +32,7 @@ namespace sui {
             delete *iter;
             iter = TRASH_ROOT->object_list.erase(iter);
         } else {
-            iter = ++iter;
+            ++iter;
         }
     }
     return 0;

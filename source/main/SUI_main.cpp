@@ -8,7 +8,7 @@
 #include "SUI_tool.h"
 
 namespace sui {
-void (*clean_last)() = nullptr;
+std::function<void (void)> clean_last = nullptr;
 Run_mode run_mode = poll;
 }
 
@@ -61,7 +61,8 @@ int main(int argc, char *argv[]) {
             }
         }
         clean_trash(nullptr);
-        present_all();
+        // present_all();
+        WINDOW_MANAGER->update_all_window();
     }
     DBG(<< "Main circle exit");
     clean();
@@ -96,7 +97,7 @@ int event_filter(void *data, SDL_Event *event) {
     //     WINDOW_MANAGER->update_all_window();
     //     return 0;
     // case Event_type::update_window:
-    //     WINDOW_MANAGER->update_window(static_cast<Window *>(event->user.data1));
+    //     WINDOW_MANAGER->update_window(static_cast<Window_base *>(event->user.data1));
     //     return 0;
     case SDL_QUIT:
         return 1;
