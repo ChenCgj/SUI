@@ -1,6 +1,7 @@
 # SUI
 
-A simple UI library built base on SDL2
+A simple UI library built base on SDL2  
+**Comments in the code are outdated!!!**
 
 ## Show
 
@@ -16,7 +17,7 @@ A simple UI library built base on SDL2
 
 - build on ubuntu
 
-  1. install SDL2 library
+  1. install SDL2 library (you should make the version >= 2.0.18 as so as sdl2_ttf)
 
      ```sh
      sudo apt-get install libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev
@@ -36,6 +37,12 @@ A simple UI library built base on SDL2
      # and you are supposed to modified the font used for button
      # if you are using ubuntu, may you can modified the font to `"/usr/share/fonts/truetype/ubuntu/UbuntuMono-B.ttf"` in `source/ui/SUI_button.cpp:23:32`
      ./test/sui_test
+     # the next one is a game
+     make demo
+     cd Space_Impact && ./Space_Impact
+     # the next one is also a game
+     make runner
+     cd runner && ./runner
      ```
 
 - build on widnow
