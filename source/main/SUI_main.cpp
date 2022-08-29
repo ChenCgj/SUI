@@ -1,5 +1,6 @@
 // #include "SDL_hints.h"
 #include "SDL_version.h"
+#include "SDL_main.h"
 
 #include "SUI_in_main.h"
 #include "SUI_in_managers.h"
