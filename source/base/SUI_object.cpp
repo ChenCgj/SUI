@@ -48,6 +48,23 @@ std::string Object::get_name() {
 Object::Object() : object_name{"Object"}, ID{-1}, parent{nullptr}, object_list{}, can_delete{false} {
     static int id_count = 0;
     ID = id_count++;
+
+    run_clean = true;
+    clean_func = nullptr;
+    clean_arg = nullptr;
+}
+
+void Object::prepare_destroy() {
+    if (run_clean && clean_func) {
+        clean_func(clean_arg);
+        run_clean = false;
+        clean_arg = nullptr;
+    }
+}
+
+void Object::register_clean(std::function<void (void *)> func, void *arg) {
+    clean_func = func;
+    clean_arg = arg;
 }
 
 Object *Object::root_instance() {
@@ -139,6 +156,7 @@ bool Object::set_destroy(bool flag) {
 }
 
 Object::~Object() {
+    prepare_destroy();
     DBG(<< "delete " << get_name() << "'s " << "children");
     // delete all children
     for (auto p : object_list) {

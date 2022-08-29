@@ -8,6 +8,7 @@ namespace sui {
 class Pane_base : public Element {
 public:
     Pane_base(int posX, int posY, int width, int height);
+    ~Pane_base();
 };
 
 }

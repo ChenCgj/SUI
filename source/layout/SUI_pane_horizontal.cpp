@@ -8,6 +8,10 @@ Horizontal_pane::Horizontal_pane(int posX, int posY, int width, int height) :
     object_name = "horizontal pane";
 }
 
+Horizontal_pane::~Horizontal_pane() {
+    prepare_destroy();
+}
+
 void Horizontal_pane::set_gap(int gap) {
     this->gap = gap;
 }

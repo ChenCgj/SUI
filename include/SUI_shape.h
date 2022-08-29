@@ -43,6 +43,10 @@ private:
     friend Canvas;
 };
 
+Rect get_intersection(const Rect &r1, const Rect &r2);
+
+void normalize_rect(Rect &r);
+
 class Ellipse_arc : public Shape {
 public:
     Ellipse_arc(const Point &center, double semiX_axis = 1.0, double semiY_axis = 1.0, double start_angle = 0.0, double end_angle = 1.0);

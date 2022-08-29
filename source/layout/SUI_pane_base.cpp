@@ -10,5 +10,7 @@ Pane_base::Pane_base(int posX, int posY, int width, int height) :
     statu = Element_status::pane_normal;
 }
 
-
+Pane_base::~Pane_base() {
+    prepare_destroy();
+}
 }

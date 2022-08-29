@@ -69,6 +69,19 @@ Key_code get_key(Keyboard_event &event) {
     return event.get_key();
 }
 
+bool *get_key_state(int &num_keys) {
+    static bool state[512] = {false};
+    const Uint8 *key_state = SDL_GetKeyboardState(&num_keys);
+    for (int i = 0; i < 512 && i < num_keys; ++i) {
+        int keycode = static_cast<int>(SDL_GetKeyFromScancode(static_cast<SDL_Scancode>(i)));
+        if (keycode > 512) {
+            continue;
+        }
+        state[keycode] = key_state[i];
+    }
+    return state;
+}
+
 int add_timer(int interval, uint32_t (*func)(uint32_t, void *), void *param) {
     return TIMER_MANAGER->add_timer(interval, func, param);
 }

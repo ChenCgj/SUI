@@ -8,6 +8,10 @@ Grid_pane::Grid_pane(int posX, int posY, int width, int height, int row, int col
     object_name = "grid pane";
 }
 
+Grid_pane::~Grid_pane() {
+    prepare_destroy();
+}
+
 void Grid_pane::set_grid(int row, int col) {
     row_count = row;
     col_count = col;

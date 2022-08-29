@@ -8,6 +8,10 @@ Pane::Pane(int posX, int posY, int width, int height) : Geometry{posX, posY, wid
     object_name = "pane";
 }
 
+Pane::~Pane() {
+    prepare_destroy();
+}
+
 void Pane::add_content(Geometry &element, int x, int y) {
     element.get_posX_property().bind(get_posX_property(), get_posX_func(x));
     element.get_posY_property().bind(get_posY_property(), get_posY_func(y));

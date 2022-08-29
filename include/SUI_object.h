@@ -8,6 +8,7 @@
 
 #include <list>
 #include <string>
+#include <functional>
 
 namespace sui {
 class Window;
@@ -40,18 +41,24 @@ public:
     * @warning if set flag true success, you should not use this object any more as well as calling this function.
     */
     bool set_destroy(bool flag);
-
+    void register_clean(std::function<void (void *)> func, void *arg);
     virtual std::string get_name();
     virtual ~Object();
 protected:
     std::string object_name;
     Object();
     Object *set_parent(Object *parent);
+    void prepare_destroy();
 private:
     int ID;
     Object *parent;
     std::list<Object *> object_list;
     bool can_delete;
+
+    bool run_clean;
+    std::function<void (void *)> clean_func;
+    void *clean_arg;
+
     // a tool function to move a object
     void add_node_from(Object *src, Object *child);
     friend int clean_trash(void *data);

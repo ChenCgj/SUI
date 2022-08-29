@@ -106,6 +106,7 @@ Window_base::~Window_base() {
     //     }
     // }
     // the Window_data will be freed auto
+    prepare_destroy();
     DBG(<< "delete " <<  get_name() << " ok");
 }
 

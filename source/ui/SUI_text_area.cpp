@@ -42,6 +42,7 @@ void Text_area::draw(Canvas &canvas) {
 }
 
 Text_area::~Text_area() {
+    prepare_destroy();
     DBG(<< get_name() << "was destroy.");
 }
 

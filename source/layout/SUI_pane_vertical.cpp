@@ -8,6 +8,10 @@ Vertical_pane::Vertical_pane(int posX, int posY, int width, int height) :
     object_name = "vertical pane";
 }
 
+Vertical_pane::~Vertical_pane() {
+    prepare_destroy();
+}
+
 void Vertical_pane::set_gap(int gap) {
     this->gap = gap;
 }

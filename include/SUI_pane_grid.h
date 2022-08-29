@@ -14,6 +14,7 @@ public:
     void set_gap(int row_gap, int col_gap);
     int get_row_gap() const;
     int get_col_gap() const;
+    ~Grid_pane();
 private:
     int row_count;
     int col_count;

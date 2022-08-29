@@ -48,6 +48,26 @@ void Rect::fill_shape(Canvas &canvas) const {
     canvas.fill_rect(*this);
 }
 
+void normalize_rect(Rect &r) {
+    double r1x1 = std::min(r.p1.x, r.p2.x);
+    double r1x2 = std::max(r.p1.x, r.p2.x);
+    double r1y1 = std::min(r.p1.y, r.p2.y);
+    double r1y2 = std::max(r.p1.y, r.p2.y);
+    r = Rect{r1x1, r1y1, r1x2, r1y2};
+}
+
+Rect get_intersection(const Rect &r1, const Rect &r2) {
+    Rect nr1 = r1, nr2 = r2;
+    normalize_rect(nr1);
+    normalize_rect(nr2);
+    double r_x1, r_x2, r_y1, r_y2;
+    r_x1 = std::max(nr1.p1.x, nr2.p1.x);
+    r_x2 = std::min(nr1.p2.x, nr2.p2.x);
+    r_y1 = std::max(nr1.p1.y, nr2.p1.y);
+    r_y2 = std::min(nr1.p2.y, nr2.p2.y);
+    return Rect{r_x1, r_y1, r_x2, r_y2};
+}
+
 Ellipse_arc::Ellipse_arc(const Point &center, double semiX_axis, double semiY_axis, double start_angle, double end_angle)
     : center{center}, semiX_axis{semiX_axis}, semiY_axis{semiY_axis}, start_angle{start_angle}, end_angle{end_angle} {}
 

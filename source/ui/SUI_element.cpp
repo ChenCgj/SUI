@@ -27,7 +27,9 @@ void Element::draw(Canvas &canvas) {
     canvas.restore_env();
 }
 
-Element::~Element() = default;
+Element::~Element() {
+    prepare_destroy();
+}
 
 void Element::destroy_content() {
     /**

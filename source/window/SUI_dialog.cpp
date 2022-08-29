@@ -53,4 +53,8 @@ static void add_dialog_element(Dialog &dialog, const std::string &message) {
     vp->add_content(*hp);
     dialog.add_node(vp);
 }
+
+Dialog::~Dialog() {
+    prepare_destroy();
+}
 }

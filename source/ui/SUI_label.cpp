@@ -23,6 +23,7 @@ void Label::draw(Canvas &canvas) {
 }
 
 Label::~Label() {
+    prepare_destroy();
     DBG(<< get_name() << "was destroy.");
 }
 

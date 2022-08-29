@@ -19,7 +19,11 @@ long long Texture_sdl_manager::alloc_texture_id() {
     // unit->update_func = nullptr;
     unit->id = curr_id;
     unit->valid = false;
-    return curr_id++;
+    long long retval = curr_id++;
+    while (texture_map.find(curr_id) != texture_map.end()) {
+        ++curr_id;
+    }
+    return retval;
 }
 
 Texture_sdl_manager::~Texture_sdl_manager() {

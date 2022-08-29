@@ -11,6 +11,7 @@ public:
     void remove_content(Geometry &node);
     void set_gap(int gap);
     int get_gap() const;
+    ~Vertical_pane();
 private:
     int gap;
     std::list<Geometry *> elements;

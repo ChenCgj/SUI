@@ -22,6 +22,8 @@ bool is_ctrl_down();
 
 bool is_alt_down();
 
+bool *get_key_state(int &num_keys);
+
 std::pair<int, int> get_mouse_pos();
 
 Key_code get_key(Keyboard_event &event);

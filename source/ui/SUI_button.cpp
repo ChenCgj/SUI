@@ -30,6 +30,7 @@ void Button::add_listener(std::function<void (void)> func, Button_event event) {
 
 Button::~Button() {
     DBG(<< get_name() << "was destroy.");
+    prepare_destroy();
 }
 
 void Button::deal_mouse_button_down_event(Mouse_button_event &mouse_button) {

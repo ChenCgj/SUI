@@ -14,7 +14,9 @@ Graphic_board::Graphic_board(int posX, int posY, int width, int height)
     statu = Element_status::graphic_board_normal;
 }
 
-Graphic_board::~Graphic_board() = default;
+Graphic_board::~Graphic_board() {
+    prepare_destroy();
+}
 
 void Graphic_board::set_redraw_flag(bool flag) {
     Drawable::set_redraw_flag(flag);
