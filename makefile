@@ -1,10 +1,12 @@
 # make -- build the static lib
 # make test -- build the test program
+# make runner -- build the runner game
 # make demo -- build a demo
 
 name = sui
 test_name = sui_test
-demo_name = runner
+runner_name = runner
+demo_name = Space_impact
 
 OBJ_DIR = ./obj
 BUILD_DIR = ./build
@@ -19,7 +21,8 @@ WINDOW = window
 
 INCLUDE_DIR = /usr/include/SDL2 /usr/local/include/SDL2 ./include $(SOURCE_DIR)/include
 TEST_DIR = test
-DEMO_DIR = runner
+RUNNER_DIR = runner
+DEMO_DIR = Space_Impact
 
 INCLUDE_FLAGS = $(addprefix -I, $(INCLUDE_DIR))
 
@@ -43,12 +46,17 @@ $(OBJ_DIR)/%.o : $(SOURCE_DIR)/%.cpp
 $(TEST_DIR)/$(test_name) : $(TEST_DIR)/*.cpp
 	$(CXX) -g -Wall -Iinclude -o $@ $^ $(LDFLAGS) -no-pie
 
-$(DEMO_DIR)/$(demo_name) : $(DEMO_DIR)/*.cpp
+$(RUNNER_DIR)/$(runner_name) : $(RUNNER_DIR)/*.cpp
 	$(CXX) -g -Wall -Iinclude -o $@ $^ $(LDFLAGS) -no-pie
 
-.PHONY : init_folder clean test
+$(DEMO_DIR)/$(demo_name) : $(DEMO_DIR)/source/*.cpp
+	$(CXX) -g -Wall -Iinclude -I$(DEMO_DIR)/include -o $@ $^ $(LDFLAGS) -no-pie
+
+.PHONY : init_folder clean test runner demo
 
 test : target $(TEST_DIR)/$(test_name)
+
+runner : target $(RUNNER_DIR)/$(runner_name)
 
 demo : target $(DEMO_DIR)/$(demo_name)
 
@@ -65,4 +73,5 @@ clean:
 	-rm -rf $(OBJ_DIR)
 	-rm -rf $(BUILD_DIR)
 	-rm $(TEST_DIR)/$(test_name)
+	-rm $(RUNNER_DIR)/$(runner_name)
 	-rm $(DEMO_DIR)/$(demo_name)

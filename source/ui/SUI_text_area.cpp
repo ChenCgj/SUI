@@ -29,7 +29,7 @@ void Text_area::draw(Canvas &canvas) {
     TTF_SizeText(font, text.c_str(), &text_w, &text_h);
     TTF_CloseFont(font);
     Rect r = {0, static_cast<double>(text_h * 0.2), static_cast<double>(get_width()), static_cast<double>(text_h * 1.2)};
-    int curr_pos = 0;
+    unsigned long curr_pos = 0;
     while (curr_pos <= text.length()) {
         std::string line = text.substr(curr_pos, perline);
         canvas.draw_text(r, line, "consola.ttf", color, font_size);

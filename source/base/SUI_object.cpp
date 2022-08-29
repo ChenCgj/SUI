@@ -9,6 +9,7 @@ namespace sui {
 // this thread is to clean the trash_root, no use now
 // SDL_Thread *clean_thread = nullptr;
 
+int clean_trash(void *data);
 /**
 * @todo this function should be static, but friend function can't set to static, avoid friend function!
 * what's more is make this function run in other thread to increase the performence of the program
