@@ -24,7 +24,12 @@ void Text_area::draw(Canvas &canvas) {
         return;
     }
     int perline = 0;
+#if (TTF_MAJOR_VERSION >= 2 && TTF_PATCHLEVEL >= 18)
     TTF_MeasureUTF8(font, text.c_str(), get_width(), nullptr, &perline);
+#else
+    ERR(<< "not support Text_area, please update the sdl2_ttf to 2.0.18");
+    perline = 1;
+#endif
     int text_w, text_h;
     TTF_SizeText(font, text.c_str(), &text_w, &text_h);
     TTF_CloseFont(font);
