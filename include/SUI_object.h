@@ -63,6 +63,6 @@ private:
     void add_node_from(Object *src, Object *child);
     friend int clean_trash(void *data);
 };
-
+int clean_trash(void *data);
 } // end of sui
 #endif
