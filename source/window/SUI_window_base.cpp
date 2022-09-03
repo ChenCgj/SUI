@@ -62,7 +62,11 @@ Window_base::Window_base(const std::string &title, int width, int height,
     // because the canvas in Drawable is bind the posX and the posY of the Geometry, and when use window, we should make it zero
     // Geometry::set_posX(0);
     // Geometry::set_posY(0);
-    SDL_Renderer *pRenderer = SDL_CreateRenderer(pWnd, -1, 0);
+    // the driver index is -1 to make the SDL choose the first one driver which support the flag
+    /**
+    * @bug On Window, if window size can be changed, we can't choose the opengl because we call SDL render function in SDL_EventFilter in SUI_main.cpp
+    */
+    SDL_Renderer *pRenderer = SDL_CreateRenderer(pWnd, -1, SDL_RENDERER_ACCELERATED);
 // debug
     // pw = pData->pWnd;
     // pr = pData->pRenderer;

@@ -74,25 +74,35 @@ int main(int argc, char *argv[]) {
 int event_filter(void *data, SDL_Event *event) {
     Uint32 type = event->type;
     switch (type) {
+/**
+* @bug according to SDL document, this function may be called in different thread
+*      but the SDL renderer function can't be called in other thread but the main thread.
+*      On window, I call this because when we change the size, it will not render any more.
+*      I guess that if we use dirext3D instead of opengl, we can call the render function in different thread.
+*      Actually, it works normally but it was undefined.
+*      this problem is also happen when we move the window on windows, which means that if we move the window, the render will stop
+*/
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
     case SDL_WINDOWEVENT:
         if (event->window.event == SDL_WINDOWEVENT_RESIZED) {
             WINDOW_MANAGER->patch_event_to(event->window.windowID, *event, sui::Window_manager::window_message_listening);
             return 0;
         }
         break;
+#endif
     case SDL_KEYDOWN:
     case SDL_KEYUP:
         WINDOW_MANAGER->patch_event_to(event->key.windowID, *event, sui::Window_manager::window_message_listening);
         return 0;
     case SDL_MOUSEBUTTONDOWN:
     case SDL_MOUSEBUTTONUP:
-        WINDOW_MANAGER->patch_event_to(event->button.windowID, *event, sui::Window_manager:: window_message_listening);
+        WINDOW_MANAGER->patch_event_to(event->button.windowID, *event, sui::Window_manager::window_message_listening);
         return 0;
     case SDL_MOUSEWHEEL:
-        WINDOW_MANAGER->patch_event_to(event->wheel.windowID, *event, sui::Window_manager::  window_message_listening);
+        WINDOW_MANAGER->patch_event_to(event->wheel.windowID, *event, sui::Window_manager::window_message_listening);
         return 0;
     case SDL_MOUSEMOTION:
-        WINDOW_MANAGER->patch_event_to(event->motion.windowID, *event, sui::Window_manager:: window_message_listening);
+        WINDOW_MANAGER->patch_event_to(event->motion.windowID, *event, sui::Window_manager::window_message_listening);
         return 0;
     // case Event_type::update_all_window:
     //     WINDOW_MANAGER->update_all_window();
