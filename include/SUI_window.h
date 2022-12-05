@@ -6,8 +6,8 @@
 namespace sui {
 class Window : public Window_base {
 public:
-    Window(const std::string &title, int width, int height, int posX, int posY, Window_flag flag = Window_flag::window_flag_none);
-    Window(const std::string &title, int width, int height, Window_flag flag = Window_flag::window_flag_none);
+    Window(const std::string &title, int width, int height, int posX, int posY, int flag = Window_flag::window_flag_none);
+    Window(const std::string &title, int width, int height, int flag = Window_flag::window_flag_none);
     ~Window();
 };
 

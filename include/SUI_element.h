@@ -18,7 +18,7 @@ namespace sui {
 */
 class Element : public Object, public Drawable, public Event_handler {
 public:
-    Element(int posX, int posY, int width, int height);
+    Element(int posX, int posY, int width, int height, bool for_gl_data = false);
     virtual void draw(Canvas &canvas) override;
     virtual ~Element();
     void deal_key_down_event(Keyboard_event &key_event) override;

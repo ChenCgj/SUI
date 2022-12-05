@@ -5,6 +5,14 @@ A simple UI library built base on SDL2
 
 ## Show
 
+![opengl](https://github.com/ChenCgj/image-host/blob/8ee2cc118babdcd242e33925b4015c298db387a5/SUI/opengl1.png)
+
+![space imapct](https://github.com/ChenCgj/image-host/blob/8ee2cc118babdcd242e33925b4015c298db387a5/SUI/space_impact.png)
+
+![test3](https://github.com/ChenCgj/image-host/blob/8ee2cc118babdcd242e33925b4015c298db387a5/SUI/test3.png)
+
+![runner](https://github.com/ChenCgj/image-host/blob/8ee2cc118babdcd242e33925b4015c298db387a5/SUI/runner.png)
+
 ![ubuntu run test](https://github.com/ChenCgj/image-host/blob/6e06c64b2c01e11e00b39975513b595e8b644504/SUI/test.gif)
 
 ![ubuntu run demo](https://github.com/ChenCgj/image-host/blob/6e06c64b2c01e11e00b39975513b595e8b644504/SUI/demo.gif)
@@ -17,7 +25,7 @@ A simple UI library built base on SDL2
 
 - build on ubuntu
 
-  1. install SDL2 library (you should make the version >= 2.0.18 as so as sdl2_ttf)
+  1. install SDL2 library (you should make the version >= 2.0.18 as so as sdl2_ttf) glad for opengl
 
      ```sh
      sudo apt-get install libsdl2-dev libsdl2-ttf-dev libsdl2-image-dev

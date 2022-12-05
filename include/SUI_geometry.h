@@ -9,11 +9,11 @@
 #include "SUI_property.h"
 namespace sui {
 
+class Rect;
 /**
 * @class Geometry
 * @brief provide the size, position information, which class need to show in window should derived from this class
 */
-
 class Geometry {
 public:
     Geometry(int posX, int posY, int width, int height);
@@ -36,6 +36,7 @@ public:
     Property<int> &get_height_property();
     Property<int> &get_posZ_property();
     Property<int> &get_depth_property();
+    Rect get_rect() const;
     virtual ~Geometry();
 private:
     Property<int> posX;

@@ -22,6 +22,7 @@ int main(int argc, char *argv[]) {
     ppane->get_height_property().bind(pWindow->get_height_property(), function<int (const int &)>([](const int &x)->int {return x * 7 / 8;}));
 
     Button *pButton = new Button("Button", 150, 150, 200, 200);
+    pButton->set_always_redraw(true);
     pButton->set_color(255, 0, 0, 125);
     pButton->set_background_image("background.jpg", target_rect, Rect{0, 0, 2000, 2000}, Element_status::button_normal);
     pButton->set_background_fill_style(Background_fill_style::full, dynamic_cast<Geometry *>(pButton), Element_status::button_normal);
@@ -31,13 +32,13 @@ int main(int argc, char *argv[]) {
     pButton->get_width_property().bind(ppane->get_width_property(), func_div4);
     pButton->get_posY_property().bind(ppane->get_height_property(), func_div4);
     pButton->get_height_property().bind(ppane->get_height_property(), func_div4);
-    pButton->add_listener([=](){
+    pButton->add_listener([=](const Mouse_button_event &, void *){
         pButton->set_background_color(rand() %255, rand() %255, rand() %255, rand() %255, Element_status::button_normal);
-    }, sui::Button::Button_event::up);
+    }, sui::Button::Button_event::be_up, nullptr);
 
     Button *pButton_control = new Button("Control", 0, 0, 100, 100);
     pButton_control->set_color(255, 0, 0, 125);
-    pButton_control->add_listener([=](){
+    pButton_control->add_listener([=](const Mouse_button_event &, void *){
         static bool control = true;
         if (control) {
             pButton->get_posX_property().unbind(ppane->get_width_property());
@@ -54,7 +55,7 @@ int main(int argc, char *argv[]) {
             pButton->set_redraw_flag(true);
             present_all();
         }
-    }, sui::Button::Button_event::up);
+    }, sui::Button::Button_event::be_up, nullptr);
     Graphic_board *pboard = new Graphic_board(300, 300, 300, 300);
     // pboard->set_draw_callback(function<void (Graphic_board_base *)>([](Graphic_board_base *arg) {
     //     static Image img(150, 150);
@@ -89,22 +90,22 @@ int main(int argc, char *argv[]) {
     pboard->line_to(25, 25);
     pboard->draw_line(0, 0, 100, 100);
     pboard->draw_text(Rect{125, 225, 300, 300}, "Hello World! Nice to meet you.", "Inkfree.ttf", Color{0, 0, 0, 255}, 20);
-    pboard->add_listener([&](void) {
+    pboard->add_listener([&](const Mouse_button_event &, void *) {
         auto pos = get_mouse_pos();
         cout << "x: " << pos.first << " y: " << pos.second << endl;
-    }, Graphic_board::Graphic_board_event::move);
-    pboard->add_listener([&]() {
+    }, Graphic_board::Graphic_board_event::gbe_move, nullptr);
+    pboard->add_listener([&](const Mouse_button_event &, void *) {
         cout << "button down in graphic board" << endl;
-    }, Graphic_board::Graphic_board_event::down);
-    pboard->add_listener([&]() {
+    }, Graphic_board::Graphic_board_event::gbe_down, nullptr);
+    pboard->add_listener([&](const Mouse_button_event &, void *) {
         cout << "button up in graphic board" << endl;
-    }, Graphic_board::Graphic_board_event::up);
+    }, Graphic_board::Graphic_board_event::gbe_up, nullptr);
 
     Button *pButton2 = new Button("Button", 100, 100, 100, 100);
     pButton2->set_color(0, 0, 0, 125);
-    pButton2->add_listener([=](){
+    pButton2->add_listener([=](const Mouse_button_event &, void *) {
         pButton2->set_background_color(rand() %255, rand() %255, rand() %255, rand() %255, Element_status::button_normal);
-    }, sui::Button::Button_event::up);
+    }, sui::Button::Button_event::be_up, nullptr);
 
     Grid_pane *gpane = new Grid_pane(800, 600, 300, 300, 3, 3);
     gpane->set_gap(10, 10);
@@ -179,7 +180,7 @@ int main(int argc, char *argv[]) {
     pButton3->set_posY(0);
     pButton3->set_width(100);
     pButton3->set_height(100);
-    pButton3->add_listener([=](){
+    pButton3->add_listener([=](const Mouse_button_event &, void *){
         Button *btn = new Button();
         btn->get_posX_property().bind(pWindow2->get_width_property(),
             std::function<int (const int &)>([](const int &x) {
@@ -193,13 +194,14 @@ int main(int argc, char *argv[]) {
                     return rand() % (x - 20);
                 else return 0;
             }));
-        btn->add_listener([=](){
+        // btn->set_always_redraw(true);
+        btn->add_listener([=](const Mouse_button_event &e, void *){
             btn->set_background_color(rand() %255, rand() %255, rand() %255, rand() %255, Element_status::button_normal);
-        }, sui::Button::Button_event::up);
+        }, sui::Button::Button_event::be_up, nullptr);
         btn->set_background_color(rand() % 255, rand() % 255, rand() % 255, rand() % 255, Element_status::button_normal);
         pWindow2->add_node(btn);
         present_all();
-    }, sui::Button::Button_event::up);
+    }, sui::Button::Button_event::be_up, nullptr);
     pWindow2->add_node(pButton3);
     pWindow2->show();
 

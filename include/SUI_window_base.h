@@ -16,11 +16,15 @@ class Canvas;
 // use when create window
 enum Window_flag {
     window_flag_none = 0x0,
+    /**
+    * @bug full_screen_desktop and full_screen and be set together
+    */
     window_flag_full_screen = 0x1,
-    window_flag_full_screen_desktop = 0x10,
-    window_flag_hidden = 0x100,
-    window_flag_borderless = 0x1000,
-    window_flag_resizable = 0x10000
+    window_flag_full_screen_desktop = 0x2,
+    window_flag_hidden = 0x4,
+    window_flag_borderless = 0x8,
+    window_flag_resizable = 0x10,
+    window_flag_opengl = 0x20
 };
 /**
 * @class Window_base
@@ -35,8 +39,8 @@ enum Window_flag {
 */
 class Window_base : public Object, public Drawable, public Event_handler {
 public:
-    Window_base(const std::string &title, int width, int height, int posX, int posY, Window_flag flag = Window_flag::window_flag_none);
-    Window_base(const std::string &title, int width, int height, Window_flag flag = Window_flag::window_flag_none);
+    Window_base(const std::string &title, int width, int height, int posX, int posY, int flag = Window_flag::window_flag_none);
+    Window_base(const std::string &title, int width, int height, int flag = Window_flag::window_flag_none);
     virtual ~Window_base();
     void set_window_title(const std::string &title);
     void show();
@@ -53,8 +57,9 @@ public:
     void set_height(int h) override;
     void set_position(int x, int y);
     void set_size(int w, int h);
-    void add_listener(std::function<void (Keyboard_event &)> func, Key_event event);
+    void add_listener(const std::function<void (Keyboard_event &, void *)> &func, Key_event event, void *arg);
     uint32_t get_window_id() const;
+    void clean_gl_context();
 private:
     void deal_window_resized_event(Event &event);
     void deal_key_down_event(Keyboard_event &key_event) override;
@@ -65,8 +70,11 @@ private:
     void deal_mouse_move_event(Mouse_motion_event &mouse_motion) override;
     void deal_window_close_event(Event &event);
     void deal_other_event(Event &event) override;
+    void *glcontext;
+    static bool has_create_gl;
     uint32_t id;
-    std::function<void (Keyboard_event &)> callback[2];
+    std::function<void (Keyboard_event &, void *)> callback[2];
+    void *args[2];
     friend class Event_handler_helper;
 };
 

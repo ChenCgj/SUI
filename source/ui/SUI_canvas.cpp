@@ -18,7 +18,7 @@ struct Canvas::Renderer_env {
 
 // static void store_env(SDL_Renderer *pRenderer, SDL_Texture *env_pOrigin_target, Uint8 o_r, Uint8 o_g, Uint8 o_b, Uint8 o_a);
 // static void load_env(SDL_Renderer *pRenderer, SDL_Texture *env_pOrigin_target, Uint8 o_r, Uint8 o_g, Uint8 o_b, Uint8 o_a);
-static SDL_Texture *recreate_texture(SDL_Renderer *pRenderer, long long texture_id, int origin_w, int origin_h, int new_w, int new_h);
+static SDL_Texture *recreate_texture(SDL_Renderer *pRenderer, long long texture_id, int origin_w, int origin_h, int new_w, int new_h, bool for_gl_data);
 static const double math_pi = 4 * atan(1);
 static SDL_BlendMode mask_blend_mode = SDL_ComposeCustomBlendMode(SDL_BLENDFACTOR_DST_COLOR, SDL_BLENDFACTOR_ZERO, SDL_BLENDOPERATION_ADD, SDL_BLENDFACTOR_DST_ALPHA, SDL_BLENDFACTOR_ZERO, SDL_BLENDOPERATION_ADD);
 Canvas::Canvas(const Window_base &window, int posX, int posY, int posZ, int width, int height, int depth)
@@ -36,9 +36,9 @@ Canvas::Canvas(const Window_base &window, int posX, int posY, int posZ, int widt
     // SDL_SetTextureBlendMode(pTexture, SDL_BLENDMODE_BLEND);
 }
 
-Canvas::Canvas(int posX, int posY, int posZ, int width, int height, int depth)
+Canvas::Canvas(int posX, int posY, int posZ, int width, int height, int depth, bool for_gl_data)
     : Geometry{posX, posY, posZ, width, height, depth}, texture_id{TEXTURE_SDL_MANAGER->alloc_texture_id()}, pRenderer{nullptr}, mask_mode{Mask_mode::none_mask},
-    need_redraw{true}, width_bak{width}, height_bak{height}, depth_bak{depth}, r{0}, g{0}, b{0}, a{255} {}
+    need_redraw{true}, always_redraw{false}, for_gl_data{for_gl_data}, width_bak{width}, height_bak{height}, depth_bak{depth}, r{0}, g{0}, b{0}, a{255} {}
 
 /**
 * Should not use the save_env with not restore_env before this function
@@ -51,7 +51,7 @@ void Canvas::load_renderer(Canvas &canvas) {
         return;
     }
     pRenderer = canvas.pRenderer;
-    TEXTURE_SDL_MANAGER->set_texture(texture_id, pRenderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, SDL_TEXTUREACCESS_TARGET, get_width(), get_height());
+    TEXTURE_SDL_MANAGER->set_texture(texture_id, pRenderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32, for_gl_data ? SDL_TEXTUREACCESS_STREAMING : SDL_TEXTUREACCESS_TARGET, get_width(), get_height());
     width_bak = get_width();
     height_bak = get_height();
     depth_bak = get_depth();
@@ -284,6 +284,30 @@ void Canvas::draw_sketch(const Sketch &image) {
     SDL_RenderPresent(pRenderer);
 }
 
+bool Canvas::load_gl_Texture(GLuint gl_texture_id, const Rect &rect) {
+    if (!for_gl_data) {
+        return false;
+    }
+    if (!prepare_texture()) {
+        ERR(<< "couldn't prepare the texture");
+        return false;
+    }
+    SDL_Texture *texture = TEXTURE_SDL_MANAGER->get_texture(texture_id);
+    void *pixels = nullptr;
+    int pitch = 0;
+    SDL_Rect r;
+    r.x = rect.p1.x, r.y = rect.p1.y, r.w = rect.get_width(), r.h = rect.get_height();
+    if (r.w <= 0 || r.h <= 0) {
+        r.x = r.y = 0;
+        r.w = get_width();
+        r.h = get_height();
+    }
+    SDL_LockTexture(texture, &r, &pixels, &pitch);
+    glGetTextureSubImage(gl_texture_id, 0, r.x, r.y, 0, r.w, r.h, 1, GL_RGBA, GL_UNSIGNED_BYTE, pitch * r.h, pixels);
+    SDL_UnlockTexture(texture);
+    return true;
+}
+
 void Canvas::draw_round_rect(const Rect &rect, double radius) {
     radius = std::min({fabs(rect.get_width()) / 2, fabs(rect.get_height()) / 2, radius});
     Point p1 = rect.p1;
@@ -345,8 +369,20 @@ void Canvas::set_mask_mode(Mask_mode mask) {
 }
 
 void Canvas::set_need_redraw(bool redraw) {
-    need_redraw = redraw;
+    need_redraw = redraw || always_redraw;
 }
+
+void Canvas::set_always_redraw(bool always) {
+    always_redraw = always;
+    if (always && !need_redraw) {
+        need_redraw = true;
+    }
+}
+
+bool Canvas::get_always_redraw() const {
+    return always_redraw;
+}
+
 /**
 * @warning the canvas should connect to the window or renderer
 * @warning this function will clean all on the window
@@ -446,7 +482,7 @@ bool Canvas::prepare_texture() {
     if (!isValid()) {
         DBG(<< "need to create a new texture...");
         save_env();
-        SDL_Texture *new_texture = recreate_texture(pRenderer, texture_id, width_bak, height_bak, get_width(), get_height());
+        SDL_Texture *new_texture = recreate_texture(pRenderer, texture_id, width_bak, height_bak, get_width(), get_height(), for_gl_data);
         // TEXTURE_SDL_MANAGER->set_texture(texture_id, pRenderer, new_texture);
         if (new_texture == nullptr) {
             ERR(<< "new texture create fail!");
@@ -547,6 +583,10 @@ void Canvas::restore_env() {
     delete env;
 }
 
+bool Canvas::is_for_opengl() {
+    return for_gl_data;
+}
+
 // void store_env(SDL_Renderer *pRenderer, Canvas::Renderer_env &env) {
 //     if (pRenderer == nullptr) {
 //         return;
@@ -570,11 +610,11 @@ void Canvas::restore_env() {
 /**
 * @warning this function will chage the environment of the renderer
 */
-static SDL_Texture *recreate_texture(SDL_Renderer *pRenderer, long long texture_id, int origin_w, int origin_h, int new_w, int new_h) {
+static SDL_Texture *recreate_texture(SDL_Renderer *pRenderer, long long texture_id, int origin_w, int origin_h, int new_w, int new_h, bool for_gl_data) {
     // SDL_Texture *new_texture = SDL_CreateTexture(pRenderer,
         // SDL_TEXTUREACCESS_TARGET, new_w, new_h);
     SDL_Texture *new_texture = TEXTURE_SDL_MANAGER->set_texture(texture_id, pRenderer, SDL_PixelFormatEnum::SDL_PIXELFORMAT_RGBA32,
-        SDL_TextureAccess::SDL_TEXTUREACCESS_TARGET, new_w, new_h, SDL_BlendMode::SDL_BLENDMODE_BLEND);
+        for_gl_data ? SDL_TEXTUREACCESS_STREAMING : SDL_TEXTUREACCESS_TARGET, new_w, new_h, SDL_BlendMode::SDL_BLENDMODE_BLEND);
     if (new_texture == nullptr) {
         ERR(<< "create texture fail, SDL: " << SDL_GetError());
         return nullptr;

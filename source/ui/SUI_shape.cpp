@@ -32,6 +32,14 @@ Rect *Rect::clone() const {
     return new Rect{*this};
 }
 
+bool Rect::is_point_in(const Point &p) const {
+    auto x1 = std::min(p1.x, p2.x);
+    auto x2 = std::max(p1.x, p2.x);
+    auto y1 = std::min(p1.y, p2.y);
+    auto y2 = std::max(p1.y, p2.y);
+    return p.x < x2 && p.x > x1 && p.y < y2 && p.y > y1;
+}
+
 double Rect::get_width() const {
     return p2.x - p1.x;
 }

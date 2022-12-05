@@ -17,9 +17,9 @@ class Canvas;
 */
 class Drawable : public virtual Geometry, public Decorator {
 public:
-    Drawable(int width, int height);
-    Drawable(int posX, int posY, int width, int height);
-    Drawable(int posX, int posY, int posZ, int width, int height, int depth);
+    Drawable(int width, int height, bool for_gl_data = false);
+    Drawable(int posX, int posY, int width, int height, bool for_gl_data = false);
+    Drawable(int posX, int posY, int posZ, int width, int height, int depth, bool for_gl_data = false);
     // draw the element to the canvas
     virtual void draw(Canvas &canvas) = 0;
     // draw all elements it cantains to the canvas
@@ -29,6 +29,8 @@ public:
     // set the element should be redraw to the buffer canvas or not
     virtual void set_redraw_flag(bool flag);
     bool get_redraw_flag();
+    void set_always_redraw(bool flag);
+    bool get_always_redraw() const;
     virtual void destroy_content();
     virtual ~Drawable();
 protected:

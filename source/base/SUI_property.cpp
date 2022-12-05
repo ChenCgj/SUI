@@ -5,9 +5,9 @@ namespace sui {
 extern template class Binder<int, int>;
 
 template<typename T>
-Property<T>::Property(const T &value) : value{value} {}
+Property<T>::Property(const T &value) : value{value}, args{nullptr} {}
 template<typename T>
-Property<T>::Property() : value{} {}
+Property<T>::Property() : value{}, args{nullptr} {}
 
 template<typename T>
 const T &Property<T>::get_value() const {
@@ -17,10 +17,19 @@ const T &Property<T>::get_value() const {
 template<typename T>
 void Property<T>::set_value(const T &value) {
     this->value = value;
+    if (on_change) {
+        on_change(value, args);
+    }
     // update all
     for (auto p : binders) {
         p->update_value(&value);
     }
+}
+
+template <typename T>
+void Property<T>::set_listener(const std::function<void (const T &value, void *)> &func, void *args) {
+    on_change = func;
+    this->args = args;
 }
 
 template<typename T>

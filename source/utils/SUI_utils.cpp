@@ -65,8 +65,12 @@ bool is_alt_down() {
     return lalt || ralt;
 }
 
-Key_code get_key(Keyboard_event &event) {
+Key_code get_key(const Keyboard_event &event) {
     return event.get_key();
+}
+
+float get_wheel_scroll(const Mouse_wheel_event &event) {
+    return event.get_scrolled_y();
 }
 
 bool *get_key_state(int &num_keys) {

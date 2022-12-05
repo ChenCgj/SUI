@@ -9,6 +9,7 @@
 namespace sui {
 
 class Keyboard_event;
+class Mouse_wheel_event;
 
 bool is_mouse_left_button_down();
 
@@ -26,7 +27,9 @@ bool *get_key_state(int &num_keys);
 
 std::pair<int, int> get_mouse_pos();
 
-Key_code get_key(Keyboard_event &event);
+Key_code get_key(const Keyboard_event &event);
+
+float get_wheel_scroll(const Mouse_wheel_event &event);
 
 int add_timer(int interval, uint32_t (*func)(uint32_t interval, void *param), void *param);
 

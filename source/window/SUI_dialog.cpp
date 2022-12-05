@@ -12,7 +12,7 @@ namespace sui {
 
 static void add_dialog_element(Dialog &dialog, const std::string &message);
 
-Dialog::Dialog(Window_base *parent, const std::string &message, const std::string &title, int width, int height, int posX, int posY, Window_flag flag)
+Dialog::Dialog(Window_base *parent, const std::string &message, const std::string &title, int width, int height, int posX, int posY, int flag)
     : Geometry{0, 0, width, height}, Window_base{title, width, height, posX, posY, flag} {
     object_name = "dialog";
     if (parent) {
@@ -23,7 +23,7 @@ Dialog::Dialog(Window_base *parent, const std::string &message, const std::strin
     add_dialog_element(*this, message);
 }
 
-Dialog::Dialog(Window_base *parent, const std::string &message, const std::string &title, int width, int height, Window_flag flag)
+Dialog::Dialog(Window_base *parent, const std::string &message, const std::string &title, int width, int height, int flag)
     : Geometry{0, 0, width, height}, Window_base{title, width, height, flag} {
     object_name = "dialog";
     if (parent) {

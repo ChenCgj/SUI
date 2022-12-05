@@ -27,6 +27,7 @@ public:
     ~Property();
     const T &get_value() const;
     void set_value(const T &value);
+    void set_listener(const std::function<void (const T &value, void *)> &func, void *args);
     // bind to others, when other porperty change, this property can update
     template<typename Origin>
     void bind(Property<Origin> &property, std::function<T (const Origin &)>);
@@ -39,6 +40,8 @@ public:
     void remove_binded(Property<Target> &property);
 private:
     T value;
+    std::function<void (const T &value, void *)> on_change;
+    void *args;
     std::list<Binder_base *> binders;
 };
 

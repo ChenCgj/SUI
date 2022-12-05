@@ -7,7 +7,8 @@
 namespace sui {
 
 Graphic_board::Graphic_board(int posX, int posY, int width, int height)
-    : Geometry(posX, posY, width, height), Graphic_board_base{width, height}, Element(posX, posY, width, height) {
+    : Geometry(posX, posY, width, height), Graphic_board_base{width, height}, Element(posX, posY, width, height),
+    cb_down{nullptr}, cb_up{nullptr}, cb_move{nullptr}, a_down{nullptr}, a_up{nullptr}, a_move{nullptr} {
     object_name = "graphic_board";
     // arg = this;
     // delete_arg = false;
@@ -21,7 +22,8 @@ Graphic_board::~Graphic_board() {
 void Graphic_board::set_redraw_flag(bool flag) {
     Drawable::set_redraw_flag(flag);
     if (flag) {
-        // if we need update the content when the window's size doesn't change
+        // flag is true if we need update the content when the window's size doesn't change
+        // make graphic_board detect if it doesn't need redraw when flag is false
         set_need_redraw(flag);
     }
 }
@@ -42,23 +44,39 @@ void Graphic_board::destroy_content() {
     Element::destroy_content();
 }
 
-void Graphic_board::add_listener(std::function<void ()> func, Graphic_board_event event) {
-    callback[event] = func;
+void Graphic_board::add_listener(const std::function<void (const Mouse_button_event &, void *)> &func, Graphic_board_event event, void *arg) {
+    if (event == Graphic_board_event::gbe_down) {
+        cb_down = func;
+        a_down = arg;
+    } else if (event == Graphic_board_event::gbe_up) {
+        cb_up = func;
+        a_up = arg;
+    } else {
+        ERR(<< "Unknow type for mouse button event");
+    }
 }
+
+void Graphic_board::add_listener(const std::function<void (const Mouse_motion_event &, void *)> &func, Graphic_board_event event, void *arg) {
+    if (event == Graphic_board_event::gbe_move) {
+        cb_move = func;
+        a_move = arg;
+    } else {
+        ERR(<< "Unknow type for mouse button event");
+    }
+}
+
 
 void Graphic_board::deal_mouse_button_down_event(Mouse_button_event &mouse_button) {
     if (mouse_button.handle()) {
         return;
     }
-    int mouse_x = mouse_button.event.button.x;
-    int mouse_y = mouse_button.event.button.y;
-    if (mouse_x < get_width() + get_posX()
-        && mouse_x > get_posX()
-        && mouse_y < get_height() + get_posY()
-        && mouse_y > get_posY()) {
+    double mouse_x = mouse_button.event.button.x;
+    double mouse_y = mouse_button.event.button.y;
+    auto r = get_rect();
+    if (r.is_point_in(Point{mouse_x, mouse_y})) {
         
-        if (callback[down]) {
-            callback[down]();
+        if (cb_down) {
+            cb_down(mouse_button, a_down);
         }
         set_redraw_flag(true);
         present_all();
@@ -70,15 +88,13 @@ void Graphic_board::deal_mouse_button_up_event(Mouse_button_event &mouse_button)
     if (mouse_button.handle()) {
         return;
     }
-    int mouse_x = mouse_button.event.button.x;
-    int mouse_y = mouse_button.event.button.y;
-    if (mouse_x < get_width() + get_posX()
-        && mouse_x > get_posX()
-        && mouse_y < get_height() + get_posY()
-        && mouse_y > get_posY()) {
-        
-        if (callback[up]) {
-            callback[up]();
+    double mouse_x = mouse_button.event.button.x;
+    double mouse_y = mouse_button.event.button.y;
+    auto r = get_rect();
+    if (r.is_point_in(Point{mouse_x, mouse_y})) {
+
+        if (cb_up) {
+            cb_up(mouse_button, a_up);
         }
         set_redraw_flag(true);
         present_all();
@@ -90,15 +106,13 @@ void Graphic_board::deal_mouse_move_event(Mouse_motion_event &mouse_motion) {
     if (mouse_motion.handle()) {
         return;
     }
-    int mouse_x = mouse_motion.event.button.x;
-    int mouse_y = mouse_motion.event.button.y;
-    if (mouse_x < get_width() + get_posX()
-        && mouse_x > get_posX()
-        && mouse_y < get_height() + get_posY()
-        && mouse_y > get_posY()) {
-        
-        if (callback[move]) {
-            callback[move]();
+    double mouse_x = mouse_motion.event.motion.x;
+    double mouse_y = mouse_motion.event.motion.y;
+    auto r = get_rect();
+    if (r.is_point_in(Point{mouse_x, mouse_y})) {
+
+        if (cb_move) {
+            cb_move(mouse_motion, a_move);
         }
         set_redraw_flag(true);
         present_all();

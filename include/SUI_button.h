@@ -21,11 +21,12 @@ namespace sui {
 
 class Button : public Element {
 public:
-    enum Button_event {
-        down, up, move_out, move_in, move
+    enum class Button_event {
+        be_down, be_up, be_move_out, be_move_in, be_move
     };
     Button(const std::string &title = "Button", int x = 0, int y = 0, int w = 60, int h = 30);
-    void add_listener(std::function<void (void)> func, Button_event event);
+    void add_listener(const std::function<void (const Mouse_motion_event &, void *)> &func, Button_event event, void *arg);
+    void add_listener(const std::function<void (const Mouse_button_event &, void *)> &func, Button_event event, void *arg);
     void draw(Canvas &canvas) override;
     ~Button();
 private:
@@ -36,10 +37,11 @@ private:
     void deal_mouse_move_event(Mouse_motion_event &move_event) override;
     void deal_mouse_move_out(Mouse_motion_event &move_event);
     void deal_mouse_move_in(Mouse_motion_event &move_event);
-    // void *(*callback)(void *);
-    std::function<void (void)> callback[5];
     std::string title;
     int in_button;
+    std::function<void (const Mouse_motion_event &, void *)> cb_move_out, cb_move_in, cb_move;
+    std::function<void (const Mouse_button_event &, void *)> cb_down, cb_up;
+    void *a_down, *a_up, *a_move_out, *a_move_in, *a_move;
     // Element_status statu;
     friend class Event_handler_helper;
 };

@@ -18,8 +18,10 @@ Window *get_window();
 Pane *get_main_pane();
 Pane *get_start_pane();
 Graphic_board *get_board();
-void func_color_up();
-void func_color_down();
+void func_color_up(const Mouse_button_event &, void *);
+void func_color_down(const Mouse_button_event &, void *);
+void color_up();
+void color_down();
 void set_board();
 void clean();
 
@@ -30,15 +32,15 @@ int main(int argc, char *argv[]) {
     srand(time(nullptr));
 
     Window *pWindow = get_window();
-    pWindow->add_listener([](Keyboard_event &e) {
+    pWindow->add_listener([](Keyboard_event &e, void *) {
         Key_code code = get_key(e);
         if (code == key_w) {
-            func_color_up();
+            color_up();
         } else if (code == key_s) {
-            func_color_down();
+            color_down();
         }
         present_all();
-    }, Key_event::down);
+    }, Key_event::down, nullptr);
     Pane *pmain_pane = get_main_pane();
     set_board();
     pWindow->add_node(pmain_pane);
@@ -65,15 +67,15 @@ Pane *get_main_pane() {
         ppane->add_content(*vpane, WIDTH / 3, 100);
         Button *pButton_start_game = new Button("START", 0, 0, 60, 100);
         Button *pButton_quit_game = new Button("QUIT", 0, 0, 60, 100);
-        pButton_start_game->add_listener([=](){
+        pButton_start_game->add_listener([=](const Mouse_button_event &, void *){
             Window *pWnd = get_window();
             pWnd->remove_node(ppane);
             pWnd->add_node(get_start_pane());
             start = true;
-        }, sui::Button::Button_event::up);
-        pButton_quit_game->add_listener([](){
+        }, sui::Button::Button_event::be_up, nullptr);
+        pButton_quit_game->add_listener([](const Mouse_button_event &, void *){
             quit();
-        }, sui::Button::Button_event::up);
+        }, sui::Button::Button_event::be_up, nullptr);
         string text = "Hello, I'm a developer. Welcome to this simple game. Player should avoid being touched by the red sticks, use the W and S to flip the black stick.";
         Text_area *label = new Text_area(text, 18, 0, 0, 100, 100);
         vpane->add_node(label);
@@ -96,20 +98,20 @@ Pane *get_start_pane() {
         vpane->set_gap(20);
 
         Button *pButton_return = new Button("<BACK", 0, 0, 60, 30);
-        pButton_return->add_listener([=](){
+        pButton_return->add_listener([=](const Mouse_button_event &, void *){
             Window *pWnd = get_window();
             pWnd->remove_node(ppane);
             pWnd->add_node(get_main_pane());
             start = false;
-        }, sui::Button::Button_event::up);
+        }, sui::Button::Button_event::be_up, nullptr);
         vpane->add_node(pButton_return);
         vpane->add_content(*pButton_return);
 
         Button *pButton_up = new Button("up", 0, 0, WIDTH / 10, HEIGHT / 10);
-        pButton_up->add_listener(func_color_up, Button::Button_event::up);
+        pButton_up->add_listener(func_color_up, Button::Button_event::be_up, nullptr);
 
         Button *pButton_down = new Button("down", 0, 0, WIDTH / 10, HEIGHT / 10);
-        pButton_down->add_listener(func_color_down, Button::Button_event::down);
+        pButton_down->add_listener(func_color_down, Button::Button_event::be_down, nullptr);
 
         Graphic_board *board = get_board();
         ppane->add_node(board);
@@ -144,18 +146,26 @@ void set_board() {
     }));
 }
 
-void func_color_up() {
+void color_up() {
     // int red = color.red + 10;
     // color.red = red < 255 ? red : 255;
     up_down = -1;
     get_board()->set_redraw_flag(true);
 }
 
-void func_color_down() {
+void color_down() {
     // int red = color.red - 10;
     // color.red = red < 0 ? 0 : red;
     up_down = 1;
     get_board()->set_redraw_flag(true);
+}
+
+void func_color_up(const Mouse_button_event &e, void *p) {
+    color_up();
+}
+
+void func_color_down(const Mouse_button_event &e, void *p) {
+    color_down();
 }
 
 uint32_t timer_update(uint32_t interval, void *param) {

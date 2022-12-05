@@ -10,6 +10,8 @@
 #include <stack>
 #include <vector>
 
+#include "glad.h"
+
 #include "SDL_render.h"
 #include "SDL_stdinc.h"
 #include "SDL_video.h"
@@ -50,7 +52,7 @@ public:
     * @fn Canvas
     * when you not provide a window, it will load the render information from it's parent if possible
     */
-    Canvas(int posX, int posY, int posZ, int width, int height, int depth);
+    Canvas(int posX, int posY, int posZ, int width, int height, int depth, bool for_gl_data = false);
     virtual ~Canvas();
     void draw_line(const Point &first, const Point &second);
     void draw_lines(const std::vector<Point> &points);
@@ -66,9 +68,12 @@ public:
     void draw_shape(const Shape &shape);
     void fill_shape(const Shape &shape);
     void draw_sketch(const Sketch &image);
+    bool load_gl_Texture(GLuint gl_texture_id, const Rect &rect);
     bool check_need_redraw();
     void set_mask_mode(Mask_mode mask);
     void set_need_redraw(bool redraw);
+    void set_always_redraw(bool always);
+    bool get_always_redraw() const;
     /**
     * @todo add the fill graph funcitons
     */
@@ -105,6 +110,7 @@ public:
     * @brief save the render information such target, color
     * you can call restore_env() to restore
     */
+    bool is_for_opengl();
     void save_env();
     /**
     * @fn restore_env
@@ -124,7 +130,7 @@ public:
     */
     void present();
     void unload_renderer();
-// private:
+private:
     long long texture_id;
     // SDL_Texture *pTexture;
     SDL_Renderer *pRenderer;
@@ -133,6 +139,8 @@ public:
     std::stack<Renderer_env*> env_stack;
     Mask_mode mask_mode;
     bool need_redraw;
+    bool always_redraw;
+    bool for_gl_data;
     // backup the size, so that when size change we can recreate new content
     int width_bak, height_bak, depth_bak;
     // detect if the size change and realloc the new content

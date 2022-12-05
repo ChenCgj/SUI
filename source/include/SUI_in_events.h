@@ -20,7 +20,7 @@ class Event {
 public:
     Event(const SDL_Event &e);
     void set_handle(bool handle);
-    bool handle();
+    bool handle() const;
     SDL_Event event;
 private:
     bool has_been_handle;
@@ -29,14 +29,14 @@ private:
 class Keyboard_event : public Event {
 public:
     Keyboard_event(const SDL_Event &e);
-    Key_code get_key();
-    bool shift();
-    bool ctrl();
-    bool alt();
-    bool capslock();
-    bool repeat();
-    bool key_pressed();
-    bool keydown();
+    Key_code get_key() const;
+    bool shift() const;
+    bool ctrl() const;
+    bool alt() const;
+    bool capslock() const;
+    bool repeat() const;
+    bool key_pressed() const;
+    bool keydown() const;
 private:
 };
 
@@ -56,28 +56,28 @@ private:
 class Mouse_motion_event : public Event {
 public:
     Mouse_motion_event(const SDL_Event &e);
-    bool left_button_down();
-    bool right_button_down();
-    bool middle_button_down();
-    std::pair<int, int> get_pos();
-    std::pair<int, int> get_relative_pos();
+    bool left_button_down() const;
+    bool right_button_down() const;
+    bool middle_button_down() const;
+    std::pair<int, int> get_pos() const;
+    std::pair<int, int> get_relative_pos() const;
 private:
 };
 
 class Mouse_button_event : public Event {
 public:
     Mouse_button_event(const SDL_Event &e);
-    Mouse_button get_button();
-    bool button_down();
-    int click_count();
+    Mouse_button get_button() const;
+    bool button_down() const;
+    int click_count() const;
 private:
 };
 
 class Mouse_wheel_event : public Event {
 public:
     Mouse_wheel_event(const SDL_Event &e);
-    float get_scrolled_x();
-    float get_scrolled_y();
+    float get_scrolled_x() const;
+    float get_scrolled_y() const;
 private:
 };
 

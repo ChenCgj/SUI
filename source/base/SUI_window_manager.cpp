@@ -41,6 +41,7 @@ Window_manager *Window_manager::instance() {
 void Window_manager::check_and_delete_window_data(Uint32 window_no) {
     Window_data &data = window_map[window_no].second;
     if (data.destroyable && data.texture_count == 0) {
+        get_window(window_no)->clean_gl_context();
         SDL_DestroyRenderer(data.pRenderer);
         SDL_DestroyWindow(data.pWnd);
         data.pRenderer = nullptr;

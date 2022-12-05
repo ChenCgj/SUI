@@ -30,6 +30,8 @@ Managers::~Managers() {
 
 void Managers::init() {
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
     TTF_Init();
     IMG_Init(IMG_INIT_JPG | IMG_INIT_TIF | IMG_INIT_PNG | IMG_INIT_WEBP);
 }
@@ -37,6 +39,7 @@ void Managers::init() {
 void Managers::antinit() {
     IMG_Quit();
     TTF_Quit();
+    SDL_QuitSubSystem(SDL_INIT_VIDEO | SDL_INIT_TIMER);
     SDL_Quit();
 }
 

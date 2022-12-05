@@ -7,10 +7,10 @@ namespace sui {
 extern template class Property<int>;
 extern template void Property<int>::add_binded<>(Property<int> &property, std::function<int (const int &)> func);
 
-Drawable::Drawable(int posX, int posY, int posZ, int width, int height, int depth)
+Drawable::Drawable(int posX, int posY, int posZ, int width, int height, int depth, bool for_gl_data)
     : Geometry{posX, posY, posZ, width, height, depth},
-    canvas_buffer{new Canvas(posX, posY, posZ, width, height, depth)} {
-    
+    canvas_buffer{new Canvas(posX, posY, posZ, width, height, depth, for_gl_data)} {
+
     // to detect the size change, the canvas size should bind to the drawable element
     auto orign_value_func = std::function<int (const int &)>([](const int &v){return v;});
     canvas_buffer->get_width_property().bind(get_width_property(), orign_value_func);
@@ -19,11 +19,11 @@ Drawable::Drawable(int posX, int posY, int posZ, int width, int height, int dept
     canvas_buffer->get_posY_property().bind(get_posY_property(), orign_value_func);
 }
 
-Drawable::Drawable(int width, int height)
-    : Drawable(0, 0, 0, width, height, 0) {}
+Drawable::Drawable(int width, int height, bool for_gl_data)
+    : Drawable(0, 0, 0, width, height, 0, for_gl_data) {}
 
-Drawable::Drawable(int posX, int posY, int width, int height)
-    : Drawable(posX, posY, 0, width, height, 0) {}
+Drawable::Drawable(int posX, int posY, int width, int height, bool for_gl_data)
+    : Drawable(posX, posY, 0, width, height, 0, for_gl_data) {}
 
 Drawable::~Drawable() {
     delete canvas_buffer;
@@ -50,14 +50,24 @@ bool Drawable::get_redraw_flag() {
     return canvas_buffer->check_need_redraw();
 }
 
+void Drawable::set_always_redraw(bool flag) {
+    canvas_buffer->set_always_redraw(flag);
+}
+
+bool Drawable::get_always_redraw() const {
+    return canvas_buffer->get_always_redraw();
+}
+
 void Drawable::save_buffer(Canvas &canvas) {
     // load the render information
     canvas_buffer->load_renderer(canvas);
-    // clean the buffer
-    canvas_buffer->save_env();
-    canvas_buffer->set_color(0, 0, 0, 0);
-    canvas_buffer->clear();
-    canvas_buffer->restore_env();
+    // clean the buffer if it's not for opengl
+    if (!canvas_buffer->is_for_opengl()) {
+        canvas_buffer->save_env();
+        canvas_buffer->set_color(0, 0, 0, 0);
+        canvas_buffer->clear();
+        canvas_buffer->restore_env();
+    }
 
     // notice not pass canvas
     draw(*canvas_buffer);
@@ -75,6 +85,11 @@ void Drawable::using_buffer_draw(Canvas &canvas) {
     } else {
         DBG(<< "save buffer texture...");
         save_buffer(canvas);
+        if (get_always_redraw()) {
+            // althought we set always redraw, some elements must have a buffer to draw so that it can show itself in the target canvas
+            canvas_buffer->paint_on_canvas(canvas);
+            return;
+        }
         // recursive
         using_buffer_draw(canvas);
     }

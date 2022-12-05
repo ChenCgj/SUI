@@ -1,5 +1,6 @@
 #include <queue>
 
+#include "glad.h"
 #include "SUI_in_canvas.h"
 #include "SUI_in_events.h"
 #include "SUI_in_debug.h"
@@ -32,8 +33,9 @@ namespace sui {
 // SDL_Renderer *pr = nullptr;
 // debug
 
+bool Window_base::has_create_gl = false;
 Window_base::Window_base(const std::string &title, int width, int height,
-               int posX, int posY, Window_flag flag) : Geometry{0, 0, width, height}, Drawable(width, height) {
+               int posX, int posY, int flag) : Geometry{0, 0, width, height}, Drawable(width, height), glcontext{nullptr}, args{} {
 
     object_name = "window_base";
     // all object except the root should be add to the trash_root initially
@@ -57,8 +59,28 @@ Window_base::Window_base(const std::string &title, int width, int height,
     if (flag & Window_flag::window_flag_resizable) {
         wflag |= SDL_WINDOW_RESIZABLE;
     }
+    bool gl = false;    // should create opengl context?
+    if (flag & Window_flag::window_flag_opengl && !has_create_gl) {
+        wflag |= SDL_WINDOW_OPENGL;
+        has_create_gl = true;
+        gl = true;
+    }
     // create the render environment
     SDL_Window *pWnd = SDL_CreateWindow(title.c_str(), posX, posY, width, height, wflag | SDL_WINDOW_HIDDEN);
+    if (!pWnd) {
+        ERR(<< "create window fail. SDL_Error: " << SDL_GetError());
+        return;
+    }
+    if (gl) {
+        glcontext = SDL_GL_CreateContext(pWnd);
+        if (!glcontext) {
+            ERR(<< "Create opengl context fail. SDL_Error: " << SDL_GetError());
+        } else if (!gladLoadGLLoader(SDL_GL_GetProcAddress)) {
+            ERR(<< "load opengl function failure.");
+            SDL_GL_DeleteContext(glcontext);
+            glcontext = nullptr;
+        }
+    }
     // because the canvas in Drawable is bind the posX and the posY of the Geometry, and when use window, we should make it zero
     // Geometry::set_posX(0);
     // Geometry::set_posY(0);
@@ -66,7 +88,7 @@ Window_base::Window_base(const std::string &title, int width, int height,
     /**
     * @bug On Window, if window size can be changed, we can't choose the opengl because we call SDL render function in SDL_EventFilter in SUI_main.cpp
     */
-    SDL_Renderer *pRenderer = SDL_CreateRenderer(pWnd, -1, SDL_RENDERER_ACCELERATED);
+    SDL_Renderer *pRenderer = SDL_CreateRenderer(pWnd, -1, has_create_gl ? SDL_RENDERER_SOFTWARE : SDL_RENDERER_ACCELERATED);
 // debug
     // pw = pData->pWnd;
     // pr = pData->pRenderer;
@@ -77,7 +99,7 @@ Window_base::Window_base(const std::string &title, int width, int height,
     WINDOW_MANAGER->add_window(this, Window_manager::window_message_unlistening, pWnd, pRenderer);
 }
 
-Window_base::Window_base(const std::string &title, int width, int height, Window_flag flag) :
+Window_base::Window_base(const std::string &title, int width, int height, int flag) :
     Window_base(title, width, height, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, flag) {}
 
 Window_base::~Window_base() {
@@ -208,6 +230,13 @@ Uint32 Window_base::get_window_id() const {
     return id;
 }
 
+void Window_base::clean_gl_context() {
+    if (glcontext) {
+        SDL_GL_DeleteContext(glcontext);
+        glcontext = nullptr;
+    }
+}
+
 void Window_base::update_all_with_children() {
     // we will no change the object tree
     std::queue<Object*> obj_q;
@@ -231,8 +260,9 @@ void Window_base::update_all_with_children() {
     }
 }
 
-void Window_base::add_listener(std::function<void (Keyboard_event &)> func, Key_event event) {
+void Window_base::add_listener(const std::function<void (Keyboard_event &, void *)> &func, Key_event event, void *arg) {
     callback[event] = func;
+    args[event] = arg;
 }
 
 void Window_base::deal_window_resized_event(Event &e) {
@@ -310,7 +340,7 @@ void Window_base::draw_all(Canvas &canvas) {
 */
 void Window_base::deal_key_down_event(Keyboard_event &key_event) {
     if (callback[Key_event::down]) {
-        callback[Key_event::down](key_event);
+        callback[Key_event::down](key_event, args[Key_event::down]);
     }
     std::list<Object *> node_list = get_node_list();
     for (auto p = node_list.rbegin(); p != node_list.rend(); ++p) {
@@ -354,7 +384,7 @@ void Window_base::deal_mouse_move_event(Mouse_motion_event &mouse_motion) {
 
 void Window_base::deal_key_up_event(Keyboard_event &key_event) {
     if (callback[Key_event::up]) {
-        callback[Key_event::up](key_event);
+        callback[Key_event::up](key_event, args[Key_event::up]);
     }
     std::list<Object *> node_list = get_node_list();
     for (auto p = node_list.rbegin(); p != node_list.rend(); ++p) {

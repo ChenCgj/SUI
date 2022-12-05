@@ -26,5 +26,6 @@
 #include "SUI_dialog.h"
 #include "SUI_label.h"
 #include "SUI_text_area.h"
+#include "SUI_opengl_graphic.h"
 
 #endif

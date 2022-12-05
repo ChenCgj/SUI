@@ -7,6 +7,10 @@ namespace sui {
 
 void present_all() {
     // WINDOW_MANAGER->update_all_window();
+    if (run_mode == Run_mode::poll) {
+        // in poll mode, we will update the window quickly
+        return;
+    }
     static SDL_Event event;
     event.type = Event_type::update_all_window;
     SDL_PushEvent(&event);
@@ -23,6 +27,10 @@ void register_clean(std::function<void (void)> func) {
 }
 
 void present(Window *pWindow) {
+    if (run_mode == Run_mode::poll) {
+        // in poll mode, we will update the window quickly
+        return;
+    }
     static SDL_Event event;
     event.type = Event_type::update_window;
     event.user.data1 = static_cast<void *>(pWindow);

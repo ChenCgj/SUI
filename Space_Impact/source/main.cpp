@@ -65,7 +65,7 @@ void init_env(Play_env *penv) {
     penv->score = 0;
     penv->gameover = false;
 
-    pWnd->add_listener([=](Keyboard_event &event)->void {
+    pWnd->add_listener([=](Keyboard_event &event, void *)->void {
         int num_keys;
         bool *state = get_key_state(num_keys);
         if (state[key_w]) {
@@ -93,7 +93,7 @@ void init_env(Play_env *penv) {
                 penv->bullet_delay = 4;
             }
         }
-    }, Key_event::down);
+    }, Key_event::down, nullptr);
     int timerid = add_timer(100, update_frame, &level);
     board->register_clean([=](void *){remove_timer(timerid);}, nullptr);
     register_clean([=](void)->void {

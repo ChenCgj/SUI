@@ -6,7 +6,10 @@
 #include "SUI_button.h"
 
 namespace sui {
-Button::Button(const std::string &title, int x, int y, int w, int h) : Geometry{x, y, w, h}, Element(x, y, w, h), callback{nullptr}, in_button{-1} {
+Button::Button(const std::string &title, int x, int y, int w, int h) : Geometry{x, y, w, h}, Element(x, y, w, h),
+    in_button{-1}, cb_move_out{nullptr}, cb_move_in{nullptr}, cb_move{nullptr}, cb_down{nullptr}, cb_up{nullptr},
+    a_down{nullptr}, a_up{nullptr}, a_move_out{nullptr}, a_move_in{nullptr}, a_move{nullptr} {
+
     object_name = "button";
     this->title = title;
     statu = Element_status::button_normal;
@@ -24,9 +27,40 @@ void Button::draw(Canvas &canvas) {
     DBG(<< get_name() << "draw button ok");
 }
 
-void Button::add_listener(std::function<void (void)> func, Button_event event) {
-    this->callback[event] = func;
+void Button::add_listener(const std::function<void (const Mouse_motion_event &, void *)> &func, Button_event event, void *arg) {
+    switch (event) {
+    case Button_event::be_move:
+        cb_move = func;
+        a_move = arg;
+        break;
+    case Button_event::be_move_in:
+        cb_move_in = func;
+        a_move_in = arg;
+        break;
+    case Button_event::be_move_out:
+        cb_move_out = func;
+        a_move_out = arg;
+        break;
+    default:
+        ERR(<< "Unknow type for Mouse_motion_event");
+    }
 }
+
+void Button::add_listener(const std::function<void (const Mouse_button_event &, void *)> &func, Button_event event, void *arg) {
+    switch (event) {
+    case Button_event::be_down:
+        cb_down = func;
+        a_down = arg;
+        break;
+    case Button_event::be_up:
+        cb_up = func;
+        a_up = arg;
+        break;
+    default:
+        ERR(<< "Unknow type for Mouse_motion_event");
+    }
+}
+
 
 Button::~Button() {
     DBG(<< get_name() << "was destroy.");
@@ -38,16 +72,14 @@ void Button::deal_mouse_button_down_event(Mouse_button_event &mouse_button) {
     if (mouse_button.handle()) {
         return;
     }
-    int mouse_x = mouse_button.event.button.x;
-    int mouse_y = mouse_button.event.button.y;
-    if (mouse_x < get_width() + get_posX()
-        && mouse_x > get_posX()
-        && mouse_y < get_height() + get_posY()
-        && mouse_y > get_posY()) {
+    double mouse_x = mouse_button.event.button.x;
+    double mouse_y = mouse_button.event.button.y;
+    auto r = get_rect();
+    if (r.is_point_in(Point{mouse_x, mouse_y})) {
         statu = button_press;
  
-        if (callback[down]) {
-            callback[down]();
+        if (cb_down) {
+            cb_down(mouse_button, a_down);
         }
         set_redraw_flag(true);
         present_all();
@@ -60,16 +92,14 @@ void Button::deal_mouse_button_up_event(Mouse_button_event &mouse_button) {
     if (mouse_button.handle()) {
         return;
     }
-    int mouse_x = mouse_button.event.button.x;
-    int mouse_y = mouse_button.event.button.y;
-    if (mouse_x < get_width() + get_posX()
-        && mouse_x > get_posX()
-        && mouse_y < get_height() + get_posY()
-        && mouse_y > get_posY()) {
+    double mouse_x = mouse_button.event.button.x;
+    double mouse_y = mouse_button.event.button.y;
+    auto r = get_rect();
+    if (r.is_point_in(Point{mouse_x, mouse_y})) {
         statu = button_normal;
         
-        if (callback[up]) {
-            callback[up]();
+        if (cb_up) {
+            cb_up(mouse_button, a_up);
         }
         set_redraw_flag(true);
         present_all();
@@ -84,12 +114,10 @@ void Button::deal_mouse_move_event(Mouse_motion_event &move_event) {
     }
     bool leave_out = false;
     bool leave_in = false;
-    int mouse_x = move_event.get_pos().first;
-    int mouse_y = move_event.get_pos().second;
-    if (mouse_x < get_width() + get_posX()
-        && mouse_x > get_posX()
-        && mouse_y < get_height() + get_posY()
-        && mouse_y > get_posY()) {
+    double mouse_x = move_event.get_pos().first;
+    double mouse_y = move_event.get_pos().second;
+    auto r = get_rect();
+    if (r.is_point_in(Point{mouse_x, mouse_y})) {
 
         if (statu != Element_status::button_press) {
             statu = Element_status::button_hover;
@@ -100,8 +128,8 @@ void Button::deal_mouse_move_event(Mouse_motion_event &move_event) {
         }
         in_button = 1;
 
-        if (callback[move]) {
-            callback[move]();
+        if (cb_move) {
+            cb_move(move_event, a_move);
             // move_event.set_handle(true);
         }
         set_redraw_flag(true);
@@ -122,8 +150,8 @@ void Button::deal_mouse_move_event(Mouse_motion_event &move_event) {
 
 void Button::deal_mouse_move_out(Mouse_motion_event &move_event) {
     statu = Element_status::button_normal;
-    if (callback[move_out]) {
-        callback[move_out]();
+    if (cb_move_out) {
+        cb_move_out(move_event, a_move_out);
     }
     set_redraw_flag(true);
     present_all();
@@ -133,8 +161,8 @@ void Button::deal_mouse_move_in(Mouse_motion_event &move_event) {
     if (statu != Element_status::button_press) {
         statu = Element_status::button_hover;
     }
-    if (callback[move_in]) {
-        callback[move_in]();
+    if (cb_move_in) {
+        cb_move_in(move_event, a_move_in);
     }
     set_redraw_flag(true);
     present_all();

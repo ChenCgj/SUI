@@ -34,6 +34,7 @@ public:
     Rect(double x1, double y1, double z1, double x2, double y2, double z2);
     Rect(double x1 = 0.0, double y1 = 0.0, double x2 = 0.0, double y2 = 0.0);
     Rect *clone() const override;
+    bool is_point_in(const Point &p) const;
     double get_width() const;
     double get_height() const;
     Point p1, p2;

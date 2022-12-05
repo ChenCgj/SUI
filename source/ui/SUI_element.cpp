@@ -7,7 +7,7 @@
 
 namespace sui {
 
-Element::Element(int posX, int posY, int width, int height) : Geometry{posX, posY, width, height}, Drawable(posX, posY, width, height) {
+Element::Element(int posX, int posY, int width, int height, bool for_gl_data) : Geometry{posX, posY, width, height}, Drawable(posX, posY, width, height, for_gl_data) {
     object_name = "Element";
     // we should add the sub object to the trash root until it was add to a parent
     if (!TRASH_ROOT->add_node(this)) {

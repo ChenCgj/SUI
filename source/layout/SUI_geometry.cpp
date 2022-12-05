@@ -1,4 +1,5 @@
 #include "SUI_geometry.h"
+#include "SUI_shape.h"
 
 namespace sui {
 extern template class Property<int>;
@@ -79,4 +80,8 @@ Property<int> &Geometry::get_depth_property() {
     return depth;
 }
 
+Rect Geometry::get_rect() const {
+    return Rect{static_cast<double>(get_posX()), static_cast<double>(get_posY()),
+        static_cast<double>(get_width() + get_posX()), static_cast<double>(get_height() + get_posY())};
+}
 }

@@ -63,7 +63,10 @@ int main(int argc, char *argv[]) {
         }
         clean_trash(nullptr);
         // present_all();
-        WINDOW_MANAGER->update_all_window();
+        if (flag) {
+            // if we want to quit, we should not update it.
+            WINDOW_MANAGER->update_all_window();
+        }
     }
     DBG(<< "Main circle exit");
     clean();
@@ -82,14 +85,14 @@ int event_filter(void *data, SDL_Event *event) {
 *      Actually, it works normally but it was undefined.
 *      this problem is also happen when we move the window on windows, which means that if we move the window, the render will stop
 */
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
     case SDL_WINDOWEVENT:
+#if (defined(WIN32) || defined(_WIN32) || defined(__WIN32__)) && 0      // we close it.
         if (event->window.event == SDL_WINDOWEVENT_RESIZED) {
             WINDOW_MANAGER->patch_event_to(event->window.windowID, *event, sui::Window_manager::window_message_listening);
             return 0;
         }
-        break;
 #endif
+        break;
     case SDL_KEYDOWN:
     case SDL_KEYUP:
         WINDOW_MANAGER->patch_event_to(event->key.windowID, *event, sui::Window_manager::window_message_listening);
