@@ -11,6 +11,7 @@ demo_name = Space_impact
 OBJ_DIR = ./obj
 BUILD_DIR = ./build
 SOURCE_DIR = ./source
+GLAD_DIR = ./glad
 
 BASE = base
 LAYOUT = layout
@@ -19,14 +20,14 @@ UI = ui
 UTILS = utils
 WINDOW = window
 
-INCLUDE_DIR = /usr/include/SDL2 /usr/local/include/SDL2 ./include $(SOURCE_DIR)/include
+INCLUDE_DIR = /usr/include/SDL2 /usr/local/include/SDL2 ./include $(GLAD_DIR)/include $(SOURCE_DIR)/include
 TEST_DIR = test
 RUNNER_DIR = runner
 DEMO_DIR = Space_Impact
 
 INCLUDE_FLAGS = $(addprefix -I, $(INCLUDE_DIR))
 
-LDFLAGS = -L$(BUILD_DIR) -l$(name) -lSDL2 -lSDL2_ttf -lSDL2_image
+LDFLAGS = -L$(BUILD_DIR) -l$(name) -lSDL2 -lSDL2_ttf -lSDL2_image -ldl
 CXXFLAGS = -g -Wall $(INCLUDE_FLAGS)
 ARFLAGS = rcsv
 
@@ -43,14 +44,14 @@ $(BUILD_DIR)/lib$(name).a : $(patsubst %.cpp, $(OBJ_DIR)/%.o, $(srcfile))
 $(OBJ_DIR)/%.o : $(SOURCE_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $^
 
-$(TEST_DIR)/$(test_name) : $(TEST_DIR)/*.cpp
-	$(CXX) -g -Wall -Iinclude -o $@ $^ $(LDFLAGS) -no-pie
+$(TEST_DIR)/$(test_name) : $(TEST_DIR)/*.cpp $(GLAD_DIR)/src/*.c
+	$(CXX) -g -Wall -Iinclude -I$(GLAD_DIR)/include -o $@ $^ $(LDFLAGS) -no-pie
 
-$(RUNNER_DIR)/$(runner_name) : $(RUNNER_DIR)/*.cpp
-	$(CXX) -g -Wall -Iinclude -o $@ $^ $(LDFLAGS) -no-pie
+$(RUNNER_DIR)/$(runner_name) : $(RUNNER_DIR)/*.cpp $(GLAD_DIR)/src/*.c
+	$(CXX) -g -Wall -Iinclude -I$(GLAD_DIR)/include -o $@ $^ $(LDFLAGS) -no-pie
 
-$(DEMO_DIR)/$(demo_name) : $(DEMO_DIR)/source/*.cpp
-	$(CXX) -g -Wall -Iinclude -I$(DEMO_DIR)/include -o $@ $^ $(LDFLAGS) -no-pie
+$(DEMO_DIR)/$(demo_name) : $(DEMO_DIR)/source/*.cpp $(GLAD_DIR)/src/*.c
+	$(CXX) -g -Wall -Iinclude -I$(GLAD_DIR)/include -I$(DEMO_DIR)/include -o $@ $^ $(LDFLAGS) -no-pie
 
 .PHONY : init_folder clean test runner demo
 
