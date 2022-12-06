@@ -32,7 +32,7 @@ int main(int argc, char *argv[]) {
     srand(time(nullptr));
 
     Window *pWindow = get_window();
-    pWindow->add_listener([](Keyboard_event &e, void *) {
+    pWindow->add_listener([](const Keyboard_event &e, void *) {
         Key_code code = get_key(e);
         if (code == key_w) {
             color_up();
@@ -40,7 +40,7 @@ int main(int argc, char *argv[]) {
             color_down();
         }
         present_all();
-    }, Key_event::down, nullptr);
+    }, Key_event::ke_down, nullptr);
     Pane *pmain_pane = get_main_pane();
     set_board();
     pWindow->add_node(pmain_pane);

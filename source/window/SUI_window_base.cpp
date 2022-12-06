@@ -35,7 +35,8 @@ namespace sui {
 
 bool Window_base::has_create_gl = false;
 Window_base::Window_base(const std::string &title, int width, int height,
-               int posX, int posY, int flag) : Geometry{0, 0, width, height}, Drawable(width, height), glcontext{nullptr}, args{} {
+               int posX, int posY, int flag) : Geometry{0, 0, width, height}, Drawable(width, height), glcontext{nullptr},
+               cb_down{nullptr}, cb_up{nullptr}, a_down{nullptr}, a_up{nullptr} {
 
     object_name = "window_base";
     // all object except the root should be add to the trash_root initially
@@ -260,9 +261,20 @@ void Window_base::update_all_with_children() {
     }
 }
 
-void Window_base::add_listener(const std::function<void (Keyboard_event &, void *)> &func, Key_event event, void *arg) {
-    callback[event] = func;
-    args[event] = arg;
+void Window_base::add_listener(const std::function<void (const Keyboard_event &, void *)> &func, Key_event event, void *arg) {
+    switch (event) {
+    case Key_event::ke_down:
+        cb_down = func;
+        a_down = arg;
+        break;
+    case Key_event::ke_up:
+        cb_up = func;
+        a_up = arg;
+        break;
+    default:
+        ERR(<< "Unknow type of Keyboard_event.");
+        break;
+    }
 }
 
 void Window_base::deal_window_resized_event(Event &e) {
@@ -339,8 +351,8 @@ void Window_base::draw_all(Canvas &canvas) {
 * @bug when the window patch events to its children, the child should not deletable anything object, otherwise it will may cause hand point
 */
 void Window_base::deal_key_down_event(Keyboard_event &key_event) {
-    if (callback[Key_event::down]) {
-        callback[Key_event::down](key_event, args[Key_event::down]);
+    if (cb_down) {
+        cb_down(key_event, a_down);
     }
     std::list<Object *> node_list = get_node_list();
     for (auto p = node_list.rbegin(); p != node_list.rend(); ++p) {
@@ -383,8 +395,8 @@ void Window_base::deal_mouse_move_event(Mouse_motion_event &mouse_motion) {
 }
 
 void Window_base::deal_key_up_event(Keyboard_event &key_event) {
-    if (callback[Key_event::up]) {
-        callback[Key_event::up](key_event, args[Key_event::up]);
+    if (cb_up) {
+        cb_up(key_event, a_up);
     }
     std::list<Object *> node_list = get_node_list();
     for (auto p = node_list.rbegin(); p != node_list.rend(); ++p) {

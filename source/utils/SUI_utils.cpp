@@ -7,7 +7,10 @@
 #include "SUI_in_events.h"
 #include "SUI_utils.h"
 
+using std::pair;
+
 namespace sui {
+
 bool is_mouse_left_button_down() {
     return SDL_GetMouseState(nullptr, nullptr) & SDL_BUTTON_LMASK;
 }
@@ -24,6 +27,30 @@ std::pair<int, int> get_mouse_pos() {
     int x = 0, y = 0;
     SDL_GetMouseState(&x, &y);
     return std::make_pair(x, y);
+}
+
+bool is_mouse_left_button_down(const Mouse_motion_event &e) {
+    return e.left_button_down();
+}
+
+bool is_mouse_middle_button_down(const Mouse_motion_event &e) {
+    return e.middle_button_down();
+}
+
+bool is_mouse_right_button_down(const Mouse_motion_event &e) {
+    return e.right_button_down();
+}
+
+pair<int ,int> get_mouse_move(const Mouse_motion_event &e) {
+    return e.get_relative_pos();
+}
+
+pair<int, int> get_mouse_pos(const Mouse_motion_event &e) {
+    return e.get_pos();
+}
+
+float get_wheel_scroll(const Mouse_wheel_event &event) {
+    return event.get_scrolled_y();
 }
 
 bool is_shift_down() {
@@ -65,15 +92,7 @@ bool is_alt_down() {
     return lalt || ralt;
 }
 
-Key_code get_key(const Keyboard_event &event) {
-    return event.get_key();
-}
-
-float get_wheel_scroll(const Mouse_wheel_event &event) {
-    return event.get_scrolled_y();
-}
-
-bool *get_key_state(int &num_keys) {
+const bool *get_key_state(int &num_keys) {
     static bool state[512] = {false};
     const Uint8 *key_state = SDL_GetKeyboardState(&num_keys);
     for (int i = 0; i < 512 && i < num_keys; ++i) {
@@ -84,6 +103,10 @@ bool *get_key_state(int &num_keys) {
         state[keycode] = key_state[i];
     }
     return state;
+}
+
+Key_code get_key(const Keyboard_event &event) {
+    return event.get_key();
 }
 
 int add_timer(int interval, uint32_t (*func)(uint32_t, void *), void *param) {

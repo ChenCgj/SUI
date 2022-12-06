@@ -18,6 +18,7 @@ struct Canvas::Renderer_env {
 
 // static void store_env(SDL_Renderer *pRenderer, SDL_Texture *env_pOrigin_target, Uint8 o_r, Uint8 o_g, Uint8 o_b, Uint8 o_a);
 // static void load_env(SDL_Renderer *pRenderer, SDL_Texture *env_pOrigin_target, Uint8 o_r, Uint8 o_g, Uint8 o_b, Uint8 o_a);
+static bool flipImage(void *pixels, int pitch, int height);
 static SDL_Texture *recreate_texture(SDL_Renderer *pRenderer, long long texture_id, int origin_w, int origin_h, int new_w, int new_h, bool for_gl_data);
 static const double math_pi = 4 * atan(1);
 static SDL_BlendMode mask_blend_mode = SDL_ComposeCustomBlendMode(SDL_BLENDFACTOR_DST_COLOR, SDL_BLENDFACTOR_ZERO, SDL_BLENDOPERATION_ADD, SDL_BLENDFACTOR_DST_ALPHA, SDL_BLENDFACTOR_ZERO, SDL_BLENDOPERATION_ADD);
@@ -304,6 +305,9 @@ bool Canvas::load_gl_Texture(GLuint gl_texture_id, const Rect &rect) {
     }
     SDL_LockTexture(texture, &r, &pixels, &pitch);
     glGetTextureSubImage(gl_texture_id, 0, r.x, r.y, 0, r.w, r.h, 1, GL_RGBA, GL_UNSIGNED_BYTE, pitch * r.h, pixels);
+    if (!flipImage(pixels, pitch, r.h)) {
+        ERR(<< "load gl texture fail.\n");
+    }
     SDL_UnlockTexture(texture);
     return true;
 }
@@ -637,5 +641,24 @@ static SDL_Texture *recreate_texture(SDL_Renderer *pRenderer, long long texture_
     // }
     // SDL_DestroyTexture(origin);
     return new_texture;
+}
+
+static bool flipImage(void *pixels, int pitch, int height) {
+    if (pitch < 0 || height < 0) {
+        return false;
+    }
+    unsigned char *buf = new unsigned char[pitch];
+    if (!buf) {
+        return false;
+    }
+    for (int i = 0; i < height / 2; ++i) {
+        unsigned char *p1 = static_cast<unsigned char *>(pixels) + pitch * i;
+        unsigned char *p2 = static_cast<unsigned char *>(pixels) + pitch * (height - 1 - i);
+        memmove(buf, p1, pitch);
+        memmove(p1, p2, pitch);
+        memmove(p2, buf, pitch);
+    }
+    delete []buf;
+    return true;
 }
 }

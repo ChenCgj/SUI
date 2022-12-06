@@ -57,7 +57,7 @@ public:
     void set_height(int h) override;
     void set_position(int x, int y);
     void set_size(int w, int h);
-    void add_listener(const std::function<void (Keyboard_event &, void *)> &func, Key_event event, void *arg);
+    void add_listener(const std::function<void (const Keyboard_event &, void *)> &func, Key_event event, void *arg);
     uint32_t get_window_id() const;
     void clean_gl_context();
 private:
@@ -73,8 +73,8 @@ private:
     void *glcontext;
     static bool has_create_gl;
     uint32_t id;
-    std::function<void (Keyboard_event &, void *)> callback[2];
-    void *args[2];
+    std::function<void (const Keyboard_event &, void *)> cb_down, cb_up;
+    void *a_down, *a_up;
     friend class Event_handler_helper;
 };
 
