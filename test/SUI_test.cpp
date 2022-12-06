@@ -90,7 +90,7 @@ int main(int argc, char *argv[]) {
     pboard->line_to(25, 25);
     pboard->draw_line(0, 0, 100, 100);
     pboard->draw_text(Rect{125, 225, 300, 300}, "Hello World! Nice to meet you.", "Inkfree.ttf", Color{0, 0, 0, 255}, 20);
-    pboard->add_listener([&](const Mouse_button_event &, void *) {
+    pboard->add_listener([&](const Mouse_motion_event &, void *) {
         auto pos = get_mouse_pos();
         cout << "x: " << pos.first << " y: " << pos.second << endl;
     }, Graphic_board::Graphic_board_event::gbe_move, nullptr);
