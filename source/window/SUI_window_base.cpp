@@ -1,6 +1,6 @@
 #include <queue>
 
-#include "glad.h"
+#include "glad/glad.h"
 #include "SUI_in_canvas.h"
 #include "SUI_in_events.h"
 #include "SUI_in_debug.h"

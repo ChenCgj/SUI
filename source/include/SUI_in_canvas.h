@@ -10,7 +10,7 @@
 #include <stack>
 #include <vector>
 
-#include "glad.h"
+#include "glad/glad.h"
 
 #include "SDL_render.h"
 #include "SDL_stdinc.h"

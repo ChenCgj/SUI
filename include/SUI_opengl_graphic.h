@@ -7,7 +7,6 @@
 #define SUI_OPENGL_GRAPHIC_H
 
 #include <vector>
-#include "glad.h"
 #include "SUI_element.h"
 
 namespace sui {

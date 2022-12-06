@@ -38,11 +38,10 @@
 CMakeLists.txt
 
 # header file needed on windows
-/source/include/SDL_include
+/SDL_include
 
 # glad
-/source/glad
-/include/glad
+/glad
 
 # testOpengl
 /testOpengl
