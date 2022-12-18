@@ -1,4 +1,5 @@
 #include <algorithm>
+#include <cmath>
 
 #include "SUI_in_canvas.h"
 #include "SUI_in_debug.h"
