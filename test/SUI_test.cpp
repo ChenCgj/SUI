@@ -2,6 +2,7 @@
 #include <functional>
 
 #include "SUI.h"
+#include "SUI_slider.h"
 
 using namespace std;
 using namespace sui;
@@ -168,6 +169,13 @@ int main(int argc, char *argv[]) {
     ppane->add_node(vpane);
     ppane->add_node(hpane);
     pWindow->add_node(ppane);
+    pWindow->add_node(pboard);
+    Slider *pSlider = new Slider(900, 900, 100, 20, -100, 100);
+    pSlider->add_listener([](const Mouse_motion_event &, void *arg) {
+        Slider *s = reinterpret_cast<Slider *>(arg);
+        cout << "the value is " << s->get_value() << endl;
+    }, Slider::Slider_event::se_slide, pSlider);
+    pWindow->add_node(pSlider);
     pWindow->show();
 
 // another window ------------------------------------------------------------------------------------------------------------------------
