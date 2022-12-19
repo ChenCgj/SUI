@@ -27,5 +27,6 @@
 #include "SUI_label.h"
 #include "SUI_text_area.h"
 #include "SUI_opengl_graphic.h"
+#include "SUI_slider.h"
 
 #endif
